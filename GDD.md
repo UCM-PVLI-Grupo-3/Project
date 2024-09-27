@@ -2,7 +2,8 @@
 
 ## Genre
 
-**References:**
+Roguelike deckbuilder with turn and diceroll-based combat system
+**References:** [Dicey Dungeon](https://store.steampowered.com/app/861540/Dicey_Dungeons/), [Darkest Dungeon](https://store.steampowered.com/app/262060/Darkest_Dungeon/) 
 
 ## Synopsis: 
 
