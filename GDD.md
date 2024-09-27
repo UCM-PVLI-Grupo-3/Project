@@ -88,7 +88,7 @@
 
 >[!NOTE]
 >
->These are all (often) numerical indicators, sometimes colors and other attributes of objects or their behavior, which we will change hundreds of times during development. This includes all dynamic data, from the character's movement speed to the smoothness of the camera transition from one screen to another and the time it takes to break an ice tile.
+>These are all (often) numerical indicators, sometimes colors and other attributes of objects or their behavior, which we will change hundreds of times during development. This includes all dynamic data, from the character's movement speed to the smoothness of the camera transition from one screen to another and the time it takes to perform an action
 >
 >They should be separated from the mechanics section, because this will make script design easier. This will also allow us to create parameter sets already prepared for testing (presets) and quickly switch between them.
 >
