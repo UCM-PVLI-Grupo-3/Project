@@ -5,17 +5,20 @@
 Roguelike deckbuilder with turn and diceroll-based combat system 
 
 ### References: 
-[Dicey Dungeon](https://store.steampowered.com/app/861540/Dicey_Dungeons/), [Darkest Dungeon](https://store.steampowered.com/app/262060/Darkest_Dungeon/) 
+[Dicey Dungeon](https://store.steampowered.com/app/861540/Dicey_Dungeons/), [Darkest Dungeon](https://store.steampowered.com/app/262060/Darkest_Dungeon/), [Slice & Dice](https://store.steampowered.com/app/1775490/Slice__Dice/)
 
 ## Synopsis: 
 
 >[!NOTE]
->This part of GDD provides a concise overview of the setting, allowing any reader to understand what to imagine while specific terms are mentioned in the text. For example, if we specify that the game setting is a medieval fantasy world, the reader will understand that when "weapons" is mentioned, it means swords or crossbows, and not futuristic laser weapons.
-
+>You are a time traveler switching between the future and the past. Your goal is to defeat the interdimensional entity that is causing a breach in space-time, twisting the world bringing together dangers from ancient times and unwitnessed futuristic hazards.
+>
+>Equipped with what you gather from killing these enemies in turn-based, card and dice roll battles; and find in past or future locations, such as markets or online crypto-auctions, you must continue the path towards this glitched interdimensional entity and restore your world.
 
 ## Controls
 
 >[!NOTE]
+>The game controls are mostly UI-based. They should be quite deducible for a player that switches from PC to mobile or any ohter display for a web platform.
+>
 >In later sections of the document, to associate a specific action with a button, you must specify the name of that button in triangle brackets.
 >**Example:** To destroy an obstacle, the player must press button *`<Interact>`* while near the obstacle so that the character is facing in its direction.
 >
@@ -25,21 +28,45 @@ Roguelike deckbuilder with turn and diceroll-based combat system
 
 | Button | Name |
 | ------ | ---- |
-|        |      |
+| Arrow keys, WASD, numpad | Change selected action |
+| Intro, space | Confirm selected action |
+
+
+### Mouse
+
+| Button | Name |
+| ------ | ---- |
+| Mouse hover | Change selected action |
+| Left click | Confirm selected action |
+
 
 ### Gamepad
 | Button | Name |
 | ------ | ---- |
-|        |      |
+| Left stick, d-pad | Change selected action |
+| East button | Confirm selected action |
+
+
+### Touch-screen
+| Button | Name |
+| ------ | ---- |
+| Touch | Change selected action |
+| Swipe | Confirm selected action |
+
 
 ## Style
 
 >[!NOTE]
->Style is understood in the broadest sense. Here we can add any concept art and references. Write down the details of how the game should feel, what emotions it should evoke in the player.
+> Smooth vector art with light saturated colors, similar to Dicey Dungeons. Clear telegraphy of any icons, buttons, actions or menu contexts.
 >
->From a gameplay point of view, in this section you should describe how the game works without touching on details. For example, how the game world is structured, whether it is divided into levels or an "open world", how movement between locations occurs. Can the character only walk? Or fly? Or drive a vehicle? Will you be able to pick up something in his inventory? Move things? Struggle? Use magic?, etc...
+>The game is structured as follows:
+>The player advances fromm event to event in the map view of the world. The map view of the world is a graph view of the different event locations of the game (similar to [Pegglin](https://store.steampowered.com/app/1296610/Peglin/)'s), how to reach them and their connections. Besides, a player icon is seen on the current event location we are at. While in this view, the player can check out their inventory, and select the next event location (provided there is a graph adjacency from their current location).
 >
->This section is like a trailer for the game in text form, where we describe the player's capabilities. After reading the entire section, the reader should understand what the game will be about, but without going into details.
+>An event location may be: a fight, shop, or bonus reward event.
+>
+>When in a fight, the main card-and-dice-based mechanics of the game take over. The fight may conclude when you are killed by an enemy or when you succesfully kill all present in a fight, granting you with a card or dice reward and taking you back to the map view.
+>
+>Both shops and reward events are addtional ways to fights to obtain a repertoir of card and dice to use in battles.
 
 
 ## Dynamics
