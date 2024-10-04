@@ -84,21 +84,14 @@ Roguelike deckbuilder with turn and diceroll-based combat system
 ## Systems and Mechanics
 
 >[!NOTE]
-> In this section we must write everything related to the logic of the game. There is no need to delve into the parameters of how long it lasts in seconds or how much damage it causes. Here we must describe the working principle of EVERYTHING that happens within the game.
+> While in the map view: The main mechanic available is selecting the next event location to move onto.
 >
-> In terms of building the structure of the document, it is worth starting with the systems and then moving on to the mechanics.
+>While in a shop: Inventory management is present and it is combined with the possibility to purchase or remove existing cards from your deck, dice, card slots and or dice slots. All interactions occur in a UI context with deducible implications of what that mechanic implies. (i.e. when you select a card for purchase, that one is added to the totallity of your current deck and its price is subtracted from your current amount. Or if you purchase a card removal, yout then get shown all your deck, to obviously pick which one you want vanished).
+>
+>While in a reward event: Mechanics implied are almost non-interactive for the player. You get shown your new addition to your deck and can consult its description. You will have it available for future events from that moment onwards.
+>
+>While in a fight: You may select the target enemy of your next attack.
 
-
->[!TIP]
->
->Estoy seguro de que en España, como en muchos otros países, en el colegio/escuela te enseñan a escribir composiciones o ensayos, intentando cometer un mínimo de errores léxicos y estilísticos (por ejemplo, tautologías).
->
->Pero la documentación no es una obra de arte, aquí se fomenta romper las reglas de redacción de composiciones para evitar la grafomanía
->
->**Ejemplo:** 
->*`Cuando un personaje activa la habilidad de "Curación", el personaje recibe el buff de "Curación", que cura al personaje y restaura N unidades de salud.`*
->
->Esto puede sonar terrible desde un punto de vista estilístico, pero para fines de documentación, este es un párrafo muy bueno que se puede traducir fácilmente a [codigo](https://ibb.co/vhgZWbt).
 
 ### Systems
 
@@ -125,21 +118,3 @@ Roguelike deckbuilder with turn and diceroll-based combat system
 >They should be separated from the mechanics section, because this will make script design easier. This will also allow us to create parameter sets already prepared for testing (presets) and quickly switch between them.
 >
 >The value of the parameters should not be written before the prototype, as it is better to test them in practice and point them here.
-
-
-## Design
-
-### Narrative:
-
-### Art:
-
-### Animations:
-
-### Music:
-
-## Progression
-
->[!NOTE]
->A very small section that indicates the sequence of opening levels, unlocking new mechanics and story events.
-
-## Interface
