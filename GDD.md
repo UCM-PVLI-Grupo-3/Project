@@ -90,16 +90,21 @@ Roguelike deckbuilder with turn and diceroll-based combat system
 >
 >While in a reward event: Mechanics implied are almost non-interactive for the player. You get shown your new addition to your deck and can consult its description. You will have it available for future events from that moment onwards.
 >
->While in a fight: You may select the target enemy of your next attack.
+>While in a fight: You may select the target enemy of your next attack. Your only leftover interaction is now to select and play your turn's action.
+>Actions include using a defence, attack or heal card with all its associated dice or reorganize your dice to weight differently your card type odds.
+>Resources present in a fight include: tied to player status, health, shield; tied to deck management, drawn cards of each type, assigned dice to each card type; and the emotion stack which can interwine both via its buffs or debuffs.
 
 
 ### Systems
 
 >[!NOTE]
 >
->**A system** is simply a set of mechanics that are combined into a separate module, which can be large or small. Systems interact with each other, but the mechanics within a single system have the most connections.  
+>Inventory system:
+>Through the run available manageable persistent resources are collected dice and cards and their "slots" in fights. Neither are preserved in any meta-progression manner (at least as of this draft), nor lost for subsequent events when used in a battle turn. The existent ways to add dice and cards to your game are: winning a battle, entering a reward event and purchasing them in a shop. Slots may only be purchased in a shop.
+>Number of slots may only increase in a run. There are no ways to remove them. Notwithstanding ways to remove dice and cards; this could be for the purpose of increasing odds of other resources; accept being purchased in shops. Not elsewhere.
 >
->**For example:** the movement system consists of all movement mechanics (running, jumping, climbing...), the combat system consists of combat mechanics (weak hit, strong hit, block...).
+>Turn play and draw system:
+>Having selected an enemy, you may choose your action for the turn. You may choose to play one card that is drawn from your whole deck and currently placed in a card slot. Playing that card will roll all the dice assigned to its card type, compute their sum and check that result against your character stats in order to determine if that card action executes successfully or fails. Afterwards the card gets put at the back of your deck. The enemy plays its turn (with a more simplified version of your turn play system (WIP)). And your draw the next card from the front of your deck; which is randomly shuffled at the beginning of each battle. 
 
 
 ### Mechanics
