@@ -1,4 +1,5 @@
 # Project
+Let's Go ~~Gambling~~ Rolling
 
 ## Genre
 
@@ -72,11 +73,10 @@ Roguelike deckbuilder with turn and diceroll-based combat system
 ## Dynamics
 
 >[!NOTE]
-> Within the MDA framework, "dynamics" refers to the way players interact with game mechanics while playing. Dynamics are defined as how game mechanics lead to changes and evolution of the game experience over time. In other words, dynamics are the result of the player's interaction with the mechanics and subsequent changes in the game.
-> 
-> In the context of the MDA framework, we can say that dynamics is a higher level of abstraction compared to mechanics. Mechanics determine what actions are available to the player, and dynamics describe how these actions affect the course of the game, what consequences they have, how the game experience unfolds, and what emotional reactions are evoked in the player.
-> 
-> Thus, we can say that the dynamics are not simply a system of mechanics, but the result of their interaction during the course of the game.
+>Various dynacmics are present in the game in two different scopes: through the run and through an individual fight.
+>
+>When traversing the map, the player may be interested in taking a bunch of fights or carefully planning to maximize passing through the most shops possible.
+>Equally, should the player be interested in a particular set of cards, they may beeline for every past or future event location they catch a glimpse of in the map view. Allowing them to craft a deck with a very defined "temporal aest
 
 
 ## Systems and Mechanics
