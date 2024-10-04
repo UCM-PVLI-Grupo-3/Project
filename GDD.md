@@ -81,7 +81,7 @@ Roguelike deckbuilder with turn and diceroll-based combat system
 >Moreover, long term thinking is also present all whilst in a fight, given that the emotion stack is one more element to bear in mind. Allowing you to plan a sequence of card turns ahead to ~~gamble~~ roll your odds of getting the best of emotion combinations.
 
 
-## Systems and Mechanics
+## Systems and Mechanics overview
 
 >[!NOTE]
 > While in the map view: The main mechanic available is selecting the next event location to move onto.
@@ -95,7 +95,7 @@ Roguelike deckbuilder with turn and diceroll-based combat system
 >Resources present in a fight include: tied to player status, health, shield; tied to deck management, drawn cards of each type, assigned dice to each card type; and the emotion stack which can interwine both via its buffs or debuffs.
 
 
-### Systems
+### Mechanics
 
 >[!NOTE]
 >
@@ -104,22 +104,8 @@ Roguelike deckbuilder with turn and diceroll-based combat system
 >Number of slots may only increase in a run. There are no ways to remove them. Notwithstanding ways to remove dice and cards; this could be for the purpose of increasing odds of other resources; accept being purchased in shops. Not elsewhere.
 >
 >Turn play and draw system:
->Having selected an enemy, you may choose your action for the turn. You may choose to play one card that is drawn from your whole deck and currently placed in a card slot. Playing that card will roll all the dice assigned to its card type, compute their sum and check that result against your character stats in order to determine if that card action executes successfully or fails. Afterwards the card gets put at the back of your deck. The enemy plays its turn (with a more simplified version of your turn play system (WIP)). And your draw the next card from the front of your deck; which is randomly shuffled at the beginning of each battle. 
-
-
-### Mechanics
-
->[!NOTE]
-> 
-> **Mechanics** are separate actions, a building block from which systems are built. For example, the movement system has a "running" mechanic and a "swimming" mechanic. Our task is to describe the mechanics so that we can imagine their code.
-
-
-## Parameters
-
->[!NOTE]
+>Having selected an enemy, you may choose your action for the turn. You may choose to play one card that is drawn from your whole deck and currently placed in a card slot. Playing that card will roll all the dice assigned to its card type, compute their sum and check that result against your character stats in order to determine if that card action executes successfully or fails. Afterwards the card gets put at the back of your deck. The enemy plays its turn (with a more simplified version of your turn play system (WIP)). And your draw the next card from the front of your deck; which isalways randomly shuffled at the beginning of each battle.
 >
->These are all (often) numerical indicators, sometimes colors and other attributes of objects or their behavior, which we will change hundreds of times during development. This includes all dynamic data, from the character's movement speed to the smoothness of the camera transition from one screen to another and the time it takes to perform an action
+>You may, instead of playing an action card, choose to reorganize your assigned dice to each card type. Doing so spends your turn as if you had played a card. While at it, you are able to take any dice from any slot and place it in another (only matters if you change it to a slot of a different card type), making so that the next card play of that type will now use that dice to compute its success.
 >
->They should be separated from the mechanics section, because this will make script design easier. This will also allow us to create parameter sets already prepared for testing (presets) and quickly switch between them.
->
->The value of the parameters should not be written before the prototype, as it is better to test them in practice and point them here.
+>![Card Play UI](./dice_time.jpg)
