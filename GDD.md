@@ -75,7 +75,10 @@ Roguelike deckbuilder with turn and diceroll-based combat system
 >Various dynacmics are present in the game in two different scopes: through the run and through an individual fight.
 >
 >When traversing the map, the player may be interested in taking a bunch of fights or carefully planning to maximize passing through the most shops possible.
->Equally, should the player be interested in a particular set of cards, they may beeline for every past or future event location they catch a glimpse of in the map view. Allowing them to craft a deck with a very defined "temporal aest
+>Equally, should the player be interested in a particular set of cards, they may beeline for every past or future event location they catch a glimpse of in the map view. Allowing them to craft a deck with a very defined "temporal aesthetic" and synergies.
+>
+>When in a particular fight, the mechanics available enhance and leave clear various game-styles. Ones might bet all their dice to risky high attack cards. Whereas others might spread the love along all the card types; of defence, attack, heal. Or even be a personal fan of using the "reorganize dice" action and dynamically assign dice to different card type slots to adapt their strategies to the enemies dynamically.
+>Moreover, long term thinking is also present all whilst in a fight, given that the emotion stack is one more element to bear in mind. Allowing you to plan a sequence of card turns ahead to ~~gamble~~ roll your odds of getting the best of emotion combinations.
 
 
 ## Systems and Mechanics
