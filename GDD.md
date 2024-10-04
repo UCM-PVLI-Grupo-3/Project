@@ -1,5 +1,5 @@
 # Project
-##Let's Go ~~Gambling~~ Rolling
+## Let's Go ~~Gambling~~ Rolling
 
 ## Genre
 
