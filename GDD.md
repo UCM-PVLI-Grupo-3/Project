@@ -1,21 +1,24 @@
-# Project
+# Project: Let's Go ~~Gambling~~ Rolling
 
 ## Genre
 
 Roguelike deckbuilder with turn and diceroll-based combat system 
 
 ### References: 
-[Dicey Dungeon](https://store.steampowered.com/app/861540/Dicey_Dungeons/), [Darkest Dungeon](https://store.steampowered.com/app/262060/Darkest_Dungeon/) 
+[Dicey Dungeon](https://store.steampowered.com/app/861540/Dicey_Dungeons/), [Darkest Dungeon](https://store.steampowered.com/app/262060/Darkest_Dungeon/), [Slice & Dice](https://store.steampowered.com/app/1775490/Slice__Dice/)
 
 ## Synopsis: 
 
 >[!NOTE]
->This part of GDD provides a concise overview of the setting, allowing any reader to understand what to imagine while specific terms are mentioned in the text. For example, if we specify that the game setting is a medieval fantasy world, the reader will understand that when "weapons" is mentioned, it means swords or crossbows, and not futuristic laser weapons.
-
+>You are a time traveler switching between the future and the past. Your goal is to defeat the interdimensional entity that is causing a breach in space-time, twisting the world bringing together dangers from ancient times and unwitnessed futuristic hazards.
+>
+>Equipped with what you gather from killing these enemies in turn-based, card and dice roll battles; and find in past or future locations, such as markets or online crypto-auctions, you must continue the path towards this glitched interdimensional entity and restore your world.
 
 ## Controls
 
 >[!NOTE]
+>The game controls are mostly UI-based. They should be quite deducible for a player that switches from PC to mobile or any ohter display for a web platform.
+>
 >In later sections of the document, to associate a specific action with a button, you must specify the name of that button in triangle brackets.
 >**Example:** To destroy an obstacle, the player must press button *`<Interact>`* while near the obstacle so that the character is facing in its direction.
 >
@@ -25,92 +28,84 @@ Roguelike deckbuilder with turn and diceroll-based combat system
 
 | Button | Name |
 | ------ | ---- |
-|        |      |
+| Arrow keys, WASD, numpad | Change selected action |
+| Intro, space | Confirm selected action |
+
+
+### Mouse
+
+| Button | Name |
+| ------ | ---- |
+| Mouse hover | Change selected action |
+| Left click | Confirm selected action |
+
 
 ### Gamepad
 | Button | Name |
 | ------ | ---- |
-|        |      |
+| Left stick, d-pad | Change selected action |
+| East button | Confirm selected action |
+
+
+### Touch-screen
+| Button | Name |
+| ------ | ---- |
+| Touch | Change selected action |
+| Swipe | Confirm selected action |
+
 
 ## Style
 
 >[!NOTE]
->Style is understood in the broadest sense. Here we can add any concept art and references. Write down the details of how the game should feel, what emotions it should evoke in the player.
+> Smooth vector art with light saturated colors, similar to Dicey Dungeons. Clear telegraphy of any icons, buttons, actions or menu contexts.
 >
->From a gameplay point of view, in this section you should describe how the game works without touching on details. For example, how the game world is structured, whether it is divided into levels or an "open world", how movement between locations occurs. Can the character only walk? Or fly? Or drive a vehicle? Will you be able to pick up something in his inventory? Move things? Struggle? Use magic?, etc...
+>The game is structured as follows:
+>The player advances fromm event to event in the map view of the world. The map view of the world is a graph view of the different event locations of the game (similar to [Pegglin](https://store.steampowered.com/app/1296610/Peglin/)'s), how to reach them and their connections. Besides, a player icon is seen on the current event location we are at. While in this view, the player can check out their inventory, and select the next event location (provided there is a graph adjacency from their current location).
 >
->This section is like a trailer for the game in text form, where we describe the player's capabilities. After reading the entire section, the reader should understand what the game will be about, but without going into details.
+>An event location may be: a fight, shop, or bonus reward event.
+>
+>When in a fight, the main card-and-dice-based mechanics of the game take over. The fight may conclude when you are killed by an enemy or when you succesfully kill all present in a fight, granting you with a card or dice reward and taking you back to the map view.
+>
+>Both shops and reward events are addtional ways to fights to obtain a repertoir of card and dice to use in battles.
 
 
 ## Dynamics
 
 >[!NOTE]
-> Within the MDA framework, "dynamics" refers to the way players interact with game mechanics while playing. Dynamics are defined as how game mechanics lead to changes and evolution of the game experience over time. In other words, dynamics are the result of the player's interaction with the mechanics and subsequent changes in the game.
-> 
-> In the context of the MDA framework, we can say that dynamics is a higher level of abstraction compared to mechanics. Mechanics determine what actions are available to the player, and dynamics describe how these actions affect the course of the game, what consequences they have, how the game experience unfolds, and what emotional reactions are evoked in the player.
-> 
-> Thus, we can say that the dynamics are not simply a system of mechanics, but the result of their interaction during the course of the game.
-
-
-## Systems and Mechanics
-
->[!NOTE]
-> In this section we must write everything related to the logic of the game. There is no need to delve into the parameters of how long it lasts in seconds or how much damage it causes. Here we must describe the working principle of EVERYTHING that happens within the game.
+>Various dynacmics are present in the game in two different scopes: through the run and through an individual fight.
 >
-> In terms of building the structure of the document, it is worth starting with the systems and then moving on to the mechanics.
+>When traversing the map, the player may be interested in taking a bunch of fights or carefully planning to maximize passing through the most shops possible.
+>Equally, should the player be interested in a particular set of cards, they may beeline for every past or future event location they catch a glimpse of in the map view. Allowing them to craft a deck with a very defined "temporal aesthetic" and synergies.
+>
+>When in a particular fight, the mechanics available enhance and leave clear various game-styles. Ones might bet all their dice to risky high attack cards. Whereas others might spread the love along all the card types; of defence, attack, heal. Or even be a personal fan of using the "reorganize dice" action and dynamically assign dice to different card type slots to adapt their strategies to the enemies dynamically.
+>Moreover, long term thinking is also present all whilst in a fight, given that the emotion stack is one more element to bear in mind. Allowing you to plan a sequence of card turns ahead to ~~gamble~~ roll your odds of getting the best of emotion combinations.
 
 
->[!TIP]
->
->Estoy seguro de que en España, como en muchos otros países, en el colegio/escuela te enseñan a escribir composiciones o ensayos, intentando cometer un mínimo de errores léxicos y estilísticos (por ejemplo, tautologías).
->
->Pero la documentación no es una obra de arte, aquí se fomenta romper las reglas de redacción de composiciones para evitar la grafomanía
->
->**Ejemplo:** 
->*`Cuando un personaje activa la habilidad de "Curación", el personaje recibe el buff de "Curación", que cura al personaje y restaura N unidades de salud.`*
->
->Esto puede sonar terrible desde un punto de vista estilístico, pero para fines de documentación, este es un párrafo muy bueno que se puede traducir fácilmente a [codigo](https://ibb.co/vhgZWbt).
-
-### Systems
+## Systems and Mechanics overview
 
 >[!NOTE]
+> While in the map view: The main mechanic available is selecting the next event location to move onto.
 >
->**A system** is simply a set of mechanics that are combined into a separate module, which can be large or small. Systems interact with each other, but the mechanics within a single system have the most connections.  
+>While in a shop: Inventory management is present and it is combined with the possibility to purchase or remove existing cards from your deck, dice, card slots and or dice slots. All interactions occur in a UI context with deducible implications of what that mechanic implies. (i.e. when you select a card for purchase, that one is added to the totallity of your current deck and its price is subtracted from your current amount. Or if you purchase a card removal, yout then get shown all your deck, to obviously pick which one you want vanished).
 >
->**For example:** the movement system consists of all movement mechanics (running, jumping, climbing...), the combat system consists of combat mechanics (weak hit, strong hit, block...).
+>While in a reward event: Mechanics implied are almost non-interactive for the player. You get shown your new addition to your deck and can consult its description. You will have it available for future events from that moment onwards.
+>
+>While in a fight: You may select the target enemy of your next attack. Your only leftover interaction is now to select and play your turn's action.
+>Actions include using a defence, attack or heal card with all its associated dice or reorganize your dice to weight differently your card type odds.
+>Resources present in a fight include: tied to player status, health, shield; tied to deck management, drawn cards of each type, assigned dice to each card type; and the emotion stack which can interwine both via its buffs or debuffs.
 
 
 ### Mechanics
 
 >[!NOTE]
-> 
-> **Mechanics** are separate actions, a building block from which systems are built. For example, the movement system has a "running" mechanic and a "swimming" mechanic. Our task is to describe the mechanics so that we can imagine their code.
-
-
-## Parameters
-
->[!NOTE]
 >
->These are all (often) numerical indicators, sometimes colors and other attributes of objects or their behavior, which we will change hundreds of times during development. This includes all dynamic data, from the character's movement speed to the smoothness of the camera transition from one screen to another and the time it takes to perform an action
+>Inventory system:
+>Through the run available manageable persistent resources are collected dice and cards and their "slots" in fights. Neither are preserved in any meta-progression manner (at least as of this draft), nor lost for subsequent events when used in a battle turn. The existent ways to add dice and cards to your game are: winning a battle, entering a reward event and purchasing them in a shop. Slots may only be purchased in a shop.
+>Number of slots may only increase in a run. There are no ways to remove them. Notwithstanding ways to remove dice and cards; this could be for the purpose of increasing odds of other resources; accept being purchased in shops. Not elsewhere.
 >
->They should be separated from the mechanics section, because this will make script design easier. This will also allow us to create parameter sets already prepared for testing (presets) and quickly switch between them.
+>Turn play and draw system:
+>Having selected an enemy, you may choose your action for the turn. You may choose to play one card that is drawn from your whole deck and currently placed in a card slot. Playing that card will roll all the dice assigned to its card type, compute their sum and check that result against your character stats in order to determine if that card action executes successfully or fails. Afterwards the card gets put at the back of your deck. The enemy plays its turn (with a more simplified version of your turn play system (WIP)). And your draw the next card from the front of your deck; which isalways randomly shuffled at the beginning of each battle.
 >
->The value of the parameters should not be written before the prototype, as it is better to test them in practice and point them here.
-
-
-## Design
-
-### Narrative:
-
-### Art:
-
-### Animations:
-
-### Music:
-
-## Progression
-
->[!NOTE]
->A very small section that indicates the sequence of opening levels, unlocking new mechanics and story events.
-
-## Interface
+>You may, instead of playing an action card, choose to reorganize your assigned dice to each card type. Doing so spends your turn as if you had played a card. While at it, you are able to take any dice from any slot and place it in another (only matters if you change it to a slot of a different card type), making so that the next card play of that type will now use that dice to compute its success.
+>
+>![Card Play UI](./dice_time.jpg)
