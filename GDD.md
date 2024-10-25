@@ -113,19 +113,11 @@ You may, instead of playing an action card, choose to reorganize your assigned d
 
 ## Mechanics
 
-### Location types
-#TODO write about types of locations on map and their difference
-
-### Map movement
-#TODO write about map movement logic (only actions of selecting nodes of map-graph, if player can return to previous locations, visit shops many times, etc...)
-
 ### Character stats
 #TODO write about character's stats logic. What stats do player has? How he can change, upgrade it?
 
-### Card types and values
+### Cards 
 #TODO write about card types (attack, defense and heal), value and logic of every card type
-
-### Card effect
 #TODO write a list of card effects (like stun), with descriptions, create backlink to [[#Character's states (buffs and debuffs)]]
 #TODO write about effects synergies
 
@@ -133,28 +125,14 @@ You may, instead of playing an action card, choose to reorganize your assigned d
 #TODO write about emotional condition logic
 #TODO don't forget to create a backlink to [[#Character's emotions]]
 
-### Choose action
-#TODO write about enemy selection logic
-#TODO write about action selection (with list of possible actions, optional and mandatory)
-
 ### Play a card
 #TODO write a logic of playing card action. Describe sequence of actions that happens when any character plays a card
-
-### Dice roll
-#TODO write a logic of rolling the dice
-#TODO write a list of possible dices
 
 ### Dice organizing
 #TODO write about dice-card assignation logic
 
-### Draw a card
-#TODO write about logic of drawing cards
-
 ### Character's states (buffs and debuffs)
 #TODO write about buffs and debuffs, their relations with [[#Card effect]]
-
-### Character's emotions
-#TODO write about emotion logic (with backlinks to [[#Emotional condition]])
 
 ### Purchase items
 #TODO write about purchasing logic while in shops
