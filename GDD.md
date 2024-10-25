@@ -63,76 +63,23 @@ When in a particular fight, the mechanics available enhance and leave clear vari
 Moreover, long term thinking is also present all whilst in a fight, given that the emotion stack is one more element to bear in mind. Allowing you to plan a sequence of card turns ahead to ~~gamble~~ roll your odds of getting the best of emotion combinations.
 
 
-# Systems and Mechanics overview
+# Gameplay
 
-While in the map view: The main mechanic available is selecting the next event location to move onto.
-
-While in a shop: Inventory management is present and it is combined with the possibility to purchase or remove existing cards from your deck, dice, card slots and or dice slots. All interactions occur in a UI context with deducible implications of what that mechanic implies. (i.e. when you select a card for purchase, that one is added to the totallity of your current deck and its price is subtracted from your current amount. Or if you purchase a card removal, yout then get shown all your deck, to obviously pick which one you want vanished).
-
-While in a reward event: Mechanics implied are almost non-interactive for the player. You get shown your new addition to your deck and can consult its description. You will have it available for future events from that moment onwards.
-
-While in a fight: You may select the target enemy of your next attack. Your only leftover interaction is now to select and play your turn's action.
-Actions include using a defence, attack or heal card with all its associated dice or reorganize your dice to weight differently your card type odds.
-Resources present in a fight include: tied to player status, health, shield; tied to deck management, drawn cards of each type, assigned dice to each card type; and the emotion stack which can interwine both via its buffs or debuffs.
-
-
-## Systems
-
-### Inventory & shop system:
-Through the run available manageable persistent resources are collected dice and cards and their "slots" in fights. Neither are preserved in any meta-progression manner (at least as of this draft), nor lost for subsequent events when used in a battle turn. The existent ways to add dice and cards to your game are: winning a battle, entering a reward event and purchasing them in a shop. Slots may only be purchased in a shop.
-Number of slots may only increase in a run. There are no ways to remove them. Notwithstanding ways to remove dice and cards; this could be for the purpose of increasing odds of other resources; accept being purchased in shops. Not elsewhere.
-
-**Related mechanics:**
-- [[#Purchase items]]
-- [[#Remove items]]
-
-### Cards system
-#TODO write short explanation what is a "card" in the game and what do they consist of? (which characteristics do they have?)
-
-**Related mechanics:**
-- [[#Card types and values]]
-- [[#Card effect]]
-- [[#Emotional condition]]
-- [[#Character's emotions]]
-- [[#Play a card]]
-
-### Turn base combat system
-Having selected an enemy, you may choose your action for the turn. You may choose to play one card that is drawn from your whole deck and currently placed in a card slot. Playing that card will roll all the dice assigned to its card type, compute their sum and check that result against your character stats in order to determine if that card action executes successfully or fails. Afterwards the card gets put at the back of your deck. The enemy plays its turn (with a more simplified version of your turn play system (WIP)). And your draw the next card from the front of your deck; which is always randomly shuffled at the beginning of each battle.
-
-You may, instead of playing an action card, choose to reorganize your assigned dice to each card type. Doing so spends your turn as if you had played a card. While at it, you are able to take any dice from any slot and place it in another (only matters if you change it to a slot of a different card type), making so that the next card play of that type will now use that dice to compute its success.
-
-**Related mechanics:**
-- [[#Choose action]]
-- [[#Play a card]]
-- [[#Dice roll]]
-- [[#Dice organizing]]
-- [[#Draw a card]]
-- [[#Character states (buffs and debuffs)]]
-- [[#Character's emotions]]
 
 
 ## Mechanics
+### Cards 
+#The cards are the most importal and principal mechanic in this game.They represent the actions the player can do during the fight,this being divided in three subclasses,each representing the cards main purpose: attack cards,they deal damage to the enemy; defense cards, they help the player receive less damage; Heal cards,they restores the players health; This been said it is posible to find a card that is a fusion of two types,like: attack/defense,attack/heal or defense/heal.
+Besides their main action, the card may have side effect and an emotion.All of this actions outcomes are decided by the dices roll,the stats bonus,the dice bonus and the emotion bonus,all of this bonuses will be talked about later on.
+
+### Emotions
+#As we have said before, a way of improving your chances at landing your cards is your emotion bonus.Most cards have emotions integrated in them and they are not just for show. Each time the dices are rolled when you play a card with an emotion,if your roll is on the higher epsilon you will receive that cards benefitial emotion and it will give you a temporal buff in your attack,defense or heal power or it will upgrade your luck,making you hit higher rolls easier,giving you more emotions,which results in more luck,getting you on a roll,hitting more and more...but beware one very bad roll and the card will give you a negative emotion,this will debuff your strenght,heal or defense power or make you hit lower rolls easier,as in the benefitial emotion,negative ones can also stack but in a slower pace giving you time to rise from the slump before you get too depressed 
 
 ### Character stats
-#TODO write about character's stats logic. What stats do player has? How he can change, upgrade it?
-
-### Cards 
-#TODO write about card types (attack, defense and heal), value and logic of every card type
-#TODO write a list of card effects (like stun), with descriptions, create backlink to [[#Character's states (buffs and debuffs)]]
-#TODO write about effects synergies
-
-### Emotional condition
-#TODO write about emotional condition logic
-#TODO don't forget to create a backlink to [[#Character's emotions]]
-
-### Play a card
-#TODO write a logic of playing card action. Describe sequence of actions that happens when any character plays a card
+#Like in many games,stats are a big part of the players kit,in this game its no diferent. In time dice, the player counts with 3 stats: strenght,constitution and resilience,each of them conected to the diferent movements the player can make: attack,defense and heal respectively. This stats are usefull because they act as a bonus to o the dice roll puntuaction of their respective classes,that way you can attain greater rolls during a fight. Each time you win a fight you gain experience to increase your level and increasing your level gives you points, you can spend the points to improve your stats. That way instead of leveling up all stats automatically and evenly, we give the players the chance to choose depending on their playstyle and strategy.
 
 ### Dice organizing
-#TODO write about dice-card assignation logic
-
-### Character's states (buffs and debuffs)
-#TODO write about buffs and debuffs, their relations with [[#Card effect]]
+#As explainede before on the gameplay analisis,during your turn you may change your dices position depending on the state of the battle and your startegy. You start each battle with a set number of diferent kinds of dices which vary from the d4 dice to the d20 dice.By rearranging your dices you can place more or less dices in each action type: attack,defense,heal. Giving more dices to your attack will give you better probability on your rolls on attack cards,giving you not only more dices but also an aditional dices bonus. But thats not the only bonus a dice can give,lets imagine,if you are figting a cyborg that needs a 19 to be hit, you may think that using d20 dices is the best answer,but its not the best one its the safest one, and this game doesnt reward being safe. Using lower dices like 3d8 will not only allow you to hit but it will give you a bonus for using a lower dice and an even bigger bonus if you use a 3 d6.That way the game doesnt only reward the smartes and most strategic players but the ones with an inner ludopat
 
 ### Purchase items
 #TODO write about purchasing logic while in shops
