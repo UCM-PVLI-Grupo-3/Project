@@ -1,5 +1,4 @@
-class DiceSlot
-{
+class DiceSlot {
     dices = new Array(3);
 
     constructor(_dices)
@@ -31,3 +30,5 @@ class DiceSlot
         return dice_sum;
     }
 }
+
+export { DiceSlot };

@@ -1,5 +1,14 @@
-class Dice
-{
+const DICE_TYPE = {
+    D4: 'd4',
+    D6: 'd6',
+    D8: 'd8',
+    D10: 'd10',
+    D12: 'd12',
+    D20: 'd20',
+};
+
+
+class Dice {
     dice_type; // d4 d6 d8 d10 d12 or d20
 
     max_value = 6;
@@ -20,3 +29,5 @@ class Dice
         return Math.floor(Math.random() * this.max_value) + 1;
     }
 }
+
+export { DICE_TYPE, Dice };

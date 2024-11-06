@@ -1,16 +1,21 @@
-const config = {
+import { Dice, DICE_TYPE } from "./Gameplay/Dice.js";
+import { DiceSlot } from "./Gameplay/DiceSlot.js";
+
+const phaser_config = {
   type: Phaser.AUTO,
-  width: 1100,
-  height: 800,
+  pixelArt: false,
   scale: {
+    width: 1100,
+    height: 800,
     parent: "game-container",
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
+  backgroundColor: "#FF00FF",
   //scene: [Boot, Preloader, MainMenu, Game,
 };
 
-new Phaser.Game(config);
+new Phaser.Game(phaser_config);
 
 // Test
 let dice = new Dice("d6");
