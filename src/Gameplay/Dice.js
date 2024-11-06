@@ -11,17 +11,38 @@ const DICE_TYPE = {
 class Dice {
     dice_type; // d4 d6 d8 d10 d12 or d20
 
-    max_value = 6;
+    max_value;
 
     constructor(_diceType)
     {
         this.dice_type = _diceType;
 
-        if(_diceType == 'd4') this.max_value = 4;
-        else if(_diceType == 'd8') this.max_value = 8;
-        else if(_diceType == 'd10') this.max_value = 10;
-        else if(_diceType == 'd12') this.max_value = 12;
-        else if(_diceType == 'd20') this.max_value = 20;
+        switch (_diceType) 
+        {
+            case D4:
+                this.max_value = 4;
+                break;
+
+            case D6:
+                this.max_value = 6;
+                break;
+
+            case D8:
+                this.max_value = 8;
+                break;
+
+            case D10:
+                this.max_value = 10;
+                break;
+
+            case D12:
+                this.max_value = 12;
+                break;
+
+            case D20:
+                this.max_value = 20;
+                break;
+        }
     }
 
     roll()
