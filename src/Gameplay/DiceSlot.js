@@ -1,4 +1,7 @@
+import { Dice } from "./Dice.js";
+
 class DiceSlot {
+    max_slots = 3;
     dices = new Array(3);
 
     constructor(_dices)
@@ -28,6 +31,17 @@ class DiceSlot {
         }
 
         return dice_sum;
+    }
+
+    add_dice(dice) {
+        console.assert(this.dices.length <= this.max_slots, "error: dices array is over the permitted capacity");
+
+        if (this.dices.length == this.max_slots) {
+            return false;
+        } else {
+            console.assert(dice instanceof Dice, "error: not a dice object");
+            this.dices.push(dice);
+        }
     }
 }
 
