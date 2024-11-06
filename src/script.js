@@ -23,9 +23,9 @@ let dice = new Dice(DICE_TYPE.D6);
 let dice2 = new Dice(DICE_TYPE.D8);
 let dice3 = new Dice(DICE_TYPE.D6);
 
-let diceSlot = new DiceSlot([]);
-diceSlot.try_add_dice(dice);
-//diceSlot.try_add_dice(5);
-
-//console.log(dice.roll());
+let diceSlot = new DiceSlot(3, []);
+diceSlot.add_dice(dice);
+diceSlot.add_dice(dice2);
+diceSlot.add_dice(dice3);
+diceSlot.add_dice(dice);
 console.log(diceSlot.roll());
