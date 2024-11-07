@@ -1,0 +1,10 @@
+const KEYS_SCENES = {
+    BATTLE: "BATTLE",
+};
+
+const KEYS_ASSETS_SPRITES = {
+    MISC_DICE: "MISC_DICE",
+    MISC_CARD: "MISC_CARD",
+};
+
+export { KEYS_SCENES, KEYS_ASSETS_SPRITES };

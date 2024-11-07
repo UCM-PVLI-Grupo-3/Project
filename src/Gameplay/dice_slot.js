@@ -1,4 +1,4 @@
-import { Dice } from "./Dice.js";
+import { Dice } from "./dice.js";
 
 const DICE_SLOT_DEFAULT_MAX_SLOTS = 3;
 

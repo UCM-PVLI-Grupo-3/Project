@@ -1,3 +1,5 @@
+import { KEYS_ASSETS_SPRITES } from "../common/common.js";
+
 const DICE_TYPE = {
     D4: "D4",
     D6: "D6",
@@ -29,7 +31,7 @@ const DICE_DEFAULT_TYPE = DICE_TYPE.D6;
 
 class Dice {
     dice_type = DICE_DEFAULT_TYPE;
-    max_roll = DICE_DEFAULT_TYPE;
+    max_roll = DICE_TYPE.get_roll_max_value(DICE_DEFAULT_TYPE);
 
     constructor(dice_type) {
         console.assert(dice_type in DICE_TYPE, "error: dice_type must be a valid DICE_TYPE enum value");
@@ -50,4 +52,41 @@ class Dice {
     }
 }
 
-export { DICE_TYPE, Dice };
+class SceneDice extends Phaser.GameObjects.Sprite {
+    dice = new Dice(DICE_DEFAULT_TYPE);
+    constructor(scene, position_x, position_y, dice_type) {
+        super(scene, position_x, position_y, KEYS_ASSETS_SPRITES.MISC_DICE);
+        this.dice = new Dice(dice_type);
+        
+        this.setInteractive({
+            draggable: true
+        });
+        this.on(Phaser.Input.Events.GAMEOBJECT_DRAG_START, (pointer) => {
+            this.on_drag_start(pointer);
+        });
+        this.on(Phaser.Input.Events.GAMEOBJECT_DRAG, (pointer, dragX, dragY) => {
+            this.on_drag(pointer, dragX, dragY);
+        });
+        this.on(Phaser.Input.Events.GAMEOBJECT_DRAG_END, (pointer) => {
+            this.on_drag_end(pointer);
+        });
+    }
+
+    preUpdate(time_milliseconds, delta_time_milliseconds) {
+        super.preUpdate(time_milliseconds, delta_time_milliseconds);
+    }
+
+    on_drag_start(pointer) {
+
+    }
+
+    on_drag(pointer, dragX, dragY) {
+        this.setPosition(dragX, dragY);
+    }
+
+    on_drag_end(pointer) {
+
+    }
+}
+
+export { DICE_TYPE, Dice, SceneDice };

@@ -1,5 +1,6 @@
-import { Dice, DICE_TYPE } from "./gameplay/Dice.js";
-import { DiceSlot } from "./gameplay/DiceSlot.js";
+import { Dice, DICE_TYPE } from "./gameplay/dice.js";
+import { DiceSlot } from "./gameplay/dice_slot.js";
+import { BattleScene } from "./scenes/battle_scene.js";
 
 
 const phaser_config = {
@@ -13,7 +14,7 @@ const phaser_config = {
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
   backgroundColor: "#FF00FF",
-  //scene: [Boot, Preloader, MainMenu, Game,
+  scene: [BattleScene]
 };
 
 new Phaser.Game(phaser_config);
@@ -27,5 +28,5 @@ let diceSlot = new DiceSlot(3, []);
 diceSlot.add_dice(dice);
 diceSlot.add_dice(dice2);
 diceSlot.add_dice(dice3);
-diceSlot.add_dice(dice);
+//diceSlot.add_dice(dice);
 console.log(diceSlot.roll());
