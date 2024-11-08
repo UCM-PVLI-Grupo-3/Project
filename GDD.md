@@ -17,7 +17,7 @@ The game controls are mostly UI-based. They should be quite deducible for a play
 
 ### Keyboard and mouse
 
-| Button                   | Name    |
+| Button                   | Action  |
 | ------------------------ | ------- |
 | W, Arrow-up, Numpad-8    | Up      |
 | A, Arrow-left, Numpad-4  | Left    |
@@ -29,7 +29,7 @@ The game controls are mostly UI-based. They should be quite deducible for a play
 
 
 ### Gamepad
-| Button         | Name                    |
+| Button         | Action                  |
 | -------------- | ----------------------- |
 | L-stick, D-pad | Up/Left/Down/Right      |
 | South/East button    | Confirm selected action |
