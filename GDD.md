@@ -88,13 +88,19 @@ Like in many games,stats are a big part of the players kit,in this game its no d
 ### Dice organizing
 As explained before on the gameplay analisis,during your turn you may change your dices position depending on the state of the battle and your startegy. You start each battle with a set number of diferent kinds of dices which vary from the d4 dice to the d20 dice.By rearranging your dices you can place more or less dices in each action type: attack,defense,heal. Giving more dices to your attack will give you better probability on your rolls on attack cards,giving you not only more dices but also an aditional dices bonus. But thats not the only bonus a dice can give,lets imagine,if you are figting a cyborg that needs a 19 to be hit, you may think that using d20 dices is the best answer,but its not the best one its the safest one, and this game doesnt reward being safe. Using lower dices like 3d8 will not only allow you to hit but it will give you a bonus for using a lower dice and an even bigger bonus if you use a 3 d6.That way the game doesnt only reward the smartes and most strategic players but the ones with an inner ludopat
 
-### Purchase items
-#TODO write about purchasing logic while in shops
-
-### Remove items
-#TODO write about removing items (cards, dices) logic
 
 
 
+![Card Play UI](./dice_time.jpg) 
 
-![Card Play UI](./dice_time.jpg)
+## Map dinamic
+
+The game has a graph like map, inspired by games like dice dungeon, in which the player can choose an adyacent cell to the one he is in.Each cell has diferent purpose being either a fight,the store or something else.That said our map also gives the player the ability to choose either the future or  the past path, each one of these have diferent enemies to fight and weapons to get.This way,we let the player choose what path to pick in an even deeper level.
+
+## Sinergies
+
+Due to the vast variety of cards,we have decided to give some cards sinergies between each other,creating more combinations that will allow players to let their creativity and strategy blossom,like using a fire weapon to burn an enemy,then making it explode with electricity.
+
+## Inspired in
+
+Our game is inspired by diferent turn based games such as darkest dungeon and games based in dice games like, dicey dungeons, slice and dice and the game dungeons and dragons.
