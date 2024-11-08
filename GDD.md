@@ -32,7 +32,7 @@ The game controls are mostly UI-based. They should be quite deducible for a play
 | Button         | Name                    |
 | -------------- | ----------------------- |
 | L-stick, D-pad | Up/Left/Down/Right      |
-| East button    | Confirm selected action |
+| South/East button    | Confirm selected action |
 
 
 ### Touch-screen
