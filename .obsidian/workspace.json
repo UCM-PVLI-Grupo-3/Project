@@ -162,19 +162,19 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "c7295e3b4b5e47d7",
+  "active": "edf2a8712c8794a4",
   "lastOpenFiles": [
+    "src/Gameplay/card_effects/stun.js",
+    "src/Gameplay/card_effects/heal.js",
+    "src/Gameplay/card_effects/deal_damage.js",
+    "src/Gameplay/card_effects/card_effect.js",
+    "src/Gameplay/card_effects",
     "types/phaser.d.ts",
     "types",
     "tsconfig.json",
     "script.ts",
     "package.json",
     "package-lock.json",
-    "lib/mod/phaser.min.js",
-    "lib/mod/phaser.js",
-    "lib/mod",
-    "lib",
-    "js/script.js",
     "assets.md",
     "GDD.md",
     "README.md"
