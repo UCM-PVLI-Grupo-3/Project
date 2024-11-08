@@ -27,11 +27,14 @@ const DICE_TYPE = {
     }
 };
 
-const DICE_DEFAULT_TYPE = DICE_TYPE.D6;
+const DICE_DEFAULTS = {
+    DICE_TYPE: DICE_TYPE.D6,
+    MAX_ROLL: DICE_TYPE.get_roll_max_value(DICE_TYPE.D6),
+};
 
 class Dice {
-    dice_type = DICE_DEFAULT_TYPE;
-    max_roll = DICE_TYPE.get_roll_max_value(DICE_DEFAULT_TYPE);
+    dice_type = DICE_DEFAULTS.DICE_TYPE;
+    max_roll = DICE_DEFAULTS.MAX_ROLL;
 
     constructor(dice_type) {
         console.assert(dice_type in DICE_TYPE, "error: dice_type must be a valid DICE_TYPE enum value");
@@ -53,7 +56,7 @@ class Dice {
 }
 
 class SceneDice extends Phaser.GameObjects.Sprite {
-    dice = new Dice(DICE_DEFAULT_TYPE);
+    dice = new Dice(DICE_DEFAULTS.DICE_TYPE);
     constructor(scene, position_x, position_y, dice_type) {
         super(scene, position_x, position_y, KEYS_ASSETS_SPRITES.MISC_DICE);
         this.dice = new Dice(dice_type);

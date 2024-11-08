@@ -1,10 +1,12 @@
 import { Dice } from "./dice.js";
 
-const DICE_SLOT_DEFAULT_MAX_SLOTS = 3;
+const DICE_SLOTS_DEFAULTS = {
+    MAX_SLOTS: 3,
+};
 
-class DiceSlot {
-    max_slots = DICE_SLOT_DEFAULT_MAX_SLOTS;
-    dices = new Array(DICE_SLOT_DEFAULT_MAX_SLOTS);
+class DiceSlots {
+    max_slots = DICE_SLOTS_DEFAULTS.MAX_SLOTS;
+    dices = new Array(DICE_SLOTS_DEFAULTS.MAX_SLOTS);
 
     constructor(max_slots, dices) {
         console.assert(dices.length <= max_slots, "error: dices length must be less than or equal to max_slots");
@@ -71,4 +73,4 @@ class DiceSlot {
     }
 }
 
-export { DiceSlot };
+export { DiceSlots };
