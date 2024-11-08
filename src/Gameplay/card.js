@@ -44,6 +44,10 @@ class Card {
             "error: invalid timeline_type, timeline_type must be a valid CARD_TIMELINE_TYPE enum value"
         );
         console.assert(
+            timeline_type != CARD_TIMELINE_TYPE.UNINITIALIZED,
+            "error: invalid timeline_type, timeline_type must not be the uninitialized value of CARD_TIMELINE_TYPE"
+        )
+        console.assert(
             successful_action_emotion_type in CARD_EMOTION_TYPE,
             "error: invalid successful_action_emotion_type, successful_action_emotion_type must be a valid EMOTION_TYPE enum value"
         );

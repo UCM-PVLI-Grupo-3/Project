@@ -1,4 +1,4 @@
-import { CardEffect } from 'card_effect.js';
+import { CardEffect } from './card_effect.js';
 
 class StunEffect extends CardEffect {
     constructor(stun_duration) {

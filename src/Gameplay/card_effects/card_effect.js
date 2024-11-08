@@ -1,7 +1,4 @@
 
-/**
- * @abstract
- */
 class CardEffect {
     constructor() {
         console.assert(this.constructor !== CardEffect, "error: CardEffect is an abstract class and cannot be instantiated");

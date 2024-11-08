@@ -1,7 +1,7 @@
 import { Dice, DICE_TYPE } from "./gameplay/dice.js";
 import { DiceSlots } from "./gameplay/dice_slots.js";
 import { BattleScene } from "./scenes/battle_scene.js";
-// import {  }
+import { CARD_ACTION_TYPE, CARD_EMOTION_TYPE, CARD_TIMELINE_TYPE, Card } from "./gameplay/card.js";
 
 const phaser_config = {
   type: Phaser.AUTO,
@@ -31,3 +31,4 @@ diceSlot.add_dice(dice3);
 //diceSlot.add_dice(dice);
 console.log(diceSlot.roll());
 
+const card = new Card(12, 0, CARD_TIMELINE_TYPE.PAST, CARD_EMOTION_TYPE.NONE(), CARD_EMOTION_TYPE.HAPPINESS(), []);

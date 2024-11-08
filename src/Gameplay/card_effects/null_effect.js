@@ -1,4 +1,4 @@
-import { CardEffect } from 'card_effect.js';
+import { CardEffect } from './card_effect.js';
 
 class NullEffect extends CardEffect {
     constructor() {
