@@ -1,7 +1,7 @@
 import { Dice, DICE_TYPE } from "./gameplay/dice.js";
-import { DiceSlot } from "./gameplay/dice_slot.js";
+import { DiceSlots } from "./gameplay/dice_slots.js";
 import { BattleScene } from "./scenes/battle_scene.js";
-
+// import {  }
 
 const phaser_config = {
   type: Phaser.AUTO,
@@ -24,9 +24,10 @@ let dice = new Dice(DICE_TYPE.D6);
 let dice2 = new Dice(DICE_TYPE.D8);
 let dice3 = new Dice(DICE_TYPE.D6);
 
-let diceSlot = new DiceSlot(3, []);
+let diceSlot = new DiceSlots(3, []);
 diceSlot.add_dice(dice);
 diceSlot.add_dice(dice2);
 diceSlot.add_dice(dice3);
 //diceSlot.add_dice(dice);
 console.log(diceSlot.roll());
+

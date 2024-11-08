@@ -13,7 +13,7 @@ h2
 
 .backgrounded
 {
-  background-color:rgb(134, 202, 202);
+   
    background-image: 
    url('https://images.vexels.com/media/users/3/140057/isolated/preview/f81b565034ebd3bda48bfd33b4aed3f3-dados-de-juguete.png'),
    url('https://images.vexels.com/media/users/3/140057/isolated/preview/f81b565034ebd3bda48bfd33b4aed3f3-dados-de-juguete.png'),
@@ -26,13 +26,13 @@ h2
 
 
    background-position: 
-   10% 20%, 
+   10% 15%, 
    70% 30%, 
-   40% 80%, 
+   35% 85%, 
    90% 10%, 
    30% 45%,
-   68% 60%,
-   98% 78%,
+   90% 60%,
+   98% 75%,
    10% 90%;
    
 
@@ -50,4 +50,27 @@ background-repeat: no-repeat;
   
     
    position: relative;
+}
+.chart1
+{
+   width:100px;
+   background-color: black;
+   position:relative;
+   left: 27%;
+}
+.chart2
+{
+   width:100px;
+   background-color: black;
+   position:relative;
+   left: 35%;
+}
+.tr 
+{
+   background-color: antiquewhite;
+}
+
+.title
+{
+   background-color: darkslategray;
 }
