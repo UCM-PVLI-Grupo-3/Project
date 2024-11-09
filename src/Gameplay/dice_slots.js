@@ -28,7 +28,7 @@ class DiceSlots {
     get_max_roll_value() {
         let dice_sum = 0;
         for(let i = 0; i < this.dices.length; i++) {
-            dice_sum += this.dices[i].get_max_roll_value();
+            dice_sum += this.dices[i].get_max_value();
         }
 
         return dice_sum;
