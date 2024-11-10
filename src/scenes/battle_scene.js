@@ -1,5 +1,5 @@
 import { KEYS_SCENES, KEYS_ASSETS_SPRITES } from "../common/common.js";
-import { DiceSlots } from "../gameplay/dice_slots.js";
+import { DiceSlots, SceneDiceSlots } from "../gameplay/dice_slots.js";
 import { DICE_TYPE, SceneDice } from "../gameplay/dice.js";
 
 const BATTLE_SCENE_DEFAULT_SICE_SLOTS = 3;
@@ -18,6 +18,7 @@ class BattleScene extends Phaser.Scene {
 
     preload() {
         this.load.image(KEYS_ASSETS_SPRITES.MISC_DICE, "assets/misc-dice.png");
+       // this.load.image(KEYS_ASSETS_SPRITES.DICE_SLOT, "assets/dice/dice_slot.png");
     }
 
     create(data) {
@@ -25,6 +26,8 @@ class BattleScene extends Phaser.Scene {
             this.dice_slots[i] = new DiceSlots(2, []);
         }
         this.add.existing(new SceneDice(this, 100, 100, DICE_TYPE.D6));
+
+        this.add.existing(new SceneDiceSlots(this, 50, 50, 3, []));
     }
 
     update(time_milliseconds, delta_time_milliseconds) {
