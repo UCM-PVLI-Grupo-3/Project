@@ -1,4 +1,5 @@
 import { Dice } from "./dice.js";
+import { KEYS_ASSETS_SPRITES, CONSTANTS_SPRITES_MEASURES } from "../common/common.js";
 
 const DICE_SLOTS_DEFAULTS = {
     MAX_SLOTS: 3,
@@ -74,6 +75,12 @@ class DiceSlots {
 }
 
 class SceneDiceSlots extends Phaser.GameObjects.Container {
+    constructor(scene, position_x, position_y, dice_slot_count, dices) {
+        super(scene, position_x, position_y);
+        this.dice_slots = dice_slots;
+        this.dice_slots.dices.forEach((dice) => this.add(dice));
+        this.add()
+    }
 }
 
 export { DiceSlots };

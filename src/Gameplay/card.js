@@ -1,4 +1,4 @@
-import { EMOTION_TYPE } from "./emotions.js";
+import { OPTIONAL_EMOTION_TYPE } from "./emotions.js";
 import { NullEffect } from "./card_effects/null_effect.js";
 import { CardEffect } from "./card_effects/card_effect.js";
 
@@ -14,15 +14,12 @@ const CARD_ACTION_TYPE = {
     HEAL: "HEAL"
 };
 
-class CARD_EMOTION_TYPE extends EMOTION_TYPE {
-    static NONE() { return "NONE" }
-};
 
 const CARD_DEFAULTS = {
     VALUE: 8,
     CARD_ID: 0,
     TIMELINE_TYPE: CARD_TIMELINE_TYPE.UNINITIALIZED,
-    EMOTION_TYPE_NONE: CARD_EMOTION_TYPE.NONE(),
+    EMOTION_TYPE_NONE: OPTIONAL_EMOTION_TYPE.NONE(),
     CARD_EFFECT_NONE: new NullEffect(),
 };
 
@@ -48,11 +45,11 @@ class Card {
             "error: invalid timeline_type, timeline_type must not be the uninitialized value of CARD_TIMELINE_TYPE"
         )
         console.assert(
-            successful_action_emotion_type in CARD_EMOTION_TYPE,
+            successful_action_emotion_type in OPTIONAL_EMOTION_TYPE,
             "error: invalid successful_action_emotion_type, successful_action_emotion_type must be a valid EMOTION_TYPE enum value"
         );
         console.assert(
-            failure_action_emotion_type in CARD_EMOTION_TYPE,
+            failure_action_emotion_type in OPTIONAL_EMOTION_TYPE,
             "error: invalid failure_action_emotion_type, failure_action_emotion_type must be a valid EMOTION_TYPE enum value"
         );
         console.assert(card_effects instanceof Array, "error: card_effects must be an array");
@@ -69,4 +66,4 @@ class Card {
     }
 };
 
-export { CARD_TIMELINE_TYPE, CARD_ACTION_TYPE, CARD_EMOTION_TYPE, Card };
+export { CARD_TIMELINE_TYPE, CARD_ACTION_TYPE, Card };
