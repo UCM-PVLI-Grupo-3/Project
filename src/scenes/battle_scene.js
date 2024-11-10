@@ -21,7 +21,15 @@ class BattleScene extends Phaser.Scene {
 
     preload() {
         this.load.image(KEYS_ASSETS_SPRITES.MISC_DICE, "assets/misc-dice.png");
-        this.load.image(KEYS_ASSETS_SPRITES.MISC_DICE_SLOT, "assets/misc-dice-slot.png"); 
+        this.load.image(KEYS_ASSETS_SPRITES.MISC_DICE_SLOT, "assets/misc-dice-slot.png");
+        this.load.image(KEYS_ASSETS_SPRITES.DICE_SLOT, "assets/dice/dice_slot.png");
+
+        this.load.image(KEYS_ASSETS_SPRITES.DICE_TYPE_D4, "assets/dice/dice_d4.png");
+        this.load.image(KEYS_ASSETS_SPRITES.DICE_TYPE_D6, "assets/dice/dice_d6.png");
+        this.load.image(KEYS_ASSETS_SPRITES.DICE_TYPE_D8, "assets/dice/dice_d8.png");
+        this.load.image(KEYS_ASSETS_SPRITES.DICE_TYPE_D10, "assets/dice/dice_d10.png");
+        this.load.image(KEYS_ASSETS_SPRITES.DICE_TYPE_D12, "assets/dice/dice_d12.png");
+        this.load.image(KEYS_ASSETS_SPRITES.DICE_TYPE_D20, "assets/dice/dice_d20.png");
 
         this.load.image(KEYS_ASSETS_SPRITES.EMOTION_ANGER_ICON, "assets/emotion_stack/anger_icon.png");
         this.load.image(KEYS_ASSETS_SPRITES.EMOTION_HAPPINESS_ICON, "assets/emotion_stack/happiness_icon.png");
@@ -37,7 +45,7 @@ class BattleScene extends Phaser.Scene {
         for (let i = 0; i < this.dice_slots.length; ++i) {
             this.dice_slots[i] = new DiceSlots(2, []);
         }
-        this.add.existing(new SceneDice(this, 100, 100, DICE_TYPE.D6));
+        this.add.existing(new SceneDice(this, 100, 100, DICE_TYPE.D20));
         this.add.existing(new SceneEmotionStack(this, 100, 100, [
             EMOTION_TYPE.ANGER(),
             EMOTION_TYPE.ANGER(),
@@ -45,7 +53,7 @@ class BattleScene extends Phaser.Scene {
             EMOTION_TYPE.HAPPINESS(),
             EMOTION_TYPE.CALM()
         ], 7));
-        this.add.existing(new SceneDiceSlots(this, 50, 50, 3, []));
+        this.add.existing(new SceneDiceSlots(this, 400, 300, 1, []));
     }
 
     update(time_milliseconds, delta_time_milliseconds) {

@@ -24,7 +24,25 @@ const DICE_TYPE = {
             case DICE_TYPE.D20:
                 return 20;
         }
-    }
+    },
+
+    get_dice_type_image(dice_type) {
+        console.assert(dice_type in DICE_TYPE, "error: dice_type must be a valid DICE_TYPE enum value");
+        switch (dice_type) {
+            case DICE_TYPE.D4:
+                return KEYS_ASSETS_SPRITES.DICE_TYPE_D4;
+            case DICE_TYPE.D6:
+                return KEYS_ASSETS_SPRITES.DICE_TYPE_D6;
+            case DICE_TYPE.D8:
+                return KEYS_ASSETS_SPRITES.DICE_TYPE_D8;
+            case DICE_TYPE.D10:
+                return KEYS_ASSETS_SPRITES.DICE_TYPE_D10;
+            case DICE_TYPE.D12:
+                return KEYS_ASSETS_SPRITES.DICE_TYPE_D12;
+            case DICE_TYPE.D20:
+                return KEYS_ASSETS_SPRITES.DICE_TYPE_D20;
+        }
+    },
 };
 
 const DICE_DEFAULTS = {
@@ -58,7 +76,7 @@ class Dice {
 class SceneDice extends Phaser.GameObjects.Sprite {
     dice = new Dice(DICE_DEFAULTS.DICE_TYPE);
     constructor(scene, position_x, position_y, dice_type) {
-        super(scene, position_x, position_y, KEYS_ASSETS_SPRITES.MISC_DICE);
+        super(scene, position_x, position_y, DICE_TYPE.get_dice_type_image(dice_type));
         this.dice = new Dice(dice_type);
         
         this.setInteractive({
