@@ -6,6 +6,7 @@ class EMOTION_TYPE {
     static ECSTASY() { return "ECSTASY" };
     static CONCERN() { return "CONCERN" };
     static CONFIDENCE() { return "CONFIDENCE" };
+    static CALM() { return "CALM" };
 };
 
 export { EMOTION_TYPE };
