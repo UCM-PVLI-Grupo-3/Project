@@ -73,4 +73,19 @@ class DiceSlots {
     }
 }
 
+class SceneDiceSlots extends Phaser.GameObjects.Container {
+
+    DiceSlots dice_slots = new DiceSlots(DICE_SLOTS_DEFAULTS.MAX_SLOTS, []);
+
+    constructor(scene, position_x, position_y, max_slots, dices) {
+        
+        for(let i = 0; i < max_slots; i++) {
+          /*  let slot_image = scene.add.image(position_x);
+            this.add();*/
+            super(scene, position_x, position_y);
+            dice_slots = new DiceSlots(max_slots, dices);
+        }
+    }
+}
+
 export { DiceSlots };
