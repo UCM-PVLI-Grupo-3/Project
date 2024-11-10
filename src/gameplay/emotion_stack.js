@@ -107,7 +107,7 @@ class SceneEmotionFrame extends Phaser.GameObjects.Container {
         this.scene_frame_nineslice_width = width;
         this.scene_frame_nineslice_height = height;
 
-        this.scene_frame_nineslice = this.add(this.scene.add.nineslice(
+        this.scene_frame_nineslice = this.scene.add.nineslice(
             0, 0,
             KEYS_ASSETS_SPRITES.MISC_DICE_SLOT,
             0,
@@ -117,14 +117,16 @@ class SceneEmotionFrame extends Phaser.GameObjects.Container {
             CONSTANTS_SPRITES_MEASURES.MISC_DICE_SLOT.SLICE_RIGHT,
             CONSTANTS_SPRITES_MEASURES.MISC_DICE_SLOT.SLICE_TOP,
             CONSTANTS_SPRITES_MEASURES.MISC_DICE_SLOT.SLICE_BOTTOM
-        ).setOrigin(0.5, 0.5));
+        ).setOrigin(0.5, 0.5);
+        this.add(this.scene_frame_nineslice);
         
         if (optional_emotion_type !== OPTIONAL_EMOTION_TYPE.NONE()) {
-            this.scene_emotion_icon_image = this.add(this.scene.add.image(
+            this.scene_emotion_icon_image = this.scene.add.image(
                 0, 0,
                 emotion_sprite_key_from_type(optional_emotion_type),
                 0
-            ).setOrigin(0.5, 0.5).setDisplaySize(this.scene_frame_nineslice_height, this.scene_frame_nineslice_height));
+            ).setOrigin(0.5, 0.5);
+            this.add(this.scene_emotion_icon_image);
         } else {
             this.scene_emotion_icon_image = null;
         }
@@ -138,20 +140,20 @@ class SceneEmotionFrame extends Phaser.GameObjects.Container {
         this.emotion_type = emotion_type;
 
         if (emotion_type === OPTIONAL_EMOTION_TYPE.NONE()) {
-            this.remove(this.scene_emotion_icon_image, false);
-            this.scene_emotion_icon_image.destroy(true);
+            this.remove(this.scene_emotion_icon_image, true);
             this.scene_emotion_icon_image = null;
         } else if (this.scene_emotion_icon_image !== null) {
             this.scene_emotion_icon_image.setTexture(emotion_sprite_key_from_type(emotion_type, 0));
         } else {
-            this.scene_emotion_icon_image = this.add(this.scene.add.image(
+            this.scene_emotion_icon_image = this.scene.add.image(
                 0, 0,
                 emotion_sprite_key_from_type(emotion_type),
                 0
             ).setOrigin(0.5, 0.5).setDisplaySize(
-                this.scene_frame_nineslice_height * 0.5 * 0.75,
-                this.scene_frame_nineslice_height * 0.5 * 0.75
-            ).setPosition(0, -this.scene_frame_nineslice_height * 0.5 * 0.5));
+                this.scene_frame_nineslice_height * 0.75,
+                this.scene_frame_nineslice_height * 0.75
+            );
+            this.add(this.scene_emotion_icon_image);
         }
     }
 }
@@ -182,13 +184,15 @@ class SceneEmotionStack extends Phaser.GameObjects.Container {
         this.emotion_stack = new EmotionStack(emotion_types);
 
         for (let i = 0; i < emotion_frame_count; ++i) {
+            const width = CONSTANTS_SPRITES_MEASURES.MISC_DICE_SLOT.WIDTH * 2;
+            const height = CONSTANTS_SPRITES_MEASURES.MISC_DICE_SLOT.HEIGHT * 1.25;
             this.emotion_frames[i] = this.scene.add.existing(
                 new SceneEmotionFrame(
                     this.scene,
-                    0, i * CONSTANTS_SPRITES_MEASURES.MISC_DICE_SLOT.HEIGHT,
+                    0, i * height,
                     OPTIONAL_EMOTION_TYPE.NONE(),
-                    CONSTANTS_SPRITES_MEASURES.MISC_DICE_SLOT.WIDTH * 3,
-                    CONSTANTS_SPRITES_MEASURES.MISC_DICE_SLOT.HEIGHT * 2
+                    width,
+                    height
                 )
             );
             this.add(this.emotion_frames[i]);
