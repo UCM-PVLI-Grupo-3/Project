@@ -3,7 +3,12 @@ import { DiceSlots } from "./gameplay/dice_slots.js";
 import { BattleScene } from "./scenes/battle_scene.js";
 import { CARD_ACTION_TYPE, CARD_TIMELINE_TYPE, Card } from "./gameplay/card.js";
 import { EMOTION_TYPE, OPTIONAL_EMOTION_TYPE } from "./gameplay/emotions.js";
+import { SceneEmotionStack } from "./gameplay/emotion_stack.js";
+import { KEYS_SCENES } from "./common/common.js";
 
+/**
+ * @type {Phaser.Types.Core.GameConfig}
+ */
 const phaser_config = {
   type: Phaser.AUTO,
   pixelArt: false,
@@ -15,21 +20,36 @@ const phaser_config = {
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
   backgroundColor: "#FF00FF",
-  scene: [BattleScene]
+  scene: [BattleScene],
 };
 
-new Phaser.Game(phaser_config);
 
-// Test
-let dice = new Dice(DICE_TYPE.D6);
-let dice2 = new Dice(DICE_TYPE.D8);
-let dice3 = new Dice(DICE_TYPE.D6);
+window.onload = () => {
+  /**
+   * @type {Phaser.Game}
+   */
+  let game = new Phaser.Game(phaser_config);
+  game.events.on(
+    Phaser.Core.Events.READY,
+    () => {
 
-let diceSlot = new DiceSlots(3, []);
-diceSlot.add_dice(dice);
-diceSlot.add_dice(dice2);
-diceSlot.add_dice(dice3);
-//diceSlot.add_dice(dice);
-console.log(diceSlot.roll());
-
-const card = new Card(12, 0, CARD_TIMELINE_TYPE.PAST, OPTIONAL_EMOTION_TYPE.NONE(), EMOTION_TYPE.HAPPINESS(), []);
+      // Testing of the emotion stack
+      
+      /**
+       * @type {BattleScene}
+       */
+      let battle_scene = game.scene.getScene(KEYS_SCENES.BATTLE);
+      battle_scene.events.on(
+        Phaser.Scenes.Events.CREATE,
+        () => {
+          let es = battle_scene.scene_emotion_stack;
+          es.add_emotions([EMOTION_TYPE.CALM(), EMOTION_TYPE.ECSTASY()]);
+          let peeked = es.peek_emotions(6);
+          console.log(peeked);
+          let popped = es.pop_emotions(1);
+          console.log(popped);
+        }
+      );
+    }
+  );
+};

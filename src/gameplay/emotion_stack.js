@@ -79,11 +79,16 @@ const SCENE_EMOTION_FRAME_DEFAULTS = {
     /**
      * @type {Phaser.GameObjects.Image}
      */
-    SCENE_EMOTION_ICON_IMAGE: null
+    SCENE_EMOTION_ICON_IMAGE: null,
+
+    SCENE_FRAME_NINESLICE_WIDTH: -1,
+    SCENE_FRAME_NINESLICE_HEIGHT: -1
 };
 
 class SceneEmotionFrame extends Phaser.GameObjects.Container {
     emotion_type = SCENE_EMOTION_FRAME_DEFAULTS.EMOTION_TYPE;
+    scene_frame_nineslice_width = SCENE_EMOTION_FRAME_DEFAULTS.SCENE_FRAME_NINESLICE_WIDTH;
+    scene_frame_nineslice_height = SCENE_EMOTION_FRAME_DEFAULTS.SCENE_FRAME_NINESLICE_HEIGHT;
     scene_frame_nineslice = SCENE_EMOTION_FRAME_DEFAULTS.SCENE_FRAME_NINESLICE;
     scene_emotion_icon_image = SCENE_EMOTION_FRAME_DEFAULTS.SCENE_EMOTION_ICON_IMAGE;
     constructor(scene, position_x, position_y, optional_emotion_type, width, height) {
@@ -91,17 +96,23 @@ class SceneEmotionFrame extends Phaser.GameObjects.Container {
         console.assert(typeof position_x === "number", "error: position_x must be a number");
         console.assert(typeof position_y === "number", "error: position_y must be a number");
         console.assert(optional_emotion_type in OPTIONAL_EMOTION_TYPE, "error: emotion_type must be a valid EMOTION_TYPE enum value");
+        
         console.assert(typeof width === "number", "error: width must be a number");
+        console.assert(width > 0, "error: width must be greater than 0");
         console.assert(typeof height === "number", "error: height must be a number");
+        console.assert(height > 0, "error: height must be greater than 0");
+
         super(scene, position_x, position_y);
         this.emotion_type = optional_emotion_type;
+        this.scene_frame_nineslice_width = width;
+        this.scene_frame_nineslice_height = height;
 
         this.scene_frame_nineslice = this.add(this.scene.add.nineslice(
             0, 0,
             KEYS_ASSETS_SPRITES.MISC_DICE_SLOT,
             0,
-            CONSTANTS_SPRITES_MEASURES.MISC_DICE_SLOT.WIDTH,
-            CONSTANTS_SPRITES_MEASURES.MISC_DICE_SLOT.HEIGHT,
+            width,
+            height,
             CONSTANTS_SPRITES_MEASURES.MISC_DICE_SLOT.SLICE_LEFT,
             CONSTANTS_SPRITES_MEASURES.MISC_DICE_SLOT.SLICE_RIGHT,
             CONSTANTS_SPRITES_MEASURES.MISC_DICE_SLOT.SLICE_TOP,
@@ -113,18 +124,22 @@ class SceneEmotionFrame extends Phaser.GameObjects.Container {
                 0, 0,
                 emotion_sprite_key_from_type(optional_emotion_type),
                 0
-            ).setOrigin(0.5, 0.5));
+            ).setOrigin(0.5, 0.5).setDisplaySize(this.scene_frame_nineslice_height, this.scene_frame_nineslice_height));
         } else {
             this.scene_emotion_icon_image = null;
         }
     }
 
     set_emotion_type(emotion_type) {
-        console.assert(emotion_type in EMOTION_TYPE, "error: emotion_type must be a valid EMOTION_TYPE enum value");
+        console.assert(
+            emotion_type in OPTIONAL_EMOTION_TYPE,
+            "error: emotion_type must be a valid OPTIONAL_EMOTION_TYPE enum value"
+        );
         this.emotion_type = emotion_type;
 
         if (emotion_type === OPTIONAL_EMOTION_TYPE.NONE()) {
-            this.remove(this.scene_emotion_icon_image, true);
+            this.remove(this.scene_emotion_icon_image, false);
+            this.scene_emotion_icon_image.destroy(true);
             this.scene_emotion_icon_image = null;
         } else if (this.scene_emotion_icon_image !== null) {
             this.scene_emotion_icon_image.setTexture(emotion_sprite_key_from_type(emotion_type, 0));
@@ -133,7 +148,10 @@ class SceneEmotionFrame extends Phaser.GameObjects.Container {
                 0, 0,
                 emotion_sprite_key_from_type(emotion_type),
                 0
-            ).setOrigin(0.5, 0.5));
+            ).setOrigin(0.5, 0.5).setDisplaySize(
+                this.scene_frame_nineslice_height * 0.5 * 0.75,
+                this.scene_frame_nineslice_height * 0.5 * 0.75
+            ).setPosition(0, -this.scene_frame_nineslice_height * 0.5 * 0.5));
         }
     }
 }
@@ -169,8 +187,8 @@ class SceneEmotionStack extends Phaser.GameObjects.Container {
                     this.scene,
                     0, i * CONSTANTS_SPRITES_MEASURES.MISC_DICE_SLOT.HEIGHT,
                     OPTIONAL_EMOTION_TYPE.NONE(),
-                    CONSTANTS_SPRITES_MEASURES.MISC_DICE_SLOT.WIDTH,
-                    CONSTANTS_SPRITES_MEASURES.MISC_DICE_SLOT.HEIGHT
+                    CONSTANTS_SPRITES_MEASURES.MISC_DICE_SLOT.WIDTH * 3,
+                    CONSTANTS_SPRITES_MEASURES.MISC_DICE_SLOT.HEIGHT * 2
                 )
             );
             this.add(this.emotion_frames[i]);
@@ -178,6 +196,56 @@ class SceneEmotionStack extends Phaser.GameObjects.Container {
         for (let i = 0; i < emotion_types.length; ++i) {
             this.emotion_frames[i].set_emotion_type(emotion_types[i]);
         }
+    }
+
+    emotion_frames_count() {
+        return this.max_emotion_frames;
+    }
+
+    emotion_count() {
+        return this.emotion_stack.emotion_count();
+    }
+
+    available_emotion_frames_count() {
+        return this.emotion_frames_count() - this.emotion_count();
+    }
+
+    add_emotions(emotion_types) {
+        console.assert(emotion_types instanceof Array, "error: emotion_types must be an array");
+        emotion_types.forEach((emotion_type) => {
+            console.assert(emotion_type in EMOTION_TYPE, "error: emotion_type must be a valid EMOTION_TYPE enum value");
+        });
+        console.assert(
+            this.available_emotion_frames_count() >= emotion_types.length,
+            `error: not enough available emotion frames to add emotions,
+            check with available_emotion_frames_count() >= emotion_types.length`
+        );
+
+        for (let i = 0; i < emotion_types.length; ++i) {
+            this.emotion_frames[this.emotion_count() + i].set_emotion_type(emotion_types[i]);
+        }
+        this.emotion_stack.add_emotions(emotion_types);
+    }
+
+    peek_emotions(count) {
+        console.assert(count > 0, "error: count must be greater than 0");
+        console.assert(
+            this.emotion_count() >= count,
+            "error: there are not enough emotions to peek, check with emotion_count() >= count"
+        );
+        return this.emotion_stack.peek_emotions(count);
+    }
+
+    pop_emotions(count) {
+        console.assert(count > 0, "error: count must be greater than 0");
+        console.assert(
+            this.emotion_count() >= count,
+            "error: there are not enough emotions to pop, check with emotion_count() >= count"
+        );
+        for (let i = 0; i < count; ++i) {
+            this.emotion_frames[this.emotion_count() - count + i].set_emotion_type(OPTIONAL_EMOTION_TYPE.NONE());
+        }
+        return this.emotion_stack.pop_emotions(count);
     }
 }
 

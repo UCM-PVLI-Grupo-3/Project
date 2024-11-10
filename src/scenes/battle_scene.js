@@ -8,11 +8,15 @@ const BATTLE_SCENE_DEFAULT_SICE_SLOTS = 3;
 
 class BattleScene extends Phaser.Scene {
     dice_slots = new Array(BATTLE_SCENE_DEFAULT_SICE_SLOTS);
+    /**´
+     * @type {SceneEmotionStack}
+     */
     scene_emotion_stack;
 
     constructor() {
         super({ key: KEYS_SCENES.BATTLE });
         this.dice_slots = new Array(BATTLE_SCENE_DEFAULT_SICE_SLOTS);
+        this.scene_emotion_stack = null;
     }
 
     init() {
@@ -38,13 +42,15 @@ class BattleScene extends Phaser.Scene {
             this.dice_slots[i] = new DiceSlots(2, []);
         }
         this.add.existing(new SceneDice(this, 100, 100, DICE_TYPE.D6));
-        this.add.existing(new SceneEmotionStack(this, 100, 100, [
+        this.scene_emotion_stack = this.add.existing(new SceneEmotionStack(this, 100, 100, [
             EMOTION_TYPE.ANGER(),
             EMOTION_TYPE.ANGER(),
             EMOTION_TYPE.HAPPINESS(),
             EMOTION_TYPE.HAPPINESS(),
             EMOTION_TYPE.CALM()
         ], 7));
+
+        // TODO: populate
         this.add.existing(new SceneDiceSlots(this, 50, 50, 3, []));
     }
 
