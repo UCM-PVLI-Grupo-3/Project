@@ -1,5 +1,5 @@
 import { KEYS_SCENES, KEYS_ASSETS_SPRITES } from "../common/common.js";
-import { DiceSlots } from "../gameplay/dice_slots.js";
+import { DiceSlots, SceneDiceSlots } from "../gameplay/dice_slots.js";
 import { DICE_TYPE, SceneDice } from "../gameplay/dice.js";
 import { SceneEmotionStack } from "../gameplay/emotion_stack.js";
 import { EMOTION_TYPE } from "../gameplay/emotions.js";
@@ -21,7 +21,6 @@ class BattleScene extends Phaser.Scene {
 
     preload() {
         this.load.image(KEYS_ASSETS_SPRITES.MISC_DICE, "assets/misc-dice.png");
-        
         this.load.image(KEYS_ASSETS_SPRITES.MISC_DICE_SLOT, "assets/misc-dice-slot.png"); 
 
         this.load.image(KEYS_ASSETS_SPRITES.EMOTION_ANGER_ICON, "assets/emotion_stack/anger_icon.png");
@@ -46,6 +45,7 @@ class BattleScene extends Phaser.Scene {
             EMOTION_TYPE.HAPPINESS(),
             EMOTION_TYPE.CALM()
         ], 7));
+        this.add.existing(new SceneDiceSlots(this, 50, 50, 3, []));
     }
 
     update(time_milliseconds, delta_time_milliseconds) {
