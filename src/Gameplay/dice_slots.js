@@ -82,12 +82,13 @@ class SceneDiceSlots extends Phaser.GameObjects.Container {
         super(scene, position_x, position_y);
         this.dice_slots = new DiceSlots(max_slots, dices);
 
-        let slot_image = scene.add.sprite(0, 0, KEYS_ASSETS_SPRITES.DICE_SLOT);
-        this.add(slot_image);
-     /*   for(let i = 0; i < max_slots; i++) {
-          /*  
+        let slot_separation = CONSTANTS_SPRITES_MEASURES.DICE_SLOT.HEIGHT - CONSTANTS_SPRITES_MEASURES.DICE_SLOT.LINE_BORDER;
 
-        }*/
+        for(let i = 0; i < max_slots; i++) {
+          
+            let slot_image = scene.add.sprite(0, i * slot_separation, KEYS_ASSETS_SPRITES.DICE_SLOT);
+            this.add(slot_image);
+        }
     }
 }
 
