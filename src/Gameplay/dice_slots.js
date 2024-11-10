@@ -73,4 +73,7 @@ class DiceSlots {
     }
 }
 
+class SceneDiceSlots extends Phaser.GameObjects.Container {
+}
+
 export { DiceSlots };
