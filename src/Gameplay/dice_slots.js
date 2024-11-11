@@ -89,6 +89,7 @@ class SceneDiceSlots extends Phaser.GameObjects.Container {
             let slot_image = scene.add.sprite(0, i * slot_separation, KEYS_ASSETS_SPRITES.DICE_SLOT);
             this.add(slot_image);
         }
+
     }
 }
 

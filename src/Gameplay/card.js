@@ -66,4 +66,17 @@ class Card {
     }
 };
 
+class SceneCard extends Phaser.GameObjects.Container {
+    card = new Card(
+        CARD_DEFAULTS.VALUE, CARD_DEFAULTS.CARD_ID, 
+        CARD_DEFAULTS.TIMELINE_TYPE, 
+        CARD_DEFAULTS.EMOTION_TYPE_NONE, CARD_DEFAULTS.EMOTION_TYPE_NONE, 
+        Array(CARD_DEFAULTS.CARD_EFFECT_NONE));
+
+    constructor(scene, position_x, position_y, value, id, timeline_type, 
+        successful_action_emotion_type, failure_action_emotion_type, card_effects) {
+        
+    }
+}
+
 export { CARD_TIMELINE_TYPE, CARD_ACTION_TYPE, Card };
