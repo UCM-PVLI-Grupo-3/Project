@@ -1,6 +1,7 @@
 import { OPTIONAL_EMOTION_TYPE } from "./emotions.js";
 import { NullEffect } from "./card_effects/null_effect.js";
 import { CardEffect } from "./card_effects/card_effect.js";
+import { KEYS_ASSETS_SPRITES } from "../common/common.js";
 
 const CARD_TIMELINE_TYPE = {
     PAST: "PAST",
@@ -75,8 +76,24 @@ class SceneCard extends Phaser.GameObjects.Container {
 
     constructor(scene, position_x, position_y, value, id, timeline_type, 
         successful_action_emotion_type, failure_action_emotion_type, card_effects) {
-        
+        super(scene, position_x, position_y);
+
+        this.card = new Card(
+            value, id, 
+            timeline_type, 
+            successful_action_emotion_type, failure_action_emotion_type, 
+           card_effects);
+
+        let card_img = scene.add.image(position_x, position_y, KEYS_ASSETS_SPRITES.CARD);
+        let successful_action_emotion_type_img = scene.add.image(position_x-75, position_y+122, KEYS_ASSETS_SPRITES.EMOTION_HAPPINESS_ICON);
+        successful_action_emotion_type_img.setScale(0.75);
+        let failure_action_emotion_type_img = scene.add.image(position_x+80, position_y+122, KEYS_ASSETS_SPRITES.EMOTION_ANGER_ICON);
+        failure_action_emotion_type_img.setScale(0.75);
+
+        this.add(card_img);
+        this.add(successful_action_emotion_type_img);
+        this.add(failure_action_emotion_type_img);
     }
 }
 
-export { CARD_TIMELINE_TYPE, CARD_ACTION_TYPE, Card };
+export { CARD_TIMELINE_TYPE,  CARD_ACTION_TYPE, CARD_DEFAULTS, Card, SceneCard };

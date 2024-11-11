@@ -1,6 +1,7 @@
 import { KEYS_SCENES, KEYS_ASSETS_SPRITES } from "../common/common.js";
 import { DiceSlots, SceneDiceSlots } from "../gameplay/dice_slots.js";
 import { DICE_TYPE, SceneDice } from "../gameplay/dice.js";
+import { CARD_TIMELINE_TYPE, SceneCard, CARD_DEFAULTS, CARD_ACTION_TYPE} from "../gameplay/card.js";
 import { SceneEmotionStack } from "../gameplay/emotion_stack.js";
 import { EMOTION_TYPE } from "../gameplay/emotions.js";
 
@@ -27,6 +28,7 @@ class BattleScene extends Phaser.Scene {
         this.load.image(KEYS_ASSETS_SPRITES.MISC_DICE, "assets/misc-dice.png");
         this.load.image(KEYS_ASSETS_SPRITES.MISC_DICE_SLOT, "assets/misc-dice-slot.png");
         this.load.image(KEYS_ASSETS_SPRITES.DICE_SLOT, "assets/dice/dice_slot.png");
+        this.load.image(KEYS_ASSETS_SPRITES.CARD, "assets/card/future_card_template.png");
 
         this.load.image(KEYS_ASSETS_SPRITES.DICE_TYPE_D4, "assets/dice/dice_d4.png");
         this.load.image(KEYS_ASSETS_SPRITES.DICE_TYPE_D6, "assets/dice/dice_d6.png");
@@ -61,6 +63,12 @@ class BattleScene extends Phaser.Scene {
 
         // TODO: populate
         this.add.existing(new SceneDiceSlots(this, 500, 100, 2, []));
+
+        this.add.existing(new SceneCard(this, 400, 200,
+        1, CARD_DEFAULTS.CARD_ID, 
+        CARD_TIMELINE_TYPE.FUTURE, 
+        CARD_DEFAULTS.EMOTION_TYPE_NONE, CARD_DEFAULTS.EMOTION_TYPE_NONE, 
+        Array(CARD_DEFAULTS.CARD_EFFECT_NONE)));
     }
 
     update(time_milliseconds, delta_time_milliseconds) {
