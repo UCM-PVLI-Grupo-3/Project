@@ -19,7 +19,7 @@ const phaser_config = {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
-  backgroundColor: "#FF00FF",
+  backgroundColor: "#AF6235",
   scene: [BattleScene],
 };
 
