@@ -4,7 +4,7 @@ import { BattleScene } from "./scenes/battle_scene.js";
 import { CARD_ACTION_TYPE, CARD_TIMELINE_TYPE, Card } from "./gameplay/card.js";
 import { EMOTION_TYPE, OPTIONAL_EMOTION_TYPE } from "./gameplay/emotions.js";
 import { SceneEmotionStack } from "./gameplay/emotion_stack.js";
-import { KEYS_SCENES } from "./common/common.js";
+import { exit, KEYS_SCENES } from "./common/common.js";
 
 /**
  * @type {Phaser.Types.Core.GameConfig}

@@ -57,10 +57,10 @@ class BattleScene extends Phaser.Scene {
             EMOTION_TYPE.HAPPINESS(),
             EMOTION_TYPE.HAPPINESS(),
             EMOTION_TYPE.CALM()
-        ], 7));
+        ], 8));
 
         // TODO: populate
-        this.add.existing(new SceneDiceSlots(this, 50, 50, 3, []));
+        this.add.existing(new SceneDiceSlots(this, 500, 100, 2, []));
     }
 
     update(time_milliseconds, delta_time_milliseconds) {
