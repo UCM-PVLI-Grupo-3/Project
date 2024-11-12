@@ -20,7 +20,7 @@ class DiceSlots {
     roll() {
         let dice_sum = 0;
 
-        for(let i = 0; i < this.dices.length; ++i) {
+        for (let i = 0; i < this.dices.length; ++i) {
             dice_sum += this.dices[i].roll();
         }
 
@@ -29,7 +29,7 @@ class DiceSlots {
 
     get_max_roll_value() {
         let dice_sum = 0;
-        for(let i = 0; i < this.dices.length; i++) {
+        for (let i = 0; i < this.dices.length; i++) {
             dice_sum += this.dices[i].get_max_value();
         }
 
@@ -51,10 +51,10 @@ class DiceSlots {
     add_dice(dice) {
         console.assert(
             this.available_slots_count() > 0,
-            `error: there are no slots available to add more dice;\n
+            `error: there are no slots available to add more dice,
             check with available_slots_count() > 0`
         );
-        console.assert(dice instanceof Dice, "error: parameter dice must be an instance of Dice");     
+        console.assert(dice instanceof Dice, "error: parameter dice must be an instance of Dice");
         this.dices.push(dice);
     }
 
@@ -107,7 +107,7 @@ class SceneDiceSlotFrame extends Phaser.GameObjects.Container {
         console.assert(width > 0, "error: width must be greater than 0");
         console.assert(typeof height === "number", "error: height must be a number");
         console.assert(height > 0, "error: height must be greater than 0");
-        
+
         super(scene, position_x, position_y);
         this.scene_frame_nineslice_width = width;
         this.scene_frame_nineslice_height = height;
@@ -122,6 +122,27 @@ class SceneDiceSlotFrame extends Phaser.GameObjects.Container {
             CONSTANTS_SPRITES_MEASURES.DICE_SLOT.LINE_BORDER,
             CONSTANTS_SPRITES_MEASURES.DICE_SLOT.LINE_BORDER
         ).setOrigin(0.5, 0.5));
+
+        this.scene_dice = scene_dice;
+        if (scene_dice !== null) {
+            this.add(scene_dice);
+        }
+    }
+
+    set_dice(scene_dice) {
+        console.assert(scene_dice instanceof SceneDice, "error: scene_dice must be an instance of SceneDice");
+        this.remove_dice();
+
+        this.scene_dice = scene_dice;
+        this.scene_dice.setDisplaySize(this.scene_frame_nineslice_height * 0.75, this.scene_frame_nineslice_height * 0.75);
+        this.add(scene_dice);
+    }
+
+    remove_dice() {
+        if (this.scene_dice !== null) {
+            this.remove(this.scene_dice, false);
+        }
+        this.scene_dice = null;
     }
 }
 
@@ -129,14 +150,16 @@ class SceneDiceSlots extends Phaser.GameObjects.Container {
     /**
      * @type {Array<SceneDiceSlotFrame>}
      */
-    scene_dice_slot_frames = new Array(); 
+    scene_dice_slot_frames = new Array();
+    max_slots = DICE_SLOTS_DEFAULTS.MAX_SLOTS;
     dice_slots = new DiceSlots(DICE_SLOTS_DEFAULTS.MAX_SLOTS, []);
 
-    constructor(scene, position_x, position_y, max_slots, dices) {  
+    constructor(scene, position_x, position_y, max_slots, dices) {
         super(scene, position_x, position_y);
         this.scene_dice_slot_frames = new Array(max_slots);
+        this.max_slots = max_slots;
         this.dice_slots = new DiceSlots(max_slots, dices);
-        
+
         if (this.dice_slots.slots_count() !== max_slots) {
             console.assert(false, "unreachable: dice_slots.slots_count() !== max_slots, failed to construct DiceSlots");
             exit("EXIT_FAILURE");
@@ -148,18 +171,88 @@ class SceneDiceSlots extends Phaser.GameObjects.Container {
                 this.scene.add.existing(new SceneDiceSlotFrame(this.scene, 0, i * height, null, width, height));
             this.add(this.scene_dice_slot_frames[i]);
         }
-        
+
         // TODO: set (link) scene dices
-        // if (this.dice_slots.used_slots_count() !== dices.length) {
-        //     console.assert(
-        //         false,
-        //         "unreachable: dice_slots.used_slots_count() !== dices.length, failed to construct SceneDiceSlots"
-        //     );
-        //     exit("EXIT_FAILURE");
-        // }
-        // for (let i = 0; i < this.dice_slots.used_slots_count(); ++i) {
-        //     this.scene_dice_slot_frames[i].setDice = this.scene.add.existing(new SceneDice(this.scene, 0, 0, dices[i]));
-        // }
+        if (this.dice_slots.used_slots_count() !== dices.length) {
+            console.assert(
+                false,
+                "unreachable: dice_slots.used_slots_count() !== dices.length, failed to construct SceneDiceSlots"
+            );
+            exit("EXIT_FAILURE");
+        }
+        for (let i = 0; i < this.dice_slots.used_slots_count(); ++i) {
+            this.scene_dice_slot_frames[i].set_dice(
+                this.scene.add.existing(new SceneDice(this.scene, 0, 0, dices[i].dice_type))
+            );
+        }
+    }
+
+    slots_count() {
+        return this.dice_slots.slots_count();
+    }
+
+    used_slots_count() {
+        return this.dice_slots.used_slots_count();
+    }
+
+    available_slots_count() {
+        return this.slots_count() - this.used_slots_count();
+    }
+
+    add_dice(scene_dice) {
+        console.assert(scene_dice instanceof SceneDice, "error: scene_dice must be an instance of SceneDice");
+        console.assert(
+            this.available_slots_count() > 0,
+            `error: there are no slots available to add more dice,
+            check with available_slots_count() > 0`
+        );
+        this.scene_dice_slot_frames[this.used_slots_count()].set_dice(scene_dice);
+        this.dice_slots.add_dice(scene_dice.dice);
+        return scene_dice;
+    }
+
+    contains_dice(scene_dice) {
+        const frame_index = this.scene_dice_slot_frames.findIndex((
+            frame, i, arr
+        ) => {
+            return frame.scene_dice == scene_dice;
+        });
+        if (this.dice_slots.contains_dice(scene_dice.dice)) {
+            if (frame_index === -1) {
+                console.assert(
+                    false,
+                    "unreachable: dice_slots - scene_dice_slot_frames mismatch, dice should be found in the array"
+                );
+                exit("EXIT_FAILURE");
+            }
+            return true;
+        } else {
+            if (frame_index !== -1) {
+                console.assert(
+                    false,
+                    "unreachable: dice_slots - scene_dice_slot_frames mismatch, dice should not be found in the array"
+                );
+                exit("EXIT_FAILURE");
+            }
+            return false;
+        }
+    }
+
+    remove_dice(scene_dice) {
+        console.assert(scene_dice instanceof SceneDice, "error: scene_dice must be an instance of SceneDice");
+        console.assert(
+            this.contains_dice(scene_dice),
+            `error: scene_dice_slots does not contain scene_dice,
+            check with contains_dice(scene_dice)`
+        );
+        const index = this.scene_dice_slot_frames.findIndex((
+            frame, i, arr
+        ) => {
+            return frame.scene_dice == scene_dice;
+        });
+        this.scene_dice_slot_frames[index].remove_dice();
+        this.dice_slots.remove_dice(scene_dice.dice);
+        return scene_dice;
     }
 }
 
