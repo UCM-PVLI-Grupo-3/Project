@@ -64,7 +64,8 @@ class BattleScene extends Phaser.Scene {
         this.scene_dice_slots = this.add.existing(new SceneDiceSlots(this, 500, 100, 2, [new Dice(DICE_TYPE.D20)]));
 
         this.add.existing(new SceneCard(this, 400, 200,
-        48, CARD_DEFAULTS.CARD_ID, 
+        "CARTA", 48,
+        CARD_DEFAULTS.CARD_ID, 
         CARD_TIMELINE_TYPE.FUTURE, 
         CARD_DEFAULTS.EMOTION_TYPE_NONE, CARD_DEFAULTS.EMOTION_TYPE_NONE, 
         Array(CARD_DEFAULTS.CARD_EFFECT_NONE)));

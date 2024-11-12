@@ -76,7 +76,7 @@ class SceneCard extends Phaser.GameObjects.Container {
 
     text_font = "Bauhaus 93";
 
-    constructor(scene, position_x, position_y, value, id, timeline_type, 
+    constructor(scene, position_x, position_y, name, value, id, timeline_type, 
         successful_action_emotion_type, failure_action_emotion_type, card_effects) {
         super(scene, position_x, position_y);
 
@@ -114,7 +114,7 @@ class SceneCard extends Phaser.GameObjects.Container {
         .setScale(EMOTION_SCALE);
 
         let card_name = scene.add.text(
-            TEXT_X, TEXT_Y, "CARTA", 
+            TEXT_X, TEXT_Y, name, 
             {fontFamily: '"Bauhaus 93"', fontSize: '30px', color: 'black'}
             )
         .setOrigin(0.5);
