@@ -95,7 +95,11 @@ class SceneCard extends Phaser.GameObjects.Container {
         const VALUE_X = position_x - 93;
         const VALUE_Y = position_y - 170;
 
-        let card_img = scene.add.image(position_x, position_y, KEYS_ASSETS_SPRITES.CARD);
+        let card_img
+        if(timeline_type === CARD_TIMELINE_TYPE.PAST)
+            card_img = scene.add.image(position_x, position_y, KEYS_ASSETS_SPRITES.PAST_CARD);
+        else
+            card_img = scene.add.image(position_x, position_y, KEYS_ASSETS_SPRITES.FUTURE_CARD);
 
         let successful_action_emotion_type_img = scene.add.image(
             LEFT_EMOTION_X, EMOTION_ICON_Y, 

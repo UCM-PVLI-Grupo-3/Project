@@ -31,7 +31,8 @@ class BattleScene extends Phaser.Scene {
         this.load.image(KEYS_ASSETS_SPRITES.MISC_DICE, "assets/misc-dice.png");
         this.load.image(KEYS_ASSETS_SPRITES.MISC_DICE_SLOT, "assets/misc-dice-slot.png");
         this.load.image(KEYS_ASSETS_SPRITES.DICE_SLOT, "assets/dice/dice_slot.png");
-        this.load.image(KEYS_ASSETS_SPRITES.CARD, "assets/card/future_card_template.png");
+        this.load.image(KEYS_ASSETS_SPRITES.PAST_CARD, "assets/card/past_card_template.png");
+        this.load.image(KEYS_ASSETS_SPRITES.FUTURE_CARD, "assets/card/future_card_template.png");
 
         this.load.image(KEYS_ASSETS_SPRITES.DICE_TYPE_D4, "assets/dice/dice_d4.png");
         this.load.image(KEYS_ASSETS_SPRITES.DICE_TYPE_D6, "assets/dice/dice_d6.png");
