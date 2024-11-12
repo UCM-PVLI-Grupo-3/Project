@@ -67,7 +67,7 @@ class BattleScene extends Phaser.Scene {
         "CARTA", 48,
         CARD_DEFAULTS.CARD_ID, 
         CARD_TIMELINE_TYPE.FUTURE, 
-        CARD_DEFAULTS.EMOTION_TYPE_NONE, CARD_DEFAULTS.EMOTION_TYPE_NONE, 
+        CARD_DEFAULTS.EMOTION_TYPE_NONE, EMOTION_TYPE.ANGER(), 
         Array(CARD_DEFAULTS.CARD_EFFECT_NONE)));
         
         let added = this.scene_dice_slots.add_dice(new SceneDice(this, 0, 0, DICE_TYPE.D4));

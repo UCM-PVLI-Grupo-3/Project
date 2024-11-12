@@ -95,23 +95,36 @@ class SceneCard extends Phaser.GameObjects.Container {
         const VALUE_X = position_x - 93;
         const VALUE_Y = position_y - 170;
 
-        let card_img
+        let card_img;
         if(timeline_type === CARD_TIMELINE_TYPE.PAST)
             card_img = scene.add.image(position_x, position_y, KEYS_ASSETS_SPRITES.PAST_CARD);
         else
             card_img = scene.add.image(position_x, position_y, KEYS_ASSETS_SPRITES.FUTURE_CARD);
 
-        let successful_action_emotion_type_img = scene.add.image(
-            LEFT_EMOTION_X, EMOTION_ICON_Y, 
-            emotion_sprite_key_from_type(successful_action_emotion_type)
-            )
-        .setScale(EMOTION_SCALE);
-  
-        let failure_action_emotion_type_img = scene.add.image(
-            RIGHT_EMOTION_X, EMOTION_ICON_Y,
-            emotion_sprite_key_from_type(failure_action_emotion_type)
-            )
-        .setScale(EMOTION_SCALE);
+        this.add(card_img);
+
+        if(successful_action_emotion_type !== OPTIONAL_EMOTION_TYPE.NONE())
+        {
+            let successful_action_emotion_type_img = scene.add.image(
+                LEFT_EMOTION_X, EMOTION_ICON_Y, 
+                emotion_sprite_key_from_type(successful_action_emotion_type)
+                )
+            .setScale(EMOTION_SCALE);
+      
+            this.add(successful_action_emotion_type_img);
+        }
+        
+
+        if(failure_action_emotion_type !== OPTIONAL_EMOTION_TYPE.NONE())
+        {
+            let failure_action_emotion_type_img = scene.add.image(
+                RIGHT_EMOTION_X, EMOTION_ICON_Y,
+                emotion_sprite_key_from_type(failure_action_emotion_type)
+                )
+            .setScale(EMOTION_SCALE);
+
+            this.add(failure_action_emotion_type_img);
+        }
 
         let card_name = scene.add.text(
             TEXT_X, TEXT_Y, name, 
@@ -125,9 +138,6 @@ class SceneCard extends Phaser.GameObjects.Container {
             )
         .setOrigin(0.5);
 
-        this.add(card_img);
-        this.add(successful_action_emotion_type_img);
-        this.add(failure_action_emotion_type_img);
         this.add(card_name);
         this.add(card_value);
     }
