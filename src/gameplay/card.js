@@ -90,8 +90,10 @@ class SceneCard extends Phaser.GameObjects.Container {
         const LEFT_EMOTION_X = position_x - 75;
         const RIGHT_EMOTION_X = position_x + 80;
         const EMOTION_SCALE = 0.70;
-        const TEXT_X = position_x - 130;
-        const TEXT_Y = position_y + 60;
+        const TEXT_X = position_x;
+        const TEXT_Y = position_y + 53;
+        const VALUE_X = position_x - 93;
+        const VALUE_Y = position_y - 170;
 
         let card_img = scene.add.image(position_x, position_y, KEYS_ASSETS_SPRITES.CARD);
 
@@ -107,12 +109,23 @@ class SceneCard extends Phaser.GameObjects.Container {
             )
         .setScale(EMOTION_SCALE);
 
-        let card_name = scene.add.text(TEXT_X, TEXT_Y, "CARTA", {fontFamily: '"Bauhaus 93"', fontSize: '30px'})
+        let card_name = scene.add.text(
+            TEXT_X, TEXT_Y, "CARTA", 
+            {fontFamily: '"Bauhaus 93"', fontSize: '30px', color: 'black'}
+            )
+        .setOrigin(0.5);
+
+        let card_value = scene.add.text(
+            VALUE_X, VALUE_Y, value.toString(), 
+            {fontFamily: '"Bauhaus 93"', fontSize: '30px', color: 'black'}
+            )
+        .setOrigin(0.5);
 
         this.add(card_img);
         this.add(successful_action_emotion_type_img);
         this.add(failure_action_emotion_type_img);
         this.add(card_name);
+        this.add(card_value);
     }
 }
 
