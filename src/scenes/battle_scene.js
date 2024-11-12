@@ -1,6 +1,6 @@
 import { KEYS_SCENES, KEYS_ASSETS_SPRITES } from "../common/common.js";
 import { DiceSlots, SceneDiceSlots } from "../gameplay/dice_slots.js";
-import { DICE_TYPE, SceneDice } from "../gameplay/dice.js";
+import { DICE_TYPE, SceneDice, Dice } from "../gameplay/dice.js";
 import { CARD_TIMELINE_TYPE, SceneCard, CARD_DEFAULTS, CARD_ACTION_TYPE} from "../gameplay/card.js";
 import { SceneEmotionStack } from "../gameplay/emotion_stack.js";
 import { EMOTION_TYPE } from "../gameplay/emotions.js";
@@ -8,7 +8,10 @@ import { EMOTION_TYPE } from "../gameplay/emotions.js";
 const BATTLE_SCENE_DEFAULT_SICE_SLOTS = 3;
 
 class BattleScene extends Phaser.Scene {
-    dice_slots = new Array(BATTLE_SCENE_DEFAULT_SICE_SLOTS);
+    /**
+     * @type {SceneDiceSlots}
+     */
+    scene_dice_slots;
     /**
      * @type {SceneEmotionStack}
      */
@@ -16,7 +19,7 @@ class BattleScene extends Phaser.Scene {
 
     constructor() {
         super({ key: KEYS_SCENES.BATTLE });
-        this.dice_slots = new Array(BATTLE_SCENE_DEFAULT_SICE_SLOTS);
+        this.scene_dice_slots = null;
         this.scene_emotion_stack = null;
     }
 
@@ -48,11 +51,6 @@ class BattleScene extends Phaser.Scene {
     }
 
     create(data) {
-        for (let i = 0; i < this.dice_slots.length; ++i) {
-            this.dice_slots[i] = new DiceSlots(2, []);
-        }
-
-        this.add.existing(new SceneDice(this, 100, 100, DICE_TYPE.D6));
         this.scene_emotion_stack = this.add.existing(new SceneEmotionStack(this, 100, 100, [
             EMOTION_TYPE.ANGER(),
             EMOTION_TYPE.ANGER(),
@@ -62,13 +60,17 @@ class BattleScene extends Phaser.Scene {
         ], 8));
 
         // TODO: populate
-        this.add.existing(new SceneDiceSlots(this, 500, 100, 2, []));
+        this.scene_dice_slots = this.add.existing(new SceneDiceSlots(this, 500, 100, 2, [new Dice(DICE_TYPE.D20)]));
 
         this.add.existing(new SceneCard(this, 400, 200,
         1, CARD_DEFAULTS.CARD_ID, 
         CARD_TIMELINE_TYPE.FUTURE, 
         CARD_DEFAULTS.EMOTION_TYPE_NONE, CARD_DEFAULTS.EMOTION_TYPE_NONE, 
         Array(CARD_DEFAULTS.CARD_EFFECT_NONE)));
+        
+        let added = this.scene_dice_slots.add_dice(new SceneDice(this, 0, 0, DICE_TYPE.D4));
+        this.scene_dice_slots.remove_dice(added).destroy();
+        this.scene_dice_slots.add_dice(new SceneDice(this, 0, 0, DICE_TYPE.D8));
     }
 
     update(time_milliseconds, delta_time_milliseconds) {
