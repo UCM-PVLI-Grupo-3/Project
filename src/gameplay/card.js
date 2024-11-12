@@ -1,4 +1,4 @@
-import { OPTIONAL_EMOTION_TYPE } from "./emotions.js";
+import { OPTIONAL_EMOTION_TYPE, emotion_sprite_key_from_type } from "./emotions.js";
 import { NullEffect } from "./card_effects/null_effect.js";
 import { CardEffect } from "./card_effects/card_effect.js";
 import { KEYS_ASSETS_SPRITES } from "../common/common.js";
@@ -74,6 +74,8 @@ class SceneCard extends Phaser.GameObjects.Container {
         CARD_DEFAULTS.EMOTION_TYPE_NONE, CARD_DEFAULTS.EMOTION_TYPE_NONE, 
         Array(CARD_DEFAULTS.CARD_EFFECT_NONE));
 
+    text_font = "Bauhaus 93";
+
     constructor(scene, position_x, position_y, value, id, timeline_type, 
         successful_action_emotion_type, failure_action_emotion_type, card_effects) {
         super(scene, position_x, position_y);
@@ -84,15 +86,33 @@ class SceneCard extends Phaser.GameObjects.Container {
             successful_action_emotion_type, failure_action_emotion_type, 
            card_effects);
 
+        const EMOTION_ICON_Y = position_y + 122;
+        const LEFT_EMOTION_X = position_x - 75;
+        const RIGHT_EMOTION_X = position_x + 80;
+        const EMOTION_SCALE = 0.70;
+        const TEXT_X = position_x - 130;
+        const TEXT_Y = position_y + 60;
+
         let card_img = scene.add.image(position_x, position_y, KEYS_ASSETS_SPRITES.CARD);
-        let successful_action_emotion_type_img = scene.add.image(position_x-75, position_y+122, KEYS_ASSETS_SPRITES.EMOTION_HAPPINESS_ICON);
-        successful_action_emotion_type_img.setScale(0.75);
-        let failure_action_emotion_type_img = scene.add.image(position_x+80, position_y+122, KEYS_ASSETS_SPRITES.EMOTION_ANGER_ICON);
-        failure_action_emotion_type_img.setScale(0.75);
+
+        let successful_action_emotion_type_img = scene.add.image(
+            LEFT_EMOTION_X, EMOTION_ICON_Y, 
+            emotion_sprite_key_from_type(successful_action_emotion_type)
+            )
+        .setScale(EMOTION_SCALE);
+  
+        let failure_action_emotion_type_img = scene.add.image(
+            RIGHT_EMOTION_X, EMOTION_ICON_Y,
+            emotion_sprite_key_from_type(failure_action_emotion_type)
+            )
+        .setScale(EMOTION_SCALE);
+
+        let card_name = scene.add.text(TEXT_X, TEXT_Y, "CARTA", {fontFamily: '"Bauhaus 93"', fontSize: '30px'})
 
         this.add(card_img);
         this.add(successful_action_emotion_type_img);
         this.add(failure_action_emotion_type_img);
+        this.add(card_name);
     }
 }
 
