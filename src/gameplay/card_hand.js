@@ -17,4 +17,6 @@ class CardHand{
 		this.max_cards = max_cards;
 		this.current_cards = new Array(max_cards);
 	}
+
+	
 }
