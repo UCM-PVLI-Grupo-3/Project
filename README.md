@@ -14,7 +14,11 @@ This game is a second year university project for  [Grado en Desarrollo de Video
 ## Screenshots
 
 *WIP*
+## Presentation 
 
+https://www.canva.com/design/DAGSb2_aZpQ/ZFZwUPKJRmssQXCX2dXBxQ/edit
+
+## Link 
 https://ucm-pvli-grupo-3.github.io/Project/
 
 
