@@ -61,7 +61,9 @@ class BattleScene extends Phaser.Scene {
         ], 8));
 
         // TODO: populate
-        this.scene_dice_slots = this.add.existing(new SceneDiceSlots(this, 500, 100, 2, [new Dice(DICE_TYPE.D20)]));
+        this.scene_dice_slots = this.add.existing(new SceneDiceSlots(this, 500, 100, 4, [
+            new SceneDice(this, 0, 0, DICE_TYPE.D4)
+        ]));
 
         this.add.existing(new SceneCard(this, 400, 200,
         "CARTA", 48,
@@ -70,9 +72,13 @@ class BattleScene extends Phaser.Scene {
         CARD_DEFAULTS.EMOTION_TYPE_NONE, EMOTION_TYPE.ANGER(), 
         Array(CARD_DEFAULTS.CARD_EFFECT_NONE)));
         
-        let added = this.scene_dice_slots.add_dice(new SceneDice(this, 0, 0, DICE_TYPE.D4));
-        this.scene_dice_slots.remove_dice(added).destroy();
-        this.scene_dice_slots.add_dice(new SceneDice(this, 0, 0, DICE_TYPE.D8));
+        let added0 = this.scene_dice_slots.add_dice(new SceneDice(this, 0, 0, DICE_TYPE.D4));
+        let added1 = this.scene_dice_slots.add_dice(new SceneDice(this, 0, 0, DICE_TYPE.D4));
+        let added2 = this.scene_dice_slots.add_dice(new SceneDice(this, 0, 0, DICE_TYPE.D4));
+        this.scene_dice_slots.remove_dice(added0).destroy();
+        this.scene_dice_slots.remove_dice(added1).destroy();
+        console.log(this.scene_dice_slots.dice_slots.roll(), this.scene_dice_slots.dice_slots.get_max_roll_value());
+        // this.scene_dice_slots.add_dice(new SceneDice(this, 0, 0, DICE_TYPE.D8));
     }
 
     update(time_milliseconds, delta_time_milliseconds) {

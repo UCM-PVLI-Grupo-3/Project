@@ -44,10 +44,10 @@ window.onload = () => {
         () => {
           let es = battle_scene.scene_emotion_stack;
           es.add_emotions([EMOTION_TYPE.CALM(), EMOTION_TYPE.ECSTASY()]);
-          let peeked = es.peek_emotions(6);
-          console.log(peeked);
-          let popped = es.pop_emotions(1);
-          console.log(popped);
+          // let peeked = es.peek_emotions(6);
+          // console.log(peeked);
+          // let popped = es.pop_emotions(1);
+          // console.log(popped);
         }
       );
     }

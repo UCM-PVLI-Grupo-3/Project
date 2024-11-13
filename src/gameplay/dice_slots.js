@@ -154,16 +154,22 @@ class SceneDiceSlots extends Phaser.GameObjects.Container {
     max_slots = DICE_SLOTS_DEFAULTS.MAX_SLOTS;
     dice_slots = new DiceSlots(DICE_SLOTS_DEFAULTS.MAX_SLOTS, []);
 
-    constructor(scene, position_x, position_y, max_slots, dices) {
+    constructor(scene, position_x, position_y, max_slots, scene_dices) {
+        console.assert(scene_dices instanceof Array, "error: scene_dices must be an array");
+        scene_dices.forEach((scene_dice) => {
+            console.assert(scene_dice instanceof SceneDice, "error: scene_dice must be an instance of SceneDice");
+        });
         super(scene, position_x, position_y);
         this.scene_dice_slot_frames = new Array(max_slots);
         this.max_slots = max_slots;
-        this.dice_slots = new DiceSlots(max_slots, dices);
-
+        this.dice_slots = new DiceSlots(max_slots, scene_dices.map(
+            (scene_dice) => scene_dice.dice
+        ));
         if (this.dice_slots.slots_count() !== max_slots) {
             console.assert(false, "unreachable: dice_slots.slots_count() !== max_slots, failed to construct DiceSlots");
             exit("EXIT_FAILURE");
         }
+        
         for (let i = 0; i < this.dice_slots.slots_count(); ++i) {
             const width = CONSTANTS_SPRITES_MEASURES.DICE_SLOT.WIDTH * 0.75;
             const height = CONSTANTS_SPRITES_MEASURES.DICE_SLOT.HEIGHT * 0.75;
@@ -171,20 +177,29 @@ class SceneDiceSlots extends Phaser.GameObjects.Container {
                 this.scene.add.existing(new SceneDiceSlotFrame(this.scene, 0, i * height, null, width, height));
             this.add(this.scene_dice_slot_frames[i]);
         }
-
-        // TODO: set (link) scene dices
-        if (this.dice_slots.used_slots_count() !== dices.length) {
+        
+        if (this.dice_slots.used_slots_count() !== scene_dices.length) {
             console.assert(
                 false,
                 "unreachable: dice_slots.used_slots_count() !== dices.length, failed to construct SceneDiceSlots"
             );
             exit("EXIT_FAILURE");
-        }
+        }    
         for (let i = 0; i < this.dice_slots.used_slots_count(); ++i) {
             this.scene_dice_slot_frames[i].set_dice(
-                this.scene.add.existing(new SceneDice(this.scene, 0, 0, dices[i].dice_type))
+                this.scene.add.existing(scene_dices[i])
             );
         }
+
+        this.scene.input.on(Phaser.Input.Events.DRAG_START, (pointer, game_object) => {
+            this.on_drag_start(pointer, game_object);
+        });
+        this.scene.input.on(Phaser.Input.Events.DRAG, (pointer, game_object, drag_x, drag_y) => {
+            this.on_drag(pointer, game_object, drag_x, drag_y);
+        });       
+        this.scene.input.on(Phaser.Input.Events.DRAG_END, (pointer, game_object) => {
+            this.on_drag_end(pointer, game_object);
+        });
     }
 
     slots_count() {
@@ -230,7 +245,9 @@ class SceneDiceSlots extends Phaser.GameObjects.Container {
             if (frame_index !== -1) {
                 console.assert(
                     false,
-                    "unreachable: dice_slots - scene_dice_slot_frames mismatch, dice should not be found in the array"
+                    "unreachable: dice_slots - scene_dice_slot_frames mismatch, dice should not be found in the array",
+                    this.dice_slots,
+                    this.scene_dice_slot_frames
                 );
                 exit("EXIT_FAILURE");
             }
@@ -253,6 +270,29 @@ class SceneDiceSlots extends Phaser.GameObjects.Container {
         this.scene_dice_slot_frames[index].remove_dice();
         this.dice_slots.remove_dice(scene_dice.dice);
         return scene_dice;
+    }
+
+    on_drag_start(pointer, game_object) {
+
+    }
+
+    on_drag(pointer, game_object, drag_x, drag_y) {
+
+    }
+
+    on_drag_end(pointer, game_object) {
+        console.log("here");
+        if (game_object instanceof SceneDice && this.contains_dice(game_object)) {
+            let scene_dice = game_object;
+            this.remove_dice(scene_dice);
+            console.log("removed");
+        } else if (game_object instanceof SceneDice && this.available_slots_count() > 0) {
+            let scene_dice = game_object;
+            this.add_dice(scene_dice);
+            console.log("added");
+        } else if (game_object === this) {
+
+        }
     }
 }
 
