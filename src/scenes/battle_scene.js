@@ -1,9 +1,11 @@
 import { KEYS_SCENES, KEYS_ASSETS_SPRITES } from "../common/common.js";
 import { DiceSlots, SceneDiceSlots } from "../gameplay/dice_slots.js";
 import { DICE_TYPE, SceneDice, Dice } from "../gameplay/dice.js";
-import { CARD_TIMELINE_TYPE, SceneCard, CARD_DEFAULTS, CARD_ACTION_TYPE} from "../gameplay/card.js";
+import { CARD_TIMELINE_TYPE, SceneCard, Card, CARD_DEFAULTS, CARD_ACTION_TYPE} from "../gameplay/card.js";
 import { SceneEmotionStack } from "../gameplay/emotion_stack.js";
 import { EMOTION_TYPE, OPTIONAL_EMOTION_TYPE } from "../gameplay/emotions.js";
+import { CardHand } from "../gameplay/card_hand.js";
+import { CardDeck } from "../gameplay/card_deck.js";
 
 const BATTLE_SCENE_DEFAULT_SICE_SLOTS = 3;
 
@@ -86,6 +88,29 @@ class BattleScene extends Phaser.Scene {
         this.scene_dice_slots.remove_dice(added1).destroy();
         console.log(this.scene_dice_slots.dice_slots.roll(), this.scene_dice_slots.dice_slots.get_max_roll_value());
         // this.scene_dice_slots.add_dice(new SceneDice(this, 0, 0, DICE_TYPE.D8));
+
+        let card_deck = new CardDeck(4, 
+            [new Card(1, CARD_DEFAULTS.CARD_ID, CARD_DEFAULTS.CARD_INSTANCE_ID, CARD_TIMELINE_TYPE.FUTURE, OPTIONAL_EMOTION_TYPE.NONE(), EMOTION_TYPE.ANGER(), new Array(CARD_DEFAULTS.CARD_EFFECT_NONE)),
+             new Card(2, CARD_DEFAULTS.CARD_ID, CARD_DEFAULTS.CARD_INSTANCE_ID, CARD_TIMELINE_TYPE.FUTURE, OPTIONAL_EMOTION_TYPE.NONE(), EMOTION_TYPE.ANGER(), new Array(CARD_DEFAULTS.CARD_EFFECT_NONE)),
+             new Card(3, CARD_DEFAULTS.CARD_ID, CARD_DEFAULTS.CARD_INSTANCE_ID, CARD_TIMELINE_TYPE.FUTURE, OPTIONAL_EMOTION_TYPE.NONE(), EMOTION_TYPE.ANGER(), new Array(CARD_DEFAULTS.CARD_EFFECT_NONE)),
+             new Card(4, CARD_DEFAULTS.CARD_ID, CARD_DEFAULTS.CARD_INSTANCE_ID, CARD_TIMELINE_TYPE.FUTURE, OPTIONAL_EMOTION_TYPE.NONE(), EMOTION_TYPE.ANGER(), new Array(CARD_DEFAULTS.CARD_EFFECT_NONE)),
+             ]);
+
+        let card_hand = new CardHand(card_deck, 3);
+        let arr = [...card_hand.current_cards];
+        console.log(arr);
+
+        card_hand.use_hand_card(2);
+        arr = [...card_hand.current_cards];
+        console.log(arr);
+
+         card_hand.use_hand_card(1);
+        arr = [...card_hand.current_cards];
+        console.log(arr);
+
+        card_hand.use_hand_card(2);
+        arr = [...card_hand.current_cards];
+        console.log(arr);
     }
 
     update(time_milliseconds, delta_time_milliseconds) {

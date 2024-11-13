@@ -1,7 +1,7 @@
 import { Card, SceneCard } from "./card.js";
 
 const CARD_DECK_DEFAULTS = {
-	MAX_CARD_NUM: 4,
+	MAX_CARD_NUM: 8,
 };
 
 // CardDeck is the collection of cards that will appear in the fight gameplay
@@ -10,7 +10,6 @@ class CardDeck{
 	cards = new Array(CARD_DECK_DEFAULTS.MAX_CARD_NUM);
 
 	constructor(max_cards, cards){
-		console.assert(cards.length <= max_cards, "error: cards length must be less than or equal to max_cards");
 		console.assert(cards instanceof Array, "error: cards must be an array");
 		cards.forEach((card) => {
 			console.assert(card instanceof Card, "error: element of cards must be an instance of Card");
@@ -39,6 +38,7 @@ class CardDeck{
             check with available_cards_count() > 0`
         );
 		console.assert(card instanceof Card, "error: parameter card must be an instance of Card");
+
         this.cards.push(card);
 	}
 
