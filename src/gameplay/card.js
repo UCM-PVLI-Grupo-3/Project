@@ -15,10 +15,10 @@ const CARD_ACTION_TYPE = {
     HEAL: "HEAL"
 };
 
-
 const CARD_DEFAULTS = {
     VALUE: 8,
     CARD_ID: 0,
+    CARD_INSTANCE_ID: 0,
     TIMELINE_TYPE: CARD_TIMELINE_TYPE.PAST,
     EMOTION_TYPE_NONE: OPTIONAL_EMOTION_TYPE.NONE(),
     CARD_EFFECT_NONE: new NullEffect(),
@@ -70,24 +70,34 @@ class Card {
     }
 };
 
+const SCENE_CARD_DEFAULTS = {
+    TEXT_FONT: "Bauhaus 93",
+};
+
 class SceneCard extends Phaser.GameObjects.Container {
     card = new Card(
-        CARD_DEFAULTS.VALUE, CARD_DEFAULTS.CARD_ID, 
+        CARD_DEFAULTS.VALUE,
+        CARD_DEFAULTS.CARD_ID,
+        CARD_DEFAULTS.CARD_INSTANCE_ID,
         CARD_DEFAULTS.TIMELINE_TYPE, 
         CARD_DEFAULTS.EMOTION_TYPE_NONE, CARD_DEFAULTS.EMOTION_TYPE_NONE, 
-        Array(CARD_DEFAULTS.CARD_EFFECT_NONE));
+        Array(CARD_DEFAULTS.CARD_EFFECT_NONE)
+    );
 
-    text_font = "Bauhaus 93";
-
-    constructor(scene, position_x, position_y, name, value, id, timeline_type, 
-        successful_action_emotion_type, failure_action_emotion_type, card_effects) {
+    constructor(
+        scene, position_x, position_y, name, value, id, instance_id, timeline_type, 
+        successful_action_emotion_type, failure_action_emotion_type, card_effects
+    ) {
         super(scene, position_x, position_y);
 
         this.card = new Card(
-            value, id, 
+            value,
+            id,
+            instance_id,
             timeline_type, 
             successful_action_emotion_type, failure_action_emotion_type, 
-           card_effects);
+            card_effects
+        );
 
         const EMOTION_ICON_Y = position_y + 122;
         const LEFT_EMOTION_X = position_x - 75;

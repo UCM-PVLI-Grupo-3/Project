@@ -3,7 +3,7 @@ import { DiceSlots, SceneDiceSlots } from "../gameplay/dice_slots.js";
 import { DICE_TYPE, SceneDice, Dice } from "../gameplay/dice.js";
 import { CARD_TIMELINE_TYPE, SceneCard, CARD_DEFAULTS, CARD_ACTION_TYPE} from "../gameplay/card.js";
 import { SceneEmotionStack } from "../gameplay/emotion_stack.js";
-import { EMOTION_TYPE } from "../gameplay/emotions.js";
+import { EMOTION_TYPE, OPTIONAL_EMOTION_TYPE } from "../gameplay/emotions.js";
 
 const BATTLE_SCENE_DEFAULT_SICE_SLOTS = 3;
 
@@ -65,12 +65,19 @@ class BattleScene extends Phaser.Scene {
             new SceneDice(this, 0, 0, DICE_TYPE.D4)
         ]));
 
-        this.add.existing(new SceneCard(this, 400, 200,
-        "CARTA", 48,
-        CARD_DEFAULTS.CARD_ID, 
-        CARD_TIMELINE_TYPE.FUTURE, 
-        CARD_DEFAULTS.EMOTION_TYPE_NONE, EMOTION_TYPE.ANGER(), 
-        Array(CARD_DEFAULTS.CARD_EFFECT_NONE)));
+        this.add.existing(new SceneCard(
+            this,
+            400,
+            200,
+            "CARTA",
+                48,
+                CARD_DEFAULTS.CARD_ID,
+                CARD_DEFAULTS.CARD_INSTANCE_ID,
+                CARD_TIMELINE_TYPE.FUTURE, 
+            OPTIONAL_EMOTION_TYPE.NONE(),
+            EMOTION_TYPE.ANGER(), 
+            new Array(CARD_DEFAULTS.CARD_EFFECT_NONE)
+        ));
         
         let added0 = this.scene_dice_slots.add_dice(new SceneDice(this, 0, 0, DICE_TYPE.D4));
         let added1 = this.scene_dice_slots.add_dice(new SceneDice(this, 0, 0, DICE_TYPE.D4));
