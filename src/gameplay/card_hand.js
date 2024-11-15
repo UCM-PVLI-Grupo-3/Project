@@ -43,4 +43,22 @@ class CardHand{
 	}
 }
 
+const SCENE_CARD_HAND_DEFAULTS = {
+	CARD_DECK: new CardDeck(0, []),
+	MAX_CARD_NUM: 0,
+};
+
+class SceneCardHand extends Phaser.GameObjects.Container{
+
+	card_hand = new CardHand(SCENE_CARD_HAND_DEFAULTS.CARD_DECK, SCENE_CARD_HAND_DEFAULTS.MAX_CARD_NUM);
+	/**
+	 * @type {Phaser.GameObjects.Image}
+	 * */
+	card_hand_window;
+	/**
+     * @type {Array<SceneCard>}
+     */
+	scene_cards = new Array();
+}
+
 export { CardHand };
