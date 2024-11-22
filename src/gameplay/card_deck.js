@@ -59,4 +59,37 @@ class CardDeck{
     }
 }
 
-export { CardDeck };
+const SCENE_CARD_DEFAULTS = {
+	CARD_FRAMES_X: 1,
+	CARD_FRAMES_Y: 1,
+};
+
+class SceneCardDeck extends Phaser.GameObjects.Container{
+	card_frames_x = SCENE_CARD_DEFAULTS.CARD_FRAMES_X;
+	card_frames_y = SCENE_CARD_DEFAULTS.CARD_FRAMES_Y;
+	max_cards = CARD_DECK_DEFAULTS.MAX_CARD_NUM;
+	card_deck = new CardDeck(CARD_DECK_DEFAULTS.MAX_CARD_NUM, []);
+	/**
+	 * @type {SceneCard}
+	 * */
+	scene_cards = new Array();
+
+	constructor(scene, position_x, position_y, card_frames_x, card_frames_y, max_cards, scene_cards){
+		console.assert(scene instanceof Phaser.Scene, "error: scene must be a valid Phaser.Scene");
+        console.assert(typeof position_x === "number", "error: position_x must be a number");
+        console.assert(typeof position_y === "number", "error: position_y must be a number");
+
+        super(scene, position_x, position_y);
+
+		this.card_deck = new CardDeck(max_cards, scene_cards.map(
+            (scene_card) => scene_card.card
+        ));
+        this.scene_cards = scene_cards;
+        this.scene_cards.forEach((scene_card) => this.add(scene_card));
+
+		this.card_frames_x = card_frames_x;
+		this.card_frames_y = card_frames_y;
+	}
+}
+
+export { CardDeck, SceneCardDeck };

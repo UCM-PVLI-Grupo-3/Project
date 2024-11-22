@@ -1,4 +1,4 @@
-import { CardDeck } from "./card_deck.js";
+import { CardDeck, SceneCardDeck } from "./card_deck.js";
 
 const CARD_HAND_DEFAULTS = {
 	MAX_CARD_NUM: 4,
@@ -6,6 +6,9 @@ const CARD_HAND_DEFAULTS = {
 
 class CardHand{
 	max_cards = CARD_HAND_DEFAULTS.MAX_CARD_NUM;
+	/**
+	 * @type {Array<Card>}
+	 * */
 	current_cards = new Array(CARD_HAND_DEFAULTS.MAX_CARD_NUM);
 	card_deck = new CardDeck(0,[]);
 	card_queue = [];
@@ -46,6 +49,7 @@ class CardHand{
 const SCENE_CARD_HAND_DEFAULTS = {
 	CARD_DECK: new CardDeck(0, []),
 	MAX_CARD_NUM: 0,
+	SCENE_CARD_DECK: null,
 };
 
 class SceneCardHand extends Phaser.GameObjects.Container{
@@ -58,7 +62,32 @@ class SceneCardHand extends Phaser.GameObjects.Container{
 	/**
      * @type {Array<SceneCard>}
      */
-	scene_cards = new Array();
+	card_map = new Array();
+	scene_card_deck = SCENE_CARD_HAND_DEFAULTS.SCENE_CARD_DECK;
+
+	constructor(scene, position_x, position_y, scene_card_deck, max_cards){
+		console.assert(scene instanceof Phaser.Scene, "error: scene must be a valid Phaser.Scene");
+        console.assert(typeof position_x === "number", "error: position_x must be a number");
+        console.assert(typeof position_y === "number", "error: position_y must be a number");
+        console.assert(scene_card_deck instanceof SceneCardDeck, "error: scene_card_deck must be a valid SceneCardDeck");
+        console.assert(typeof max_cards === "number", "error: max_cards must be a number");
+
+        super(scene, position_x, position_y);
+
+        this.card_hand = new CardHand(scene_card_deck.card_deck, max_cards);
+        this.scene_card_deck = scene_card_deck;
+
+        for(let i = 0; i < this.card_hand.current_cards.length; i++)
+        {
+        	let card = this.card_hand.current_cards[i];
+        	let scene_card_index = this.scene_card_deck.scene_cards.map((scene_card) => scene_card.card).indexOf(card);
+        	let scene_card = this.scene_card_deck.scene_cards[scene_card_index];
+        	scene_card.parentContainer = null;
+        //	scene.add.existing(scene_card);
+scene_card.card.value = 0;
+        	this.add(scene_card);
+        }
+	}
 }
 
-export { CardHand };
+export { CardHand, SceneCardHand };
