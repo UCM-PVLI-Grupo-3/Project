@@ -18,16 +18,16 @@ const CARD_ACTION_TYPE = {
 const CARD_DEFAULTS = {
     VALUE: 8,
     CARD_ID: 0,
-    CARD_INSTANCE_ID: 0,
+    CARD_NAME: "CARD",
     TIMELINE_TYPE: CARD_TIMELINE_TYPE.PAST,
     EMOTION_TYPE_NONE: OPTIONAL_EMOTION_TYPE.NONE(),
     CARD_EFFECT_NONE: new NullEffect(),
 };
 
 class Card {
-    value = CARD_DEFAULTS.VALUE;
     card_id = CARD_DEFAULTS.CARD_ID;
-    instance_id = CARD_DEFAULTS.CARD_ID;
+    name = CARD_DEFAULTS.CARD_NAME;
+    value = CARD_DEFAULTS.VALUE;
     timeline_type = CARD_DEFAULTS.TIMELINE_TYPE;
 
     successful_action_emotion_type = CARD_DEFAULTS.EMOTION_TYPE_NONE;
@@ -35,10 +35,10 @@ class Card {
 
     card_effects = Array(CARD_DEFAULTS.CARD_EFFECT_NONE);
 
-    constructor(value, id, inst_id, timeline_type, successful_action_emotion_type, failure_action_emotion_type, card_effects) {
-        console.assert(value >= 0, "error: value must be greater than or equal to 0");
+    constructor(id, name, value, timeline_type, successful_action_emotion_type, failure_action_emotion_type, card_effects) {
         console.assert(id >= 0, "error: invalid id, id must be greater than or equal to 0");
-        console.assert(inst_id >= 0, "error: invalid inst_id, inst_id must be greater than or equal to 0");
+        console.assert(typeof name === 'string' || name instanceof String, "error: name must be a String");
+        console.assert(value >= 0, "error: value must be greater than or equal to 0");
         console.assert(
             timeline_type in CARD_TIMELINE_TYPE,
             "error: invalid timeline_type, timeline_type must be a valid CARD_TIMELINE_TYPE enum value"
@@ -62,7 +62,7 @@ class Card {
 
         this.value = value;
         this.card_id = id;
-        this.instance_id = inst_id;
+        this.name = name;
         this.timeline_type = timeline_type;
         this.successful_action_emotion_type = successful_action_emotion_type;
         this.failure_action_emotion_type = failure_action_emotion_type;
@@ -76,24 +76,24 @@ const SCENE_CARD_DEFAULTS = {
 
 class SceneCard extends Phaser.GameObjects.Container {
     card = new Card(
-        CARD_DEFAULTS.VALUE,
         CARD_DEFAULTS.CARD_ID,
-        CARD_DEFAULTS.CARD_INSTANCE_ID,
+        CARD_DEFAULTS.CARD_NAME,
+        CARD_DEFAULTS.VALUE,
         CARD_DEFAULTS.TIMELINE_TYPE, 
         CARD_DEFAULTS.EMOTION_TYPE_NONE, CARD_DEFAULTS.EMOTION_TYPE_NONE, 
         Array(CARD_DEFAULTS.CARD_EFFECT_NONE)
     );
 
     constructor(
-        scene, position_x, position_y, name, value, id, instance_id, timeline_type, 
+        scene, position_x, position_y, id, name, value, timeline_type, 
         successful_action_emotion_type, failure_action_emotion_type, card_effects
     ) {
         super(scene, position_x, position_y);
 
         this.card = new Card(
-            value,
             id,
-            instance_id,
+            name,
+            value,
             timeline_type, 
             successful_action_emotion_type, failure_action_emotion_type, 
             card_effects

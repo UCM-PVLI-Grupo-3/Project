@@ -91,36 +91,28 @@ class BattleScene extends Phaser.Scene {
 
         //Scene CardHand Test
         let sc_card1 = new SceneCard(
-            this, 130, 0, "CARTA1", 48,
-            1,
-            CARD_DEFAULTS.CARD_INSTANCE_ID,
+            this, 130, 0, 1, "CARTA1", 48,
             CARD_TIMELINE_TYPE.FUTURE, 
             OPTIONAL_EMOTION_TYPE.NONE(),
             EMOTION_TYPE.ANGER(), 
             new Array(CARD_DEFAULTS.CARD_EFFECT_NONE)
         );
         let sc_card2 = new SceneCard(
-            this, 260, 0, "CARTA2", 48,
-            2,
-            CARD_DEFAULTS.CARD_INSTANCE_ID,
+            this, 260, 0, 2, "CARTA2", 48,
             CARD_TIMELINE_TYPE.FUTURE, 
             OPTIONAL_EMOTION_TYPE.NONE(),
             EMOTION_TYPE.ANGER(), 
             new Array(CARD_DEFAULTS.CARD_EFFECT_NONE)
         );
         let sc_card3 = new SceneCard(
-            this, 390, 0, "CARTA3", 48,
-            3,
-            CARD_DEFAULTS.CARD_INSTANCE_ID,
+            this, 390, 0, 3, "CARTA3", 48,
             CARD_TIMELINE_TYPE.FUTURE, 
             OPTIONAL_EMOTION_TYPE.NONE(),
             EMOTION_TYPE.ANGER(), 
             new Array(CARD_DEFAULTS.CARD_EFFECT_NONE)
         );
         let sc_card4 = new SceneCard(
-            this, 520, 0, "CARTA4", 48,
-            4,
-            CARD_DEFAULTS.CARD_INSTANCE_ID,
+            this, 520, 0, 4, "CARTA4", 48,
             CARD_TIMELINE_TYPE.FUTURE, 
             OPTIONAL_EMOTION_TYPE.NONE(),
             EMOTION_TYPE.ANGER(), 
