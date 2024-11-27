@@ -154,6 +154,24 @@ class SceneCard extends Phaser.GameObjects.Container {
         this.add(card_name);
         this.add(card_value);
     }
+
+    static from_existing_card(scene, position_x, position_y, card) {
+        
+        let new_scene_card = new SceneCard(
+            scene, position_x, position_y, 
+            card.card_id, 
+            card.name, 
+            card.value, 
+            card.timeline_type, 
+            card.successful_action_emotion_type,
+            card.failure_action_emotion_type, 
+            card.card_effects
+            );
+
+        new_scene_card.card = card;
+
+        return new_scene_card;
+    }
 }
 
 export { CARD_TIMELINE_TYPE,  CARD_ACTION_TYPE, CARD_DEFAULTS, Card, SceneCard };

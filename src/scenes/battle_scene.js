@@ -89,40 +89,51 @@ class BattleScene extends Phaser.Scene {
         console.log(this.scene_dice_slots.dice_slots.roll(), this.scene_dice_slots.dice_slots.get_max_roll_value());
         // this.scene_dice_slots.add_dice(new SceneDice(this, 0, 0, DICE_TYPE.D8));
 
+        let card1 = new Card(
+            1, "CARTA1", 48,
+            CARD_TIMELINE_TYPE.FUTURE, 
+            OPTIONAL_EMOTION_TYPE.NONE(),
+            EMOTION_TYPE.ANGER(), 
+            new Array(CARD_DEFAULTS.CARD_EFFECT_NONE)
+            );
+
+        let card2 = new Card(
+            2, "CARTA2", 48,
+            CARD_TIMELINE_TYPE.FUTURE, 
+            OPTIONAL_EMOTION_TYPE.NONE(),
+            EMOTION_TYPE.ANGER(), 
+            new Array(CARD_DEFAULTS.CARD_EFFECT_NONE)
+            ); 
+
+        let card3 = new Card(
+            3, "CARTA3", 48,
+            CARD_TIMELINE_TYPE.FUTURE, 
+            OPTIONAL_EMOTION_TYPE.NONE(),
+            EMOTION_TYPE.ANGER(), 
+            new Array(CARD_DEFAULTS.CARD_EFFECT_NONE)
+            ); 
+
+        let card4 = new Card(
+            4, "CARTA4", 48,
+            CARD_TIMELINE_TYPE.FUTURE, 
+            OPTIONAL_EMOTION_TYPE.NONE(),
+            EMOTION_TYPE.ANGER(), 
+            new Array(CARD_DEFAULTS.CARD_EFFECT_NONE)
+            ); 
+
         //Scene CardHand Test
-        let sc_card1 = new SceneCard(
-            this, 130, 0, 1, "CARTA1", 48,
-            CARD_TIMELINE_TYPE.FUTURE, 
-            OPTIONAL_EMOTION_TYPE.NONE(),
-            EMOTION_TYPE.ANGER(), 
-            new Array(CARD_DEFAULTS.CARD_EFFECT_NONE)
-        );
-        let sc_card2 = new SceneCard(
-            this, 260, 0, 2, "CARTA2", 48,
-            CARD_TIMELINE_TYPE.FUTURE, 
-            OPTIONAL_EMOTION_TYPE.NONE(),
-            EMOTION_TYPE.ANGER(), 
-            new Array(CARD_DEFAULTS.CARD_EFFECT_NONE)
-        );
-        let sc_card3 = new SceneCard(
-            this, 390, 0, 3, "CARTA3", 48,
-            CARD_TIMELINE_TYPE.FUTURE, 
-            OPTIONAL_EMOTION_TYPE.NONE(),
-            EMOTION_TYPE.ANGER(), 
-            new Array(CARD_DEFAULTS.CARD_EFFECT_NONE)
-        );
-        let sc_card4 = new SceneCard(
-            this, 520, 0, 4, "CARTA4", 48,
-            CARD_TIMELINE_TYPE.FUTURE, 
-            OPTIONAL_EMOTION_TYPE.NONE(),
-            EMOTION_TYPE.ANGER(), 
-            new Array(CARD_DEFAULTS.CARD_EFFECT_NONE)
-        );
+        let sc_card1 = SceneCard.from_existing_card(this, 130, 0, card1);
+        let sc_card2 = SceneCard.from_existing_card(this, 260, 0, card2);
+        let sc_card3 = SceneCard.from_existing_card(this, 390, 0, card3);
+        let sc_card4 = SceneCard.from_existing_card(this, 520, 0, card4);
+      
         this.add.existing(sc_card1);
         this.add.existing(sc_card2);
         this.add.existing(sc_card3);
         this.add.existing(sc_card4);
-console.log([sc_card1, sc_card2, sc_card3, sc_card4]);
+
+        console.log([sc_card1, sc_card2, sc_card3, sc_card4]);
+
         let scene_card_deck = new SceneCardDeck(this, 0, 200, 3, 3, 9, [sc_card1, sc_card2, sc_card3, sc_card4]);
 
         this.add.existing(scene_card_deck);
