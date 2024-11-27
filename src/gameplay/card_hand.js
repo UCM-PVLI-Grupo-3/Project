@@ -88,6 +88,20 @@ scene_card.card.value = 0;
         	this.add(scene_card);
         }
 	}
+
+	card_clicked(pointer, game_object) {
+        
+        if (game_object instanceof SceneCard)
+        {
+            this.card_hand.use_hand_card(game_object);
+            this.update_hand_SceneCards();
+        }
+
+	}
+
+	update_hand_SceneCards(){
+		
+	}
 }
 
 export { CardHand, SceneCardHand };
