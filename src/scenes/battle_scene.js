@@ -90,7 +90,7 @@ class BattleScene extends Phaser.Scene {
         // this.scene_dice_slots.add_dice(new SceneDice(this, 0, 0, DICE_TYPE.D8));
 
         let card1 = new Card(
-            1, "CARTA1", 48,
+            "CARTA1", 48,
             CARD_TIMELINE_TYPE.FUTURE, 
             OPTIONAL_EMOTION_TYPE.NONE(),
             EMOTION_TYPE.ANGER(), 
@@ -98,7 +98,7 @@ class BattleScene extends Phaser.Scene {
             );
 
         let card2 = new Card(
-            2, "CARTA2", 48,
+            "CARTA2", 48,
             CARD_TIMELINE_TYPE.FUTURE, 
             OPTIONAL_EMOTION_TYPE.NONE(),
             EMOTION_TYPE.ANGER(), 
@@ -106,7 +106,7 @@ class BattleScene extends Phaser.Scene {
             ); 
 
         let card3 = new Card(
-            3, "CARTA3", 48,
+            "CARTA3", 48,
             CARD_TIMELINE_TYPE.FUTURE, 
             OPTIONAL_EMOTION_TYPE.NONE(),
             EMOTION_TYPE.ANGER(), 
@@ -114,7 +114,7 @@ class BattleScene extends Phaser.Scene {
             ); 
 
         let card4 = new Card(
-            4, "CARTA4", 48,
+            "CARTA4", 48,
             CARD_TIMELINE_TYPE.FUTURE, 
             OPTIONAL_EMOTION_TYPE.NONE(),
             EMOTION_TYPE.ANGER(), 
@@ -132,15 +132,19 @@ class BattleScene extends Phaser.Scene {
         this.add.existing(sc_card3);
         this.add.existing(sc_card4);
 
-        console.log([sc_card1.id, sc_card2.id, sc_card3.id, sc_card4.id]);
+        console.log([sc_card1, sc_card2, sc_card3, sc_card4]);
 
         let scene_card_deck = new SceneCardDeck(this, 0, 200, 3, 3, 9, [sc_card1, sc_card2, sc_card3, sc_card4]);
 
         this.add.existing(scene_card_deck);
 
-        let scene_card_hand = new SceneCardHand(this, 0, 300, scene_card_deck, 2);
+        let scene_card_hand = new SceneCardHand(this, 100, 100, scene_card_deck, 2);
 
-        console.log(scene_card_hand.visible_scene_cards.map((sc_c) => sc_c.id));
+        scene_card_hand.list.forEach((g_o) => {
+            if(g_o instanceof SceneCard){
+                console.log(g_o.card.card_id);
+            }
+        });
 
         this.add.existing(scene_card_hand);
     }

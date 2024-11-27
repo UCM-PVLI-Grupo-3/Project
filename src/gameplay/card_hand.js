@@ -78,7 +78,7 @@ class SceneCardHand extends Phaser.GameObjects.Container{
         {
         	let card = this.card_hand.current_cards[i];
 
-        	let scene_card = SceneCard.from_existing_card(scene, position_x, position_y, card);
+        	let scene_card = SceneCard.from_existing_card(scene, i*180, position_y, card);
         	this.add(scene_card);
         }
 	}

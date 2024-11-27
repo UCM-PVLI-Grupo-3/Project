@@ -25,6 +25,8 @@ const CARD_DEFAULTS = {
 };
 
 class Card {
+    static current_instance_id = 0;
+
     card_id = CARD_DEFAULTS.CARD_ID;
     name = CARD_DEFAULTS.CARD_NAME;
     value = CARD_DEFAULTS.VALUE;
@@ -35,8 +37,7 @@ class Card {
 
     card_effects = Array(CARD_DEFAULTS.CARD_EFFECT_NONE);
 
-    constructor(id, name, value, timeline_type, successful_action_emotion_type, failure_action_emotion_type, card_effects) {
-        console.assert(id >= 0, "error: invalid id, id must be greater than or equal to 0");
+    constructor(name, value, timeline_type, successful_action_emotion_type, failure_action_emotion_type, card_effects) {
         console.assert(typeof name === 'string' || name instanceof String, "error: name must be a String");
         console.assert(value >= 0, "error: value must be greater than or equal to 0");
         console.assert(
@@ -60,9 +61,11 @@ class Card {
             console.assert(card_effect instanceof CardEffect, "error: card_effect must be an instance of CardEffect");
         });
 
-        this.value = value;
-        this.card_id = id;
+        this.card_id = Card.current_instance_id;
+        Card.current_instance_id++;
+
         this.name = name;
+        this.value = value;
         this.timeline_type = timeline_type;
         this.successful_action_emotion_type = successful_action_emotion_type;
         this.failure_action_emotion_type = failure_action_emotion_type;
@@ -76,24 +79,20 @@ const SCENE_CARD_DEFAULTS = {
 
 class SceneCard extends Phaser.GameObjects.Container {
     card = new Card(
-        CARD_DEFAULTS.CARD_ID,
         CARD_DEFAULTS.CARD_NAME,
         CARD_DEFAULTS.VALUE,
         CARD_DEFAULTS.TIMELINE_TYPE, 
         CARD_DEFAULTS.EMOTION_TYPE_NONE, CARD_DEFAULTS.EMOTION_TYPE_NONE, 
         Array(CARD_DEFAULTS.CARD_EFFECT_NONE)
     );
-static sc_id = 0;
-id = 0;
+
     constructor(
-        scene, position_x, position_y, id, name, value, timeline_type, 
+        scene, position_x, position_y, name, value, timeline_type, 
         successful_action_emotion_type, failure_action_emotion_type, card_effects
     ) {
         super(scene, position_x, position_y);
-this.id = SceneCard.sc_id;
-SceneCard.sc_id+=1;
+
         this.card = new Card(
-            id,
             name,
             value,
             timeline_type, 
@@ -161,7 +160,6 @@ SceneCard.sc_id+=1;
         
         let new_scene_card = new SceneCard(
             scene, position_x, position_y, 
-            card.card_id, 
             card.name, 
             card.value, 
             card.timeline_type, 
