@@ -1,4 +1,5 @@
 import { CardDeck, SceneCardDeck } from "./card_deck.js";
+import { Card, SceneCard } from "./card.js";
 
 const CARD_HAND_DEFAULTS = {
 	MAX_CARD_NUM: 4,
@@ -59,10 +60,6 @@ class SceneCardHand extends Phaser.GameObjects.Container{
 	 * @type {Phaser.GameObjects.Image}
 	 * */
 	card_hand_window;
-	/**
-     * @type {Array<SceneCard>}
-     */
-	card_map = new Array();
 	scene_card_deck = SCENE_CARD_HAND_DEFAULTS.SCENE_CARD_DECK;
 
 	constructor(scene, position_x, position_y, scene_card_deck, max_cards){
@@ -80,11 +77,8 @@ class SceneCardHand extends Phaser.GameObjects.Container{
         for(let i = 0; i < this.card_hand.current_cards.length; i++)
         {
         	let card = this.card_hand.current_cards[i];
-        	let scene_card_index = this.scene_card_deck.scene_cards.map((scene_card) => scene_card.card).indexOf(card);
-        	let scene_card = this.scene_card_deck.scene_cards[scene_card_index];
-        	scene_card.parentContainer = null;
-        //	scene.add.existing(scene_card);
-scene_card.card.value = 0;
+
+        	let scene_card = SceneCard.from_existing_card(scene, position_x, position_y, card);
         	this.add(scene_card);
         }
 	}

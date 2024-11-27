@@ -132,13 +132,15 @@ class BattleScene extends Phaser.Scene {
         this.add.existing(sc_card3);
         this.add.existing(sc_card4);
 
-        console.log([sc_card1, sc_card2, sc_card3, sc_card4]);
+        console.log([sc_card1.id, sc_card2.id, sc_card3.id, sc_card4.id]);
 
         let scene_card_deck = new SceneCardDeck(this, 0, 200, 3, 3, 9, [sc_card1, sc_card2, sc_card3, sc_card4]);
 
         this.add.existing(scene_card_deck);
 
         let scene_card_hand = new SceneCardHand(this, 0, 300, scene_card_deck, 2);
+
+        console.log(scene_card_hand.visible_scene_cards.map((sc_c) => sc_c.id));
 
         this.add.existing(scene_card_hand);
     }

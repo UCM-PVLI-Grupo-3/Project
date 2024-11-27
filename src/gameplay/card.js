@@ -83,13 +83,15 @@ class SceneCard extends Phaser.GameObjects.Container {
         CARD_DEFAULTS.EMOTION_TYPE_NONE, CARD_DEFAULTS.EMOTION_TYPE_NONE, 
         Array(CARD_DEFAULTS.CARD_EFFECT_NONE)
     );
-
+static sc_id = 0;
+id = 0;
     constructor(
         scene, position_x, position_y, id, name, value, timeline_type, 
         successful_action_emotion_type, failure_action_emotion_type, card_effects
     ) {
         super(scene, position_x, position_y);
-
+this.id = SceneCard.sc_id;
+SceneCard.sc_id+=1;
         this.card = new Card(
             id,
             name,
