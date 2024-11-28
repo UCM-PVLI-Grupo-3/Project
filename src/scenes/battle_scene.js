@@ -35,6 +35,7 @@ class BattleScene extends Phaser.Scene {
         this.load.image(KEYS_ASSETS_SPRITES.DICE_SLOT, "assets/dice/dice_slot.png");
         this.load.image(KEYS_ASSETS_SPRITES.PAST_CARD, "assets/card/past_card_template.png");
         this.load.image(KEYS_ASSETS_SPRITES.FUTURE_CARD, "assets/card/future_card_template.png");
+        this.load.image(KEYS_ASSETS_SPRITES.CARD_HAND_PANEL, "assets/card/card_hand_panel.png");
 
         this.load.image(KEYS_ASSETS_SPRITES.DICE_TYPE_D4, "assets/dice/dice_d4.png");
         this.load.image(KEYS_ASSETS_SPRITES.DICE_TYPE_D6, "assets/dice/dice_d6.png");
@@ -138,7 +139,7 @@ class BattleScene extends Phaser.Scene {
 
         this.add.existing(scene_card_deck);
 
-        let scene_card_hand = new SceneCardHand(this, 100, 100, scene_card_deck, 2);
+        let scene_card_hand = new SceneCardHand(this, 400, 200, scene_card_deck, 2);
 
         scene_card_hand.list.forEach((g_o) => {
             if(g_o instanceof SceneCard){

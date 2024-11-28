@@ -9,6 +9,7 @@ const KEYS_ASSETS_SPRITES = {
     DICE_SLOT: "DICE_SLOT",
     PAST_CARD: "PAST_CARD",
     FUTURE_CARD: "FUTURE_CARD",
+    CARD_HAND_PANEL: "CARD_HAND_PANEL",
 
     DICE_TYPE_D4: "DICE_TYPE_D4",
     DICE_TYPE_D6: "DICE_TYPE_D6",
@@ -40,6 +41,10 @@ const CONSTANTS_SPRITES_MEASURES = {
         WIDTH: 154,
         HEIGHT: 153,
         LINE_BORDER: 10
+    },
+    SCENE_CARD: {
+        WIDTH: 344,
+        HEIGHT: 460,
     },
 };
 

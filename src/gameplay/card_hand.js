@@ -1,3 +1,4 @@
+import { KEYS_ASSETS_SPRITES, CONSTANTS_SPRITES_MEASURES } from "../common/common.js";
 import { CardDeck, SceneCardDeck } from "./card_deck.js";
 import { Card, SceneCard } from "./card.js";
 
@@ -51,6 +52,10 @@ const SCENE_CARD_HAND_DEFAULTS = {
 	CARD_DECK: new CardDeck(0, []),
 	MAX_CARD_NUM: 0,
 	SCENE_CARD_DECK: null,
+	SCENE_CARD_SCALE: 0.75,
+	SCENE_CARD_FIELD_WIDTH: 
+		CONSTANTS_SPRITES_MEASURES.SCENE_CARD.WIDTH * 1.15 
+		* SCENE_CARD_HAND_DEFAULTS.SCENE_CARD_SCALE,
 };
 
 class SceneCardHand extends Phaser.GameObjects.Container{
@@ -59,7 +64,7 @@ class SceneCardHand extends Phaser.GameObjects.Container{
 	/**
 	 * @type {Phaser.GameObjects.Image}
 	 * */
-	card_hand_window;
+	card_hand_panel;
 	scene_card_deck = SCENE_CARD_HAND_DEFAULTS.SCENE_CARD_DECK;
 
 	constructor(scene, position_x, position_y, scene_card_deck, max_cards){
@@ -74,11 +79,26 @@ class SceneCardHand extends Phaser.GameObjects.Container{
         this.card_hand = new CardHand(scene_card_deck.card_deck, max_cards);
         this.scene_card_deck = scene_card_deck;
 
+        this.card_hand_panel = scene.add.image(0, 0, KEYS_ASSETS_SPRITES.CARD_HAND_PANEL);
+        this.card_hand_panel.setDisplaySize(
+        	SCENE_CARD_HAND_DEFAULTS.SCENE_CARD_FIELD_WIDTH * max_cards,
+        	(CONSTANTS_SPRITES_MEASURES.SCENE_CARD.HEIGHT * 1.15) * SCENE_CARD_HAND_DEFAULTS.SCENE_CARD_SCALE
+        	);
+        //this.card_hand_panel.setScale(4);
+        this.add(this.card_hand_panel);
+
         for(let i = 0; i < this.card_hand.current_cards.length; i++)
         {
         	let card = this.card_hand.current_cards[i];
 
-        	let scene_card = SceneCard.from_existing_card(scene, i*180, position_y, card);
+        	let scene_card = SceneCard.from_existing_card(
+        		scene, 
+        		-(SCENE_CARD_HAND_DEFAULTS.SCENE_CARD_FIELD_WIDTH * max_cards)/2/* + i*SCENE_CARD_HAND_DEFAULTS.SCENE_CARD_FIELD_WIDTH*/, 
+        		0, 
+        		card);
+
+        	scene_card.setScale(SCENE_CARD_HAND_DEFAULTS.SCENE_CARD_SCALE);
+
         	this.add(scene_card);
         }
 	}
