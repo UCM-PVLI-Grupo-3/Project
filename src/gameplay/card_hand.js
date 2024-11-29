@@ -53,9 +53,8 @@ const SCENE_CARD_HAND_DEFAULTS = {
 	MAX_CARD_NUM: 0,
 	SCENE_CARD_DECK: null,
 	SCENE_CARD_SCALE: 0.75,
-	SCENE_CARD_FIELD_WIDTH: 
-		CONSTANTS_SPRITES_MEASURES.SCENE_CARD.WIDTH * 1.15 
-		* SCENE_CARD_HAND_DEFAULTS.SCENE_CARD_SCALE,
+	SCENE_CARD_MARGIN_FACTOR: 1.15,
+	SCENE_CARD_SEPARATION: CONSTANTS_SPRITES_MEASURES.SCENE_CARD.WIDTH / 2.2,
 };
 
 class SceneCardHand extends Phaser.GameObjects.Container{
@@ -81,11 +80,14 @@ class SceneCardHand extends Phaser.GameObjects.Container{
 
         this.card_hand_panel = scene.add.image(0, 0, KEYS_ASSETS_SPRITES.CARD_HAND_PANEL);
         this.card_hand_panel.setDisplaySize(
-        	SCENE_CARD_HAND_DEFAULTS.SCENE_CARD_FIELD_WIDTH * max_cards,
-        	(CONSTANTS_SPRITES_MEASURES.SCENE_CARD.HEIGHT * 1.15) * SCENE_CARD_HAND_DEFAULTS.SCENE_CARD_SCALE
+        	SCENE_CARD_HAND_DEFAULTS.SCENE_CARD_MARGIN_FACTOR * CONSTANTS_SPRITES_MEASURES.SCENE_CARD.WIDTH 
+        	* SCENE_CARD_HAND_DEFAULTS.SCENE_CARD_SCALE * max_cards,
+        	SCENE_CARD_HAND_DEFAULTS.SCENE_CARD_MARGIN_FACTOR * CONSTANTS_SPRITES_MEASURES.SCENE_CARD.HEIGHT 
+        	* SCENE_CARD_HAND_DEFAULTS.SCENE_CARD_SCALE
         	);
-        //this.card_hand_panel.setScale(4);
-        this.add(this.card_hand_panel);
+        this.card_hand_panel.setAlpha(0.6);
+        
+        //this.add(this.card_hand_panel);
 
         for(let i = 0; i < this.card_hand.current_cards.length; i++)
         {
@@ -93,7 +95,7 @@ class SceneCardHand extends Phaser.GameObjects.Container{
 
         	let scene_card = SceneCard.from_existing_card(
         		scene, 
-        		-(SCENE_CARD_HAND_DEFAULTS.SCENE_CARD_FIELD_WIDTH * max_cards)/2/* + i*SCENE_CARD_HAND_DEFAULTS.SCENE_CARD_FIELD_WIDTH*/, 
+        		i * SCENE_CARD_HAND_DEFAULTS.SCENE_CARD_SEPARATION, 
         		0, 
         		card);
 

@@ -139,7 +139,7 @@ class BattleScene extends Phaser.Scene {
 
         this.add.existing(scene_card_deck);
 
-        let scene_card_hand = new SceneCardHand(this, 400, 200, scene_card_deck, 2);
+        let scene_card_hand = new SceneCardHand(this, 500, 200, scene_card_deck, 4);
 
         scene_card_hand.list.forEach((g_o) => {
             if(g_o instanceof SceneCard){
