@@ -139,7 +139,8 @@ class BattleScene extends Phaser.Scene {
         console.log([sc_card1, sc_card2, sc_card3, sc_card4]);
 
         let scene_card_deck = new SceneCardDeck(this, 0, 200, 3, 3, 9, [sc_card1, sc_card2, sc_card3, sc_card4]);
-
+        // TEMP
+        scene_card_deck.setVisible(0);
         this.add.existing(scene_card_deck);
 
         let scene_card_hand = new SceneCardHand(this, 500, 200, scene_card_deck, 4);

@@ -88,19 +88,21 @@ class SceneCardHand extends Phaser.GameObjects.Container{
         this.card_hand_panel.setAlpha(0.6);
         
         //this.add(this.card_hand_panel);
-
-        for(let i = 0; i < this.card_hand.current_cards.length; i++)
-        {
+		
+        for(let i = 0; i < this.card_hand.current_cards.length; i++) {
+			const position_x = this.card_hand_panel.displayWidth / 2
+				+ (i - this.card_hand.current_cards.length / 2) * CONSTANTS_SPRITES_MEASURES.SCENE_CARD.WIDTH;
         	let card = this.card_hand.current_cards[i];
 
         	let scene_card = SceneCard.from_existing_card(
         		scene, 
-        		i * SCENE_CARD_HAND_DEFAULTS.SCENE_CARD_SEPARATION, 
+        		position_x, 
         		0, 
-        		card);
-
+        		card
+			);
+			// scene_card.setOrigin(0, 0);
+			console.log(scene_card.x, scene_card.y);
         	scene_card.setScale(SCENE_CARD_HAND_DEFAULTS.SCENE_CARD_SCALE);
-
         	this.add(scene_card);
         }
 	}
