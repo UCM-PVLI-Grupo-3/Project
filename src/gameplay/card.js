@@ -86,6 +86,15 @@ class SceneCard extends Phaser.GameObjects.Container {
         Array(CARD_DEFAULTS.CARD_EFFECT_NONE)
     );
 
+    /**
+     * @type {Phaser.GameObjects.Image}
+     * */
+    _selection_frame;
+    /**
+     * @type {bool}
+     * */
+    is_selected;
+
     constructor(
         scene, position_x, position_y, name, value, timeline_type, 
         successful_action_emotion_type, failure_action_emotion_type, card_effects
@@ -108,6 +117,15 @@ class SceneCard extends Phaser.GameObjects.Container {
         const TEXT_Y = position_y + 53;
         const VALUE_X = position_x - 93;
         const VALUE_Y = position_y - 170;
+
+        this._selection_frame = scene.add.image(position_x, position_y, KEYS_ASSETS_SPRITES.CARD_SELECTION_FRAME)
+        .setAlpha(0.5)
+        .setTint(0xF5E90F)
+        .setVisible(false);
+
+        this.is_selected = false;
+
+        this.add(this._selection_frame);
 
         let card_img;
         if(timeline_type === CARD_TIMELINE_TYPE.PAST)
@@ -171,6 +189,13 @@ class SceneCard extends Phaser.GameObjects.Container {
         new_scene_card.card = card;
 
         return new_scene_card;
+    }
+
+    setSeletionState(value) {
+        console.assert(typeof value == "boolean", "error: value must be boolean in SceneCard.setSeletionState(value)");
+        
+        this.is_selected = value;
+        this._selection_frame.setVisible(value);
     }
 }
 
