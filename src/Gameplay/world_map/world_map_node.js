@@ -7,14 +7,19 @@ class WorldMapNode {
     * @param {string} texture - The texture of the node 
     */
 
-    constructor(scene, x, y, texture) {
+    constructor(scene, x, y, texture, selectedTexture) {
         this.scene = scene;
         this.x = x;
         this.y = y;
         this.texture = texture;
+        this.selectedTexture = selectedTexture;
         this.neighbor_nodes = [];
-        this.is_unlocked = false;
-    }
+        this.is_locked = false;
+        this.draw();
+        this.image.setInteractive();
+        this.image.on('pointerdown', this.node_click, this);
+    };
+
 
     /**
      * @param {WorldMapNode} node - The node to add as a neighbor
@@ -31,6 +36,24 @@ class WorldMapNode {
     }
 
     unlock_node() {
-        this.is_unlocked = true;
+        this.is_locked = false;
+    }
+
+    draw() {
+        this.image = this.scene.add.image(this.x, this.y, this.texture);
+    }
+
+    node_click() {
+        this.scene.select_node(this);
+    }
+
+    select(){
+        this.image.setTexture(this.selectedTexture);
+    }
+
+    deselect() {
+        this.image.setTexture(this.texture);
     }
 }
+
+export { WorldMapNode };

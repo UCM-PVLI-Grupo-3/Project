@@ -1,6 +1,7 @@
 import { Dice, DICE_TYPE } from "./gameplay/dice.js";
 import { DiceSlots } from "./gameplay/dice_slots.js";
 import { BattleScene } from "./scenes/battle_scene.js";
+import {WorldMapScene} from "./scenes/world_map_scene.js";
 import { CARD_ACTION_TYPE, CARD_TIMELINE_TYPE, Card } from "./gameplay/card.js";
 import { EMOTION_TYPE, OPTIONAL_EMOTION_TYPE } from "./gameplay/emotions.js";
 import { SceneEmotionStack } from "./gameplay/emotion_stack.js";
@@ -20,7 +21,7 @@ const phaser_config = {
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
   backgroundColor: "#AF6235",
-  scene: [BattleScene],
+  scene: [WorldMapScene, BattleScene],
 };
 
 
