@@ -172,6 +172,12 @@ class SceneCard extends Phaser.GameObjects.Container {
 
         this.add(card_name);
         this.add(card_value);
+
+        this.setInteractive({
+            hitArea: new Phaser.Geom.Rectangle(0, 0, card_img.width, card_img.height),
+            hitAreaCallback: Phaser.Geom.Rectangle.Contains 
+        })
+        .on(Phaser.Input.Events.POINTER_DOWN, () => { this.setSeletionState(!this.is_selected); });
     }
 
     static from_existing_card(scene, position_x, position_y, card) {
