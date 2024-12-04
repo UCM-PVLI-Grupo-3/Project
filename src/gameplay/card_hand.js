@@ -13,6 +13,7 @@ class CardHand{
 	 * @type {Array<Card>}
 	 * */
 	current_cards = new Array(CARD_HAND_DEFAULTS.MAX_CARD_NUM);
+	current_cards_count = 0;
 	card_deck = new CardDeck(0,[]);
 	card_queue = [];
 
@@ -23,13 +24,12 @@ class CardHand{
 		this.card_deck = card_deck;
 		this.max_cards = max_cards;
 		this.current_cards = new Array(max_cards);
+
+		let in_use_cards = card_deck.cards.slice(0, max_cards);
+		this.current_cards = [...in_use_cards];
+		this.current_cards_count = in_use_cards.length;
 		
-		for(let i = 0; i < this.current_cards.length; i++){
-			this.current_cards[i] = card_deck.cards[i];
-			this.current_cards[i].instance_id = i;
-		}
-		
-		for(; i < this.card_deck.card_count(); i++){
+		for(let i = 0; i < this.card_deck.card_count(); i++){
 			this.card_queue.push(card_deck.cards[i]);
 		}
 	}
@@ -86,28 +86,26 @@ class SceneCardHand extends Phaser.GameObjects.Container{
         	* SCENE_CARD_HAND_DEFAULTS.SCENE_CARD_SCALE
         	);
         this.card_hand_panel.setAlpha(0.6);
+        this.add(this.card_hand_panel);
         
-        //this.add(this.card_hand_panel);
-		
 		const card_positions = distribute_uniform(
-			this.card_hand_panel.displayWidth, this.card_hand_panel.displayHeight,
-			CONSTANTS_SPRITES_MEASURES.SCENE_CARD.WIDTH * SCENE_CARD_HAND_DEFAULTS.SCENE_CARD_SCALE,
-			CONSTANTS_SPRITES_MEASURES.SCENE_CARD.HEIGHT * SCENE_CARD_HAND_DEFAULTS.SCENE_CARD_SCALE,
-			this.card_hand.current_cards.length, 1,
-			SCENE_CARD_HAND_DEFAULTS.SCENE_CARD_SEPARATION, 0
+			this.card_hand_panel.width, this.card_hand_panel.height,
+			CONSTANTS_SPRITES_MEASURES.SCENE_CARD.WIDTH, CONSTANTS_SPRITES_MEASURES.SCENE_CARD.HEIGHT,
+			this.card_hand.current_cards_count / 2, 2,
+			0, 0
 		);
-        for(let i = 0; i < this.card_hand.current_cards.length; i++) {
+        for(let i = 0; i < card_positions.length; i++) {
         	let card = this.card_hand.current_cards[i];
-
         	let scene_card = SceneCard.from_existing_card(
         		scene, 
-        		card_positions[i].x, 
-        		card_positions[i].y, 
+        		card_positions[i].x + CONSTANTS_SPRITES_MEASURES.SCENE_CARD.WIDTH * -1.5 / 2, 
+        		card_positions[i].y + CONSTANTS_SPRITES_MEASURES.SCENE_CARD.HEIGHT * -1 / 2, 
         		card
 			);
-			// scene_card.setOrigin(0, 0);
+			console.log(card_positions[i].x, card_positions[i].y);
 			console.log(scene_card.x, scene_card.y);
         	scene_card.setScale(SCENE_CARD_HAND_DEFAULTS.SCENE_CARD_SCALE);
+			//this.scene.add.existing(scene_card);
         	this.add(scene_card);
         }
 	}
