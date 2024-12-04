@@ -6,6 +6,8 @@ import { SceneEmotionStack } from "../gameplay/emotion_stack.js";
 import { EMOTION_TYPE, OPTIONAL_EMOTION_TYPE } from "../gameplay/emotions.js";
 import { CardHand, SceneCardHand } from "../gameplay/card_hand.js";
 import { CardDeck, SceneCardDeck } from "../gameplay/card_deck.js";
+import { ActionSelectorRadioGroup } from "../gameplay/player_action_selection/action_selector_radio_group.js";
+import { CardHandActionFeature } from "../gameplay/player_action_selection/action_features/card_hand_action_feature_sel.js";
 
 const BATTLE_SCENE_DEFAULT_SICE_SLOTS = 3;
 
@@ -92,7 +94,7 @@ class BattleScene extends Phaser.Scene {
         // this.scene_dice_slots.add_dice(new SceneDice(this, 0, 0, DICE_TYPE.D8));
 
         let card1 = new Card(
-            "CARTA1", 48,
+            "CARTA1", 8,
             CARD_TIMELINE_TYPE.FUTURE, 
             OPTIONAL_EMOTION_TYPE.NONE(),
             EMOTION_TYPE.ANGER(), 
@@ -118,7 +120,7 @@ class BattleScene extends Phaser.Scene {
         let card4 = new Card(
             "CARTA4", 48,
             CARD_TIMELINE_TYPE.FUTURE, 
-            OPTIONAL_EMOTION_TYPE.NONE(),
+            EMOTION_TYPE.CALM(),
             EMOTION_TYPE.ANGER(), 
             new Array(CARD_DEFAULTS.CARD_EFFECT_NONE)
             ); 
@@ -137,21 +139,6 @@ class BattleScene extends Phaser.Scene {
         this.add.existing(sc_card4);
 
         console.log([sc_card1, sc_card2, sc_card3, sc_card4]);
-
-        let scene_card_deck = new SceneCardDeck(this, 0, 200, 3, 3, 9, [sc_card1, sc_card2, sc_card3, sc_card4]);
-        // TEMP
-        scene_card_deck.setVisible(0);
-        this.add.existing(scene_card_deck);
-
-        let scene_card_hand = new SceneCardHand(this, 500, 200, scene_card_deck, 4);
-
-        scene_card_hand.list.forEach((g_o) => {
-            if(g_o instanceof SceneCard){
-                console.log(g_o.card.card_id);
-            }
-        });
-
-        this.add.existing(scene_card_hand);
     }
 
     update(time_milliseconds, delta_time_milliseconds) {
