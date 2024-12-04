@@ -12,4 +12,4 @@ class DealDamageEffect extends CardEffect {
     }
 }
 
-export { DealDamage };
+export { DealDamageEffect };

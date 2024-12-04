@@ -1,6 +1,7 @@
 import { KEYS_ASSETS_SPRITES, CONSTANTS_SPRITES_MEASURES } from "../common/common.js";
 import { CardDeck, SceneCardDeck } from "./card_deck.js";
 import { Card, SceneCard } from "./card.js";
+import { distribute_uniform } from "../common/layouts.js";
 
 const CARD_HAND_DEFAULTS = {
 	MAX_CARD_NUM: 4,
@@ -89,15 +90,20 @@ class SceneCardHand extends Phaser.GameObjects.Container{
         
         //this.add(this.card_hand_panel);
 		
+		const card_positions = distribute_uniform(
+			this.card_hand_panel.displayWidth, this.card_hand_panel.displayHeight,
+			CONSTANTS_SPRITES_MEASURES.SCENE_CARD.WIDTH * SCENE_CARD_HAND_DEFAULTS.SCENE_CARD_SCALE,
+			CONSTANTS_SPRITES_MEASURES.SCENE_CARD.HEIGHT * SCENE_CARD_HAND_DEFAULTS.SCENE_CARD_SCALE,
+			this.card_hand.current_cards.length, 1,
+			SCENE_CARD_HAND_DEFAULTS.SCENE_CARD_SEPARATION, 0
+		);
         for(let i = 0; i < this.card_hand.current_cards.length; i++) {
-			const position_x = this.card_hand_panel.displayWidth / 2
-				+ (i - this.card_hand.current_cards.length / 2) * CONSTANTS_SPRITES_MEASURES.SCENE_CARD.WIDTH;
         	let card = this.card_hand.current_cards[i];
 
         	let scene_card = SceneCard.from_existing_card(
         		scene, 
-        		position_x, 
-        		0, 
+        		card_positions[i].x, 
+        		card_positions[i].y, 
         		card
 			);
 			// scene_card.setOrigin(0, 0);

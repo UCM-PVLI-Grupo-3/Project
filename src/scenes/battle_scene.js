@@ -5,7 +5,8 @@ import { CARD_TIMELINE_TYPE, SceneCard, Card, CARD_DEFAULTS, CARD_ACTION_TYPE} f
 import { SceneEmotionStack } from "../gameplay/emotion_stack.js";
 import { EMOTION_TYPE, OPTIONAL_EMOTION_TYPE } from "../gameplay/emotions.js";
 import { CardHand, SceneCardHand } from "../gameplay/card_hand.js";
-import { CardDeck, SceneCardDeck } from "../gameplay/card_deck.js";
+import { CardDeck, GAMEPLAY_CARDS, SceneCardDeck } from "../gameplay/card_deck.js";
+import { Player } from "../gameplay/player.js";
 
 const BATTLE_SCENE_DEFAULT_SICE_SLOTS = 3;
 
@@ -18,11 +19,16 @@ class BattleScene extends Phaser.Scene {
      * @type {SceneEmotionStack}
      */
     scene_emotion_stack;
+    /**
+     * @type {Player}
+     */
+    player;
 
     constructor() {
         super({ key: KEYS_SCENES.BATTLE });
         this.scene_dice_slots = null;
         this.scene_emotion_stack = null;
+        this.player = null;
     }
 
     init() {
@@ -69,89 +75,20 @@ class BattleScene extends Phaser.Scene {
             new SceneDice(this, 0, 0, DICE_TYPE.D4)
         ]));
 
-       /* this.add.existing(new SceneCard(
-            this,
-            400,
-            200,
-            "CARTA",
-                48,
-                CARD_DEFAULTS.CARD_ID,
-                CARD_DEFAULTS.CARD_INSTANCE_ID,
-                CARD_TIMELINE_TYPE.FUTURE, 
-            OPTIONAL_EMOTION_TYPE.NONE(),
-            EMOTION_TYPE.ANGER(), 
-            new Array(CARD_DEFAULTS.CARD_EFFECT_NONE)
-        ));
-        */
-        let added0 = this.scene_dice_slots.add_dice(new SceneDice(this, 0, 0, DICE_TYPE.D4));
-        let added1 = this.scene_dice_slots.add_dice(new SceneDice(this, 0, 0, DICE_TYPE.D4));
-        let added2 = this.scene_dice_slots.add_dice(new SceneDice(this, 0, 0, DICE_TYPE.D4));
-        this.scene_dice_slots.remove_dice(added0).destroy();
-        this.scene_dice_slots.remove_dice(added1).destroy();
-        console.log(this.scene_dice_slots.dice_slots.roll(), this.scene_dice_slots.dice_slots.get_max_roll_value());
-        // this.scene_dice_slots.add_dice(new SceneDice(this, 0, 0, DICE_TYPE.D8));
+        const initial_cards_count = 6;
+        let initial_cards = [...GAMEPLAY_CARDS].sort(() => 0.5 - Math.random()).slice(0, initial_cards_count);
+        console.assert(initial_cards instanceof Array, "error: initial_cards must be an array");
+        console.assert(initial_cards.length === initial_cards_count, "error: initial_cards.length !== initial_cards_count");
 
-        let card1 = new Card(
-            "CARTA1", 48,
-            CARD_TIMELINE_TYPE.FUTURE, 
-            OPTIONAL_EMOTION_TYPE.NONE(),
-            EMOTION_TYPE.ANGER(), 
-            new Array(CARD_DEFAULTS.CARD_EFFECT_NONE)
-            );
+        const screen_width = this.renderer.width;
+        const screen_height = this.renderer.height;
+        console.log(initial_cards);
 
-        let card2 = new Card(
-            "CARTA2", 48,
-            CARD_TIMELINE_TYPE.FUTURE, 
-            OPTIONAL_EMOTION_TYPE.NONE(),
-            EMOTION_TYPE.ANGER(), 
-            new Array(CARD_DEFAULTS.CARD_EFFECT_NONE)
-            ); 
+        // let card_deck = new CardDeck(30, initial_cards);
+        // this.player = new Player(
+        //     card_deck,
+        //     new SceneCardHand(this, screen_width / 2, screen_height / 2, null, )
 
-        let card3 = new Card(
-            "CARTA3", 48,
-            CARD_TIMELINE_TYPE.FUTURE, 
-            OPTIONAL_EMOTION_TYPE.NONE(),
-            EMOTION_TYPE.ANGER(), 
-            new Array(CARD_DEFAULTS.CARD_EFFECT_NONE)
-            ); 
-
-        let card4 = new Card(
-            "CARTA4", 48,
-            CARD_TIMELINE_TYPE.FUTURE, 
-            OPTIONAL_EMOTION_TYPE.NONE(),
-            EMOTION_TYPE.ANGER(), 
-            new Array(CARD_DEFAULTS.CARD_EFFECT_NONE)
-            ); 
-
-        //Scene CardHand Test
-        let sc_card1 = SceneCard.from_existing_card(this, 130, 0, card1);
-        let sc_card2 = SceneCard.from_existing_card(this, 260, 0, card2);
-        let sc_card3 = SceneCard.from_existing_card(this, 390, 0, card3);
-        let sc_card4 = SceneCard.from_existing_card(this, 520, 0, card4);
-      
-        sc_card1.setSeletionState(true);
-        
-        this.add.existing(sc_card1);
-        this.add.existing(sc_card2);
-        this.add.existing(sc_card3);
-        this.add.existing(sc_card4);
-
-        console.log([sc_card1, sc_card2, sc_card3, sc_card4]);
-
-        let scene_card_deck = new SceneCardDeck(this, 0, 200, 3, 3, 9, [sc_card1, sc_card2, sc_card3, sc_card4]);
-        // TEMP
-        scene_card_deck.setVisible(0);
-        this.add.existing(scene_card_deck);
-
-        let scene_card_hand = new SceneCardHand(this, 500, 200, scene_card_deck, 4);
-
-        scene_card_hand.list.forEach((g_o) => {
-            if(g_o instanceof SceneCard){
-                console.log(g_o.card.card_id);
-            }
-        });
-
-        this.add.existing(scene_card_hand);
     }
 
     update(time_milliseconds, delta_time_milliseconds) {

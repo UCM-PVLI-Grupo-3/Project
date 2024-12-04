@@ -20,6 +20,7 @@ const CARD_DEFAULTS = {
     CARD_ID: 0,
     CARD_NAME: "CARD",
     TIMELINE_TYPE: CARD_TIMELINE_TYPE.PAST,
+    ACTION_TYPE: CARD_ACTION_TYPE.ATTACK,
     EMOTION_TYPE_NONE: OPTIONAL_EMOTION_TYPE.NONE(),
     CARD_EFFECT_NONE: new NullEffect(),
 };
@@ -31,13 +32,14 @@ class Card {
     name = CARD_DEFAULTS.CARD_NAME;
     value = CARD_DEFAULTS.VALUE;
     timeline_type = CARD_DEFAULTS.TIMELINE_TYPE;
+    action_type = CARD_DEFAULTS.ACTION_TYPE;
 
     successful_action_emotion_type = CARD_DEFAULTS.EMOTION_TYPE_NONE;
     failure_action_emotion_type = CARD_DEFAULTS.EMOTION_TYPE_NONE;
 
     card_effects = Array(CARD_DEFAULTS.CARD_EFFECT_NONE);
 
-    constructor(name, value, timeline_type, successful_action_emotion_type, failure_action_emotion_type, card_effects) {
+    constructor(name, value, timeline_type, action_type, successful_action_emotion_type, failure_action_emotion_type, card_effects) {
         console.assert(typeof name === 'string' || name instanceof String, "error: name must be a String");
         console.assert(value >= 0, "error: value must be greater than or equal to 0");
         console.assert(
@@ -49,6 +51,10 @@ class Card {
             "error: invalid timeline_type, timeline_type must not be the uninitialized value of CARD_TIMELINE_TYPE"
         )
         console.assert(
+            action_type in CARD_ACTION_TYPE,
+            "error: invalid action_type, action_type must be a valid CARD_ACTION_TYPE enum value"
+        );
+        console.assert(
             successful_action_emotion_type in OPTIONAL_EMOTION_TYPE,
             "error: invalid successful_action_emotion_type, successful_action_emotion_type must be a valid EMOTION_TYPE enum value"
         );
@@ -56,6 +62,9 @@ class Card {
             failure_action_emotion_type in OPTIONAL_EMOTION_TYPE,
             "error: invalid failure_action_emotion_type, failure_action_emotion_type must be a valid EMOTION_TYPE enum value"
         );
+        if (card_effects instanceof CardEffect) {
+            card_effects = [card_effects];
+        }
         console.assert(card_effects instanceof Array, "error: card_effects must be an array");
         card_effects.forEach((card_effect) => {
             console.assert(card_effect instanceof CardEffect, "error: card_effect must be an instance of CardEffect");
@@ -67,6 +76,7 @@ class Card {
         this.name = name;
         this.value = value;
         this.timeline_type = timeline_type;
+        this.action_type = action_type;
         this.successful_action_emotion_type = successful_action_emotion_type;
         this.failure_action_emotion_type = failure_action_emotion_type;
         this.card_effects = [...card_effects];
