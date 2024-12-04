@@ -24,8 +24,7 @@ class CardHand{
 		this.max_cards = max_cards;
 		this.current_cards = new Array(max_cards);
 		
-		let i = 0;
-		for(; i < this.current_cards.length; i++){
+		for(let i = 0; i < this.current_cards.length; i++){
 			this.current_cards[i] = card_deck.cards[i];
 			this.current_cards[i].instance_id = i;
 		}
@@ -65,19 +64,19 @@ class SceneCardHand extends Phaser.GameObjects.Container{
 	 * @type {Phaser.GameObjects.Image}
 	 * */
 	card_hand_panel;
-	scene_card_deck = SCENE_CARD_HAND_DEFAULTS.SCENE_CARD_DECK;
+	card_deck = SCENE_CARD_HAND_DEFAULTS.SCENE_CARD_DECK;
 
-	constructor(scene, position_x, position_y, scene_card_deck, max_cards){
+	constructor(scene, position_x, position_y, card_deck, max_cards){
 		console.assert(scene instanceof Phaser.Scene, "error: scene must be a valid Phaser.Scene");
         console.assert(typeof position_x === "number", "error: position_x must be a number");
         console.assert(typeof position_y === "number", "error: position_y must be a number");
-        console.assert(scene_card_deck instanceof SceneCardDeck, "error: scene_card_deck must be a valid SceneCardDeck");
+        console.assert(card_deck instanceof CardDeck, "error: scene_card_deck must be a valid CardDeck");
         console.assert(typeof max_cards === "number", "error: max_cards must be a number");
 
         super(scene, position_x, position_y);
 
-        this.card_hand = new CardHand(scene_card_deck.card_deck, max_cards);
-        this.scene_card_deck = scene_card_deck;
+        this.card_hand = new CardHand(card_deck, max_cards);
+		this.card_deck = card_deck;
 
         this.card_hand_panel = scene.add.image(0, 0, KEYS_ASSETS_SPRITES.CARD_HAND_PANEL);
         this.card_hand_panel.setDisplaySize(

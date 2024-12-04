@@ -1,4 +1,4 @@
-import { KEYS_SCENES, KEYS_ASSETS_SPRITES } from "../common/common.js";
+import { KEYS_SCENES, KEYS_ASSETS_SPRITES, KEYS_EVENTS } from "../common/common.js";
 import { DiceSlots, SceneDiceSlots } from "../gameplay/dice_slots.js";
 import { DICE_TYPE, SceneDice, Dice } from "../gameplay/dice.js";
 import { CARD_TIMELINE_TYPE, SceneCard, Card, CARD_DEFAULTS, CARD_ACTION_TYPE} from "../gameplay/card.js";
@@ -7,6 +7,7 @@ import { EMOTION_TYPE, OPTIONAL_EMOTION_TYPE } from "../gameplay/emotions.js";
 import { CardHand, SceneCardHand } from "../gameplay/card_hand.js";
 import { CardDeck, GAMEPLAY_CARDS, SceneCardDeck } from "../gameplay/card_deck.js";
 import { Player } from "../gameplay/player.js";
+import { Health } from "../gameplay/health.js";
 
 const BATTLE_SCENE_DEFAULT_SICE_SLOTS = 3;
 
@@ -23,6 +24,11 @@ class BattleScene extends Phaser.Scene {
      * @type {Player}
      */
     player;
+
+    /**
+     * @type {SceneCardHand}
+     */
+    scene_card_hand;
 
     constructor() {
         super({ key: KEYS_SCENES.BATTLE });
@@ -84,17 +90,22 @@ class BattleScene extends Phaser.Scene {
         const screen_height = this.renderer.height;
         console.log(initial_cards);
 
-        // let card_deck = new CardDeck(30, initial_cards);
-        // this.player = new Player(
-        //     card_deck,
-        //     new SceneCardHand(this, screen_width / 2, screen_height / 2, null, )
-
+        let card_deck = new CardDeck(30, initial_cards);
+        this.scene_card_hand = this.add.existing(new SceneCardHand(this, screen_width / 2, screen_height / 2, card_deck, 8));
+        this.player = new Player(
+            card_deck,
+            this.scene_card_hand,
+            new Health(12, 0, 12, (health) => { this.on_player_health_set(health); })
+        );
     }
 
     update(time_milliseconds, delta_time_milliseconds) {
 
     }
 
+    on_player_health_set(health) {
+        this.events.emit(KEYS_EVENTS.PLAYER_HEALTH_SET, health);
+    }
 }
 
 export { BattleScene };
