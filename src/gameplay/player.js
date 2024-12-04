@@ -18,21 +18,21 @@ class Player {
     /**
      * @type {SceneCardHand}
      */
-    card_hand = null;
+    scene_card_hand = null;
 
     /**
      * @type {Health}
      */
     health = null;
 
-    constructor(card_deck, card_hand, health) {
+    constructor(card_deck, scene_card_hand, health) {
         //console.assert(card_deck instanceof SceneCardDeck, "error: parameter card_deck must be an instance of SceneCardDeck");
         console.assert(card_deck instanceof CardDeck, "error: parameter card_deck must be an instance of CardDeck");
-        console.assert(card_hand instanceof SceneCardHand, "error: parameter card_hand must be an instance of SceneCardHand");
+        console.assert(scene_card_hand instanceof SceneCardHand, "error: parameter card_hand must be an instance of SceneCardHand");
         console.assert(health instanceof Health, "error: parameter health must be an instance of Health");
 
         this.card_deck = card_deck;
-        this.card_hand = card_hand;
+        this.card_hand = scene_card_hand;
         this.health = health;
     }
 }

@@ -3,13 +3,13 @@ class Health {
     max_health = 0;
     health = 0;
 
-    health_changed = (health) => { };
+    health_set = (health) => { };
 
-    constructor(health, min_health, max_health, on_health_changed) {
+    constructor(health, min_health, max_health, on_health_set) {
         this.min_health = min_health;
         this.max_health = max_health;
         this.health = health;
-        this.health_changed = on_health_changed;
+        this.health_set = on_health_set;
     }
 
     set_min_health(new_min_health) {
@@ -36,7 +36,7 @@ class Health {
 
     set_health(new_health) {
         this.health = new_health;
-        this.health_changed(this.health);
+        this.health_set(this.health);
     }
 
     get_health() {
