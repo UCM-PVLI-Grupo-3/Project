@@ -17,7 +17,7 @@ class CardHandActionFeature extends ActionFeatureSelector {
 
 	contains_selected_action_agent(clicked_game_object) {
     
-    	let scene_cards = this.scene_card_hand.scene_cards;
+    	let scene_cards = this.scene_card_hand.list;
     	
     	let i = 0;
     	while(i < scene_cards.length && 

@@ -109,19 +109,22 @@ class SceneCard extends Phaser.GameObjects.Container {
             card_effects
         );
 
-        const EMOTION_ICON_Y = position_y + 122;
-        const LEFT_EMOTION_X = position_x - 75;
-        const RIGHT_EMOTION_X = position_x + 80;
+        const CARD_IMG_X = (362 - 344)/2;
+        const CARD_IMG_Y = (478 - 460)/2;
+        const EMOTION_ICON_Y = 362;
+        const LEFT_EMOTION_X = 104;
+        const RIGHT_EMOTION_X = 262;
         const EMOTION_SCALE = 0.70;
-        const TEXT_X = position_x;
-        const TEXT_Y = position_y + 53;
-        const VALUE_X = position_x - 93;
-        const VALUE_Y = position_y - 170;
+        const TEXT_X = 177;
+        const TEXT_Y = 292;
+        const VALUE_X = 87;
+        const VALUE_Y = 68;
 
-        this._selection_frame = scene.add.image(position_x, position_y, KEYS_ASSETS_SPRITES.CARD_SELECTION_FRAME)
+        this._selection_frame = scene.add.image(0, 0, KEYS_ASSETS_SPRITES.CARD_SELECTION_FRAME)
         .setAlpha(0.5)
         .setTint(0xF5E90F)
-        .setVisible(false);
+        .setVisible(false)
+        .setOrigin(0, 0);
 
         this.is_selected = false;
 
@@ -129,11 +132,11 @@ class SceneCard extends Phaser.GameObjects.Container {
 
         let card_img;
         if(timeline_type === CARD_TIMELINE_TYPE.PAST)
-            card_img = scene.add.image(position_x, position_y, KEYS_ASSETS_SPRITES.PAST_CARD);
+            card_img = scene.add.image(CARD_IMG_X, CARD_IMG_Y, KEYS_ASSETS_SPRITES.PAST_CARD);
         else
-            card_img = scene.add.image(position_x, position_y, KEYS_ASSETS_SPRITES.FUTURE_CARD);
+            card_img = scene.add.image(CARD_IMG_X, CARD_IMG_Y, KEYS_ASSETS_SPRITES.FUTURE_CARD);
 
-        this.add(card_img);
+        this.add(card_img.setOrigin(0, 0));
 
         if(successful_action_emotion_type !== OPTIONAL_EMOTION_TYPE.NONE())
         {
