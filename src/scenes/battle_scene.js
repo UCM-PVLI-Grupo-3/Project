@@ -55,6 +55,7 @@ class BattleScene extends Phaser.Scene {
         this.load.image(KEYS_ASSETS_SPRITES.CARD_ATTACK_ACTION, "assets/card/card_attack_action_type_icon.png");
         this.load.image(KEYS_ASSETS_SPRITES.CARD_DEFENCE_ACTION, "assets/card/card_defence_action_type_icon.png");
         this.load.image(KEYS_ASSETS_SPRITES.CARD_HEAL_ACTION, "assets/card/card_heal_action_type_icon.png");
+        this.load.image(KEYS_ASSETS_SPRITES.CARD_ACTION_SELECTION_FRAME, "assets/card/card_action_type_selection_frame.png")
 
 
         this.load.image(KEYS_ASSETS_SPRITES.DICE_TYPE_D4, "assets/dice/dice_d4.png");
@@ -90,7 +91,7 @@ class BattleScene extends Phaser.Scene {
 
 
         const initial_cards_count = 6;
-        let initial_cards = [...GAMEPLAY_CARDS].sort(() => 0.5 - Math.random()).slice(0, initial_cards_count);
+        let initial_cards = [...GAMEPLAY_CARDS].sort(() => 0.5 - Math.random());//.slice(0, initial_cards_count);
         console.assert(initial_cards instanceof Array, "error: initial_cards must be an array");
         console.assert(initial_cards.length === initial_cards_count, "error: initial_cards.length !== initial_cards_count");
 
@@ -99,12 +100,13 @@ class BattleScene extends Phaser.Scene {
         console.log(initial_cards);
 
         let card_deck = new CardDeck(30, initial_cards);
-        this.scene_card_hand = this.add.existing(new SceneCardHand(this, screen_width / 2, screen_height / 2, card_deck, 4));
-      /*  this.player = new Player(
+        this.scene_card_hand = this.add.existing(new SceneCardHand(this, screen_width / 2, screen_height / 2, card_deck, 2, CARD_ACTION_TYPE.DEFENCE));
+        
+        this.player = new Player(
             card_deck,
             this.scene_card_hand,
             new Health(12, 0, 12, (health) => { this.on_player_health_set(health); })
-        );*/
+        );
     }
 
     update(time_milliseconds, delta_time_milliseconds) {

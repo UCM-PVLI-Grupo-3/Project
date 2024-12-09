@@ -1,6 +1,6 @@
 import { KEYS_ASSETS_SPRITES, CONSTANTS_SPRITES_MEASURES } from "../common/common.js";
 import { CardDeck, SceneCardDeck } from "./card_deck.js";
-import { Card, SceneCard } from "./card.js";
+import { Card, SceneCard, CARD_ACTION_TYPE } from "./card.js";
 import { distribute_uniform } from "../common/layouts.js";
 
 const CARD_HAND_DEFAULTS = {
@@ -9,6 +9,7 @@ const CARD_HAND_DEFAULTS = {
 
 class CardHand{
 	max_cards = CARD_HAND_DEFAULTS.MAX_CARD_NUM;
+	cards_action_type;
 	/**
 	 * @type {Array<Card>}
 	 * */
@@ -17,20 +18,27 @@ class CardHand{
 	card_deck = new CardDeck(0,[]);
 	card_queue = [];
 
-	constructor(card_deck, max_cards){
+	constructor(card_deck, max_cards, cards_action_type){
 		console.assert(card_deck instanceof CardDeck, "error: parameter card_deck must be an instance of CardDeck");
 		console.assert(typeof max_cards === "number", "error: max_cards must be a number");
+		console.assert(typeof cards_action_type === "string" || cards_action_type instanceof String, "error: cards_action_type must be a String");
 
 		this.card_deck = card_deck;
 		this.max_cards = max_cards;
 		this.current_cards = new Array(max_cards);
+		this.cards_action_type = cards_action_type;
+			
+		for(let i = 0; i < this.card_deck.card_count(); i++) {
+			if(this.card_deck.cards[i].action_type === this.cards_action_type) {
 
-		let in_use_cards = card_deck.cards.slice(0, max_cards);
-		this.current_cards = [...in_use_cards];
-		this.current_cards_count = in_use_cards.length;
-		
-		for(let i = 0; i < this.card_deck.card_count(); i++){
-			this.card_queue.push(card_deck.cards[i]);
+				if(this.current_cards_count < this.max_cards) {
+					this.current_cards[this.current_cards_count] = this.card_deck.cards[i];
+					++this.current_cards_count;
+				}
+				else {
+					this.card_queue.push(this.card_deck.cards[i]);
+				}
+			}
 		}
 	}
 
@@ -55,27 +63,32 @@ const SCENE_CARD_HAND_DEFAULTS = {
 	SCENE_CARD_SCALE: 0.75,
 	SCENE_CARD_MARGIN_FACTOR: 1.15,
 	SCENE_CARD_SEPARATION: CONSTANTS_SPRITES_MEASURES.SCENE_CARD.WIDTH / 1.28,
+	ACTION_TYPE: CARD_ACTION_TYPE.ATTACK,
 };
 
 class SceneCardHand extends Phaser.GameObjects.Container{
 
-	card_hand = new CardHand(SCENE_CARD_HAND_DEFAULTS.CARD_DECK, SCENE_CARD_HAND_DEFAULTS.MAX_CARD_NUM);
+	card_hand = new CardHand(
+		SCENE_CARD_HAND_DEFAULTS.CARD_DECK, 
+		SCENE_CARD_HAND_DEFAULTS.MAX_CARD_NUM, 
+		SCENE_CARD_HAND_DEFAULTS.ACTION_TYPE);
 	/**
 	 * @type {Phaser.GameObjects.Image}
 	 * */
 	card_hand_panel;
 	card_deck = SCENE_CARD_HAND_DEFAULTS.SCENE_CARD_DECK;
 
-	constructor(scene, position_x, position_y, card_deck, max_cards){
+	constructor(scene, position_x, position_y, card_deck, max_cards, cards_action_type){
 		console.assert(scene instanceof Phaser.Scene, "error: scene must be a valid Phaser.Scene");
         console.assert(typeof position_x === "number", "error: position_x must be a number");
         console.assert(typeof position_y === "number", "error: position_y must be a number");
         console.assert(card_deck instanceof CardDeck, "error: scene_card_deck must be a valid CardDeck");
         console.assert(typeof max_cards === "number", "error: max_cards must be a number");
+        console.assert(typeof cards_action_type === "string" || cards_action_type instanceof String, "error: cards_action_type must be a String");
 
         super(scene, position_x, position_y);
 
-        this.card_hand = new CardHand(card_deck, max_cards);
+        this.card_hand = new CardHand(card_deck, max_cards, cards_action_type);
 		this.card_deck = card_deck;
 
         this.card_hand_panel = scene.add.image(0, 0, KEYS_ASSETS_SPRITES.CARD_HAND_PANEL);
@@ -94,6 +107,7 @@ class SceneCardHand extends Phaser.GameObjects.Container{
 			this.card_hand.current_cards_count , 1,
 			0, 0
 		);
+
         for(let i = 0; i < card_positions.length; i++) {
         	let card = this.card_hand.current_cards[i];
         	let scene_card = SceneCard.from_existing_card(
