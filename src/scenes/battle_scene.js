@@ -17,7 +17,18 @@ class BattleScene extends Phaser.Scene {
     /**
      * @type {SceneDiceSlots}
      */
-    scene_dice_slots;
+    attack_dice_slots;
+
+    /**
+     * @type {SceneDiceSlots}
+     */
+    defence_dice_slots;
+
+    /**
+     * @type {SceneDiceSlots}
+     */
+    heal_dice_slots;
+
     /**
      * @type {SceneEmotionStack}
      */
@@ -59,7 +70,7 @@ class BattleScene extends Phaser.Scene {
 
     constructor() {
         super({ key: KEYS_SCENES.BATTLE });
-        this.scene_dice_slots = null;
+        this.attack_dice_slots = null;
         this.scene_emotion_stack = null;
         this.player = null;
     }
@@ -109,10 +120,20 @@ class BattleScene extends Phaser.Scene {
             EMOTION_TYPE.CALM()
         ], 8));
 
+        const screen_width = this.renderer.width;
+        const screen_height = this.renderer.height;
+
         // TODO: populate
-        this.scene_dice_slots = this.add.existing(new SceneDiceSlots(this, 500, 100, 4, [
+        this.attack_dice_slots = this.add.existing(new SceneDiceSlots(this, screen_width / 2 - 110, 400, 3, [
             new SceneDice(this, 0, 0, DICE_TYPE.D4)
         ]));
+        this.defence_dice_slots = this.add.existing(new SceneDiceSlots(this, screen_width / 2, 400, 3, [
+            new SceneDice(this, 0, 0, DICE_TYPE.D4)
+        ]));
+        this.heal_dice_slots = this.add.existing(new SceneDiceSlots(this, screen_width / 2 + 110, 400, 3, [
+            new SceneDice(this, 0, 0, DICE_TYPE.D4)
+        ]));
+
 
 
         const initial_cards_count = 6;
@@ -120,8 +141,6 @@ class BattleScene extends Phaser.Scene {
         console.assert(initial_cards instanceof Array, "error: initial_cards must be an array");
         console.assert(initial_cards.length === initial_cards_count, "error: initial_cards.length !== initial_cards_count");
 
-        const screen_width = this.renderer.width;
-        const screen_height = this.renderer.height;
         console.log(initial_cards);
 
         let card_deck = new CardDeck(30, initial_cards);
@@ -144,9 +163,9 @@ class BattleScene extends Phaser.Scene {
 
         let action_selection_group = new ActionSelectorRadioGroup(this, [attack_card_hand_feature, defence_card_hand_feature, heal_card_hand_feature]);
 
-        this.attack_card_hand_button = this.add.existing(new SceneCardHandActionFeature(this, 200, 100, attack_card_hand_feature));
-        this.defence_card_hand_button = this.add.existing(new SceneCardHandActionFeature(this, 300, 100, defence_card_hand_feature));
-        this.heal_card_hand_button = this.add.existing(new SceneCardHandActionFeature(this, 400, 100, heal_card_hand_feature));
+        this.attack_card_hand_button = this.add.existing(new SceneCardHandActionFeature(this, screen_width / 2 - 115 - 50, 210, attack_card_hand_feature));
+        this.defence_card_hand_button = this.add.existing(new SceneCardHandActionFeature(this, screen_width / 2 - 50, 210, defence_card_hand_feature));
+        this.heal_card_hand_button = this.add.existing(new SceneCardHandActionFeature(this, screen_width / 2 + 115 - 50, 210, heal_card_hand_feature));
     }
 
     update(time_milliseconds, delta_time_milliseconds) {

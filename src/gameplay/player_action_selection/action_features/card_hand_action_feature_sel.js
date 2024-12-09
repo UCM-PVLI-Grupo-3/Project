@@ -68,6 +68,7 @@ class SceneCardHandActionFeature extends Phaser.GameObjects.Container {
         const ICON_Y = 6;
 
         this.selection_frame = scene.add.image(0, 0, KEYS_ASSETS_SPRITES.CARD_ACTION_SELECTION_FRAME)
+        .setScale(0.9)
         .setAlpha(0.5)
         .setTint(0xF5E90F)
         .setVisible(false)
@@ -75,6 +76,7 @@ class SceneCardHandActionFeature extends Phaser.GameObjects.Container {
         this.add(this.selection_frame);
 
         this.icon = scene.add.image(ICON_X, ICON_Y, this.get_icon_key())
+        .setScale(0.8)
         .setOrigin(0, 0);
         this.add(this.icon);
 
