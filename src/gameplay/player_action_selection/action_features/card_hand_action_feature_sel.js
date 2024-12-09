@@ -57,8 +57,7 @@ class SceneCardHandActionFeature extends Phaser.GameObjects.Container {
      * */
     selection_frame;
 
-    constructor(scene, position_x, position_y, card_action_type, card_hand_action_feature) {
-        console.assert(typeof card_action_type === 'string' || card_action_type instanceof String, "error: card_action_type must be a String");
+    constructor(scene, position_x, position_y, card_hand_action_feature) {
         console.assert(card_hand_action_feature instanceof CardHandActionFeature, "error: card_hand_action_feature must be an instance of CardHandActionFeature");
 
         super(scene, position_x, position_y);
@@ -68,19 +67,27 @@ class SceneCardHandActionFeature extends Phaser.GameObjects.Container {
         const ICON_X = 5;
         const ICON_Y = 6;
 
-        this.selection_frame = scene.add.image(0, 0, KEYS_ASSETS_SPRITES.CARD_ACTION_SELECTION_FRAME);
-        this.selection_frame.setOrigin(0, 0);
-        this.icon = scene.add.image(ICON_X, ICON_Y, this.get_icon_key(card_action_type));
-        this.icon.setOrigin(0, 0);
+        this.selection_frame = scene.add.image(0, 0, KEYS_ASSETS_SPRITES.CARD_ACTION_SELECTION_FRAME)
+        .setAlpha(0.5)
+        .setTint(0xF5E90F)
+        .setVisible(false)
+        .setOrigin(0, 0);
+        this.add(this.selection_frame);
 
-    /*    this.setInteractive({
+        this.icon = scene.add.image(ICON_X, ICON_Y, this.get_icon_key())
+        .setOrigin(0, 0);
+        this.add(this.icon);
+
+        this.setInteractive({
             hitArea: new Phaser.Geom.Rectangle(0, 0, this.icon.width, this.icon.height),
             hitAreaCallback: Phaser.Geom.Rectangle.Contains 
         })
-        .on(Phaser.Input.Events.POINTER_DOWN, () => { this.card_hand_action_feature.scene_card_hand.setVisible(); });*/
-    }
+        .on(Phaser.Input.Events.POINTER_DOWN, () => { this.card_hand_action_feature.scene_card_hand.setVisible(!this.card_hand_action_feature.scene_card_hand.visible); });
+        }
 
-    get_icon_key(card_action_type) {
+    get_icon_key() {
+        let card_action_type = this.card_hand_action_feature.scene_card_hand.card_hand.cards_action_type;
+
         if(card_action_type === CARD_ACTION_TYPE.ATTACK) {
             return KEYS_ASSETS_SPRITES.CARD_ATTACK_ACTION;
         }
@@ -91,7 +98,7 @@ class SceneCardHandActionFeature extends Phaser.GameObjects.Container {
             return KEYS_ASSETS_SPRITES.CARD_HEAL_ACTION;
         }
 
-        console.error("CardActionType especified does not exist");
+        console.error("CardActionType specified does not exist");
     }
 
     update() {

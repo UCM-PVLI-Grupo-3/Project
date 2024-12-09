@@ -7,7 +7,7 @@ import { EMOTION_TYPE, OPTIONAL_EMOTION_TYPE } from "../gameplay/emotions.js";
 import { CardHand, SceneCardHand } from "../gameplay/card_hand.js";
 import { CardDeck, GAMEPLAY_CARDS, SceneCardDeck } from "../gameplay/card_deck.js";
 import { ActionSelectorRadioGroup } from "../gameplay/player_action_selection/action_selector_radio_group.js";
-import { CardHandActionFeature } from "../gameplay/player_action_selection/action_features/card_hand_action_feature_sel.js";
+import { CardHandActionFeature, SceneCardHandActionFeature } from "../gameplay/player_action_selection/action_features/card_hand_action_feature_sel.js";
 import { Player } from "../gameplay/player.js";
 import { Health } from "../gameplay/health.js";
 
@@ -30,7 +30,32 @@ class BattleScene extends Phaser.Scene {
     /**
      * @type {SceneCardHand}
      */
-    scene_card_hand;
+    attack_scene_card_hand;
+
+    /**
+     * @type {SceneCardHand}
+     */
+    defence_scene_card_hand;
+
+    /**
+     * @type {SceneCardHand}
+     */
+    heal_scene_card_hand;
+
+    /**
+     * @type {SceneCardHandActionFeature}
+     * */
+    attack_card_hand_button;
+
+    /**
+     * @type {SceneCardHandActionFeature}
+     * */
+    defence_card_hand_button;
+
+    /**
+     * @type {SceneCardHandActionFeature}
+     * */
+    heal_card_hand_button;
 
     constructor() {
         super({ key: KEYS_SCENES.BATTLE });
@@ -100,17 +125,34 @@ class BattleScene extends Phaser.Scene {
         console.log(initial_cards);
 
         let card_deck = new CardDeck(30, initial_cards);
-        this.scene_card_hand = this.add.existing(new SceneCardHand(this, screen_width / 2, screen_height / 2, card_deck, 2, CARD_ACTION_TYPE.DEFENCE));
+
+        // SceneCardHands
+        this.attack_scene_card_hand = this.add.existing(new SceneCardHand(this, screen_width / 2, screen_height / 2, card_deck, 2, CARD_ACTION_TYPE.ATTACK));
+        this.defence_scene_card_hand = this.add.existing(new SceneCardHand(this, screen_width / 2, screen_height / 2, card_deck, 2, CARD_ACTION_TYPE.DEFENCE));
+        this.heal_scene_card_hand = this.add.existing(new SceneCardHand(this, screen_width / 2, screen_height / 2, card_deck, 2, CARD_ACTION_TYPE.HEAL));
         
         this.player = new Player(
             card_deck,
-            this.scene_card_hand,
+            this.attack_scene_card_hand,
             new Health(12, 0, 12, (health) => { this.on_player_health_set(health); })
         );
+
+        // SceneCard selection
+        let attack_card_hand_feature = new CardHandActionFeature(this.attack_scene_card_hand);
+        let defence_card_hand_feature = new CardHandActionFeature(this.defence_scene_card_hand);
+        let heal_card_hand_feature = new CardHandActionFeature(this.heal_scene_card_hand);
+
+        let action_selection_group = new ActionSelectorRadioGroup(this, [attack_card_hand_feature, defence_card_hand_feature, heal_card_hand_feature]);
+
+        this.attack_card_hand_button = this.add.existing(new SceneCardHandActionFeature(this, 200, 100, attack_card_hand_feature));
+        this.defence_card_hand_button = this.add.existing(new SceneCardHandActionFeature(this, 300, 100, defence_card_hand_feature));
+        this.heal_card_hand_button = this.add.existing(new SceneCardHandActionFeature(this, 400, 100, heal_card_hand_feature));
     }
 
     update(time_milliseconds, delta_time_milliseconds) {
-
+        this.attack_card_hand_button.update();
+        this.defence_card_hand_button.update();
+        this.heal_card_hand_button.update();
     }
 
     on_player_health_set(health) {
