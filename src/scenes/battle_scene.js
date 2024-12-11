@@ -172,7 +172,12 @@ class BattleScene extends Phaser.Scene {
         let defence_card_hand_feature = new CardHandActionFeature(this.defence_scene_card_hand);
         let heal_card_hand_feature = new CardHandActionFeature(this.heal_scene_card_hand);
 
-        let action_selection_group = new ActionSelectorRadioGroup(this, [attack_card_hand_feature, defence_card_hand_feature, heal_card_hand_feature, dice_change_feature]);
+        let action_selection_group = new ActionSelectorRadioGroup(
+            this,
+            [attack_card_hand_feature, defence_card_hand_feature, heal_card_hand_feature, dice_change_feature],
+            false,
+            true
+        );
         
         this.attack_card_hand_button = this.add.existing(new SceneCardHandActionFeature(this, screen_width / 2 - 115 - 50, 260, attack_card_hand_feature));
         this.defence_card_hand_button = this.add.existing(new SceneCardHandActionFeature(this, screen_width / 2 - 50, 260, defence_card_hand_feature));
@@ -182,7 +187,10 @@ class BattleScene extends Phaser.Scene {
             this.attack_card_hand_button.feature_selector,
             this.defence_card_hand_button.feature_selector,
             this.heal_card_hand_button.feature_selector,
-        ]);
+        ], true, false);
+
+        console.log(action_selection_group);
+        console.log(card_hand_selection_group);
     }
 
     update(time_milliseconds, delta_time_milliseconds) {

@@ -63,8 +63,14 @@ class SceneCardHandActionFeatureSelector extends ActionFeatureSelector {
     }
 
     contains_selected_action_agent(clicked_game_object) {
-        //return true;
-    	return clicked_game_object === this.scene_card_hand_feature;
+        /**
+         * Sel  Me  RES
+         * 0    0   0
+         * 0    1   1
+         * 1    0   0
+         * 1    1   0
+         */
+    	return !(clicked_game_object != this.scene_card_hand_feature || this._is_selected);
     }
 
     set_selection_state(value) {
