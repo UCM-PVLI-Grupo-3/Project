@@ -113,7 +113,7 @@ class SceneCardHand extends Phaser.GameObjects.Container{
         	let scene_card = SceneCard.from_existing_card(
         		scene, 
         		card_positions[i].x + CONSTANTS_SPRITES_MEASURES.SCENE_CARD.WIDTH * -0.18 / 2, 
-        		card_positions[i].y + CONSTANTS_SPRITES_MEASURES.SCENE_CARD.HEIGHT * 0.07 / 2, 
+        		card_positions[i].y + CONSTANTS_SPRITES_MEASURES.SCENE_CARD.HEIGHT * 0.07 / 2,
         		card
 			);
 			console.log(card_positions[i].x, card_positions[i].y);

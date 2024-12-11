@@ -94,10 +94,7 @@ class DiceChangeActionFeature extends ActionFeatureSelector {
 
     	if(value === true) return;
 
-    	dice_slots_registers.forEach((dice_slots_register) => {
-    		for(let i = 0; i < dice_slots_register.base_dice_config.length) {
-    		//	dice_slots_register.scene_dice_slots.scene_dice_slot_frames[i] = dice_slots_register.base_dice_config[i];
-    		}
+    	this.dice_slots_registers.forEach((dice_slots_register) => {
     	});
     }
 }

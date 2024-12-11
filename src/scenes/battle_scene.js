@@ -157,7 +157,7 @@ class BattleScene extends Phaser.Scene {
         let card_deck = new CardDeck(30, initial_cards);
 
         // SceneCardHands
-        this.attack_scene_card_hand = this.add.existing(new SceneCardHand(this, screen_width / 2, screen_height / 2 + 180, card_deck, 2, CARD_ACTION_TYPE.ATTACK));
+        this.attack_scene_card_hand = this.add.existing(new SceneCardHand(this, screen_width / 2, screen_height / 2 + 180, card_deck, 3, CARD_ACTION_TYPE.ATTACK));
         this.defence_scene_card_hand = this.add.existing(new SceneCardHand(this, screen_width / 2, screen_height / 2 + 180, card_deck, 2, CARD_ACTION_TYPE.DEFENCE));
         this.heal_scene_card_hand = this.add.existing(new SceneCardHand(this, screen_width / 2, screen_height / 2 + 180, card_deck, 2, CARD_ACTION_TYPE.HEAL));
         
@@ -173,10 +173,16 @@ class BattleScene extends Phaser.Scene {
         let heal_card_hand_feature = new CardHandActionFeature(this.heal_scene_card_hand);
 
         let action_selection_group = new ActionSelectorRadioGroup(this, [attack_card_hand_feature, defence_card_hand_feature, heal_card_hand_feature, dice_change_feature]);
-
+        
         this.attack_card_hand_button = this.add.existing(new SceneCardHandActionFeature(this, screen_width / 2 - 115 - 50, 260, attack_card_hand_feature));
         this.defence_card_hand_button = this.add.existing(new SceneCardHandActionFeature(this, screen_width / 2 - 50, 260, defence_card_hand_feature));
         this.heal_card_hand_button = this.add.existing(new SceneCardHandActionFeature(this, screen_width / 2 + 115 - 50, 260, heal_card_hand_feature));
+        
+        let card_hand_selection_group = new ActionSelectorRadioGroup(this, [
+            this.attack_card_hand_button.feature_selector,
+            this.defence_card_hand_button.feature_selector,
+            this.heal_card_hand_button.feature_selector,
+        ]);
     }
 
     update(time_milliseconds, delta_time_milliseconds) {

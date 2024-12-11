@@ -43,6 +43,40 @@ class CardHandActionFeature extends ActionFeatureSelector {
     }
 }
 
+class SceneCardHandActionFeatureSelector extends ActionFeatureSelector {
+    /**
+     * @type {SceneCardHandActionFeature}
+     * */
+    scene_card_hand_feature;
+    
+    /**
+     * @type {SceneCardHand}
+     */
+    scene_card_hand;
+
+    constructor(scene_card_hand_feature, scene_card_hand) {
+        console.assert(scene_card_hand instanceof SceneCardHand, "error: scene_card_hand must be a SceneCardHand");
+        super();
+
+        this.scene_card_hand_feature = scene_card_hand_feature;
+        this.scene_card_hand = scene_card_hand;
+    }
+
+    contains_selected_action_agent(clicked_game_object) {
+        //return true;
+    	return clicked_game_object === this.scene_card_hand_feature;
+    }
+
+    set_selection_state(value) {
+        this._is_selected = value;
+        this.scene_card_hand.setVisible(value);
+    }
+
+    get_selection_state() {
+    	return this._is_selected;
+    }
+}
+
 class SceneCardHandActionFeature extends Phaser.GameObjects.Container {
     /**
      * @type {CardHandActionFeature}
@@ -56,6 +90,11 @@ class SceneCardHandActionFeature extends Phaser.GameObjects.Container {
      * @type {Phaser.GameObjects.Image}
      * */
     selection_frame;
+
+    /**
+     * @type {SceneCardHandActionFeatureSelector}
+     * */
+    feature_selector;
 
     constructor(scene, position_x, position_y, card_hand_action_feature) {
         console.assert(card_hand_action_feature instanceof CardHandActionFeature, "error: card_hand_action_feature must be an instance of CardHandActionFeature");
@@ -80,11 +119,12 @@ class SceneCardHandActionFeature extends Phaser.GameObjects.Container {
         .setOrigin(0, 0);
         this.add(this.icon);
 
+        this.feature_selector = new SceneCardHandActionFeatureSelector(this, this.card_hand_action_feature.scene_card_hand);
         this.setInteractive({
             hitArea: new Phaser.Geom.Rectangle(0, 0, this.icon.width, this.icon.height),
             hitAreaCallback: Phaser.Geom.Rectangle.Contains 
-        })
-        .on(Phaser.Input.Events.POINTER_DOWN, () => { this.card_hand_action_feature.scene_card_hand.setVisible(!this.card_hand_action_feature.scene_card_hand.visible); });
+        });
+        // .on(Phaser.Input.Events.POINTER_DOWN, () => { this.card_hand_action_feature.scene_card_hand.setVisible(!this.card_hand_action_feature.scene_card_hand.visible); });
     }
 
     get_icon_key() {
