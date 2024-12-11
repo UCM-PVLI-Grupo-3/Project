@@ -91,7 +91,8 @@ class SceneCard extends Phaser.GameObjects.Container {
     card = new Card(
         CARD_DEFAULTS.CARD_NAME,
         CARD_DEFAULTS.VALUE,
-        CARD_DEFAULTS.TIMELINE_TYPE, 
+        CARD_DEFAULTS.TIMELINE_TYPE,
+        CARD_DEFAULTS.ACTION_TYPE,
         CARD_DEFAULTS.EMOTION_TYPE_NONE, CARD_DEFAULTS.EMOTION_TYPE_NONE, 
         Array(CARD_DEFAULTS.CARD_EFFECT_NONE)
     );
@@ -106,7 +107,7 @@ class SceneCard extends Phaser.GameObjects.Container {
     is_selected;
 
     constructor(
-        scene, position_x, position_y, name, value, timeline_type, 
+        scene, position_x, position_y, name, value, timeline_type, action_type,
         successful_action_emotion_type, failure_action_emotion_type, card_effects
     ) {
         super(scene, position_x, position_y);
@@ -115,7 +116,9 @@ class SceneCard extends Phaser.GameObjects.Container {
             name,
             value,
             timeline_type, 
-            successful_action_emotion_type, failure_action_emotion_type, 
+            action_type,
+            successful_action_emotion_type,
+            failure_action_emotion_type, 
             card_effects
         );
 
@@ -200,10 +203,11 @@ class SceneCard extends Phaser.GameObjects.Container {
             card.name, 
             card.value, 
             card.timeline_type, 
+            card.action_type,
             card.successful_action_emotion_type,
             card.failure_action_emotion_type, 
             card.card_effects
-            );
+        );
 
         new_scene_card.card = card;
 

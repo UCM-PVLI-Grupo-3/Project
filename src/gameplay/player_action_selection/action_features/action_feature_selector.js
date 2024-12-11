@@ -2,7 +2,7 @@ class ActionFeatureSelector{
 	/**
 	 * @type {bool}
 	 * */
-	_is_selected;
+	_is_selected = false;
 
 	constructor() {
         console.assert(this.constructor !== ActionFeatureSelector, "error: ActionFeatureSelector is an abstract class and cannot be instantiated");
