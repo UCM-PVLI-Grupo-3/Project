@@ -11,6 +11,9 @@ import { CardHandActionFeature, SceneCardHandActionFeature } from "../gameplay/p
 import { DiceChangeActionFeature, SceneDiceChangeActionFeature } from "../gameplay/player_action_selection/action_features/dice_change_action_feature_sel.js";
 import { Player } from "../gameplay/player.js";
 import { Health } from "../gameplay/health.js";
+import { Enemy } from "../Gameplay/enemy.js";
+import { EnemyTypeList } from "../Gameplay/EnemyTypeList.js";
+
 
 const BATTLE_SCENE_DEFAULT_SICE_SLOTS = 3;
 
@@ -73,6 +76,10 @@ class BattleScene extends Phaser.Scene {
      * @type {SceneDiceChangeActionFeature}
      * */
     dice_change_button;
+      /**
+     * @type {Enemy}
+     * */
+      Enemy;
 
     constructor() {
         super({ key: KEYS_SCENES.BATTLE });
@@ -182,7 +189,10 @@ class BattleScene extends Phaser.Scene {
             this.attack_card_hand_button.feature_selector,
             this.defence_card_hand_button.feature_selector,
             this.heal_card_hand_button.feature_selector,
+
         ]);
+            this.Enemy = new Enemy(this,EnemyTypeList[2].health,EnemyTypeList[2].attacks,EnemyTypeList[2].type,EnemyTypeList[2].Url);
+        
     }
 
     update(time_milliseconds, delta_time_milliseconds) {

@@ -95,7 +95,8 @@ class DiceChangeActionFeature extends ActionFeatureSelector {
     	if(value === true) return;
 
     	this.dice_slots_registers.forEach((dice_slots_register) => {
-    	});
+		});
+		                                                            
     }
 }
 

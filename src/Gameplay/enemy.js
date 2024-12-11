@@ -1,12 +1,12 @@
-import {AttackList} from '\AttackList.js'
-import {Attack}     from '\attack.js'
+import {AttackList} from './AttackList.js'
+import {Attack}     from './attack.js'
 
  export class Enemy
 {
-    constructor(health,imageDirection,actions,enemyType)
+    constructor(scene,health,actions,enemyType,url)
     {
         this.health = health;
-        this.imageDirection = imageDirection;            
+        //this.imageDirection = imageDirection;            
         this.enemyType = enemyType;
         this.action1 =actions[1];
         this.action2 =actions[2];
@@ -14,6 +14,8 @@ import {Attack}     from '\attack.js'
         this.action4 = action[4];
         this.actions = [this.action1,this.action2,this.action3,this.action4];  
         this.TopHealth = health; 
+        this.scene = scene;
+        this.scene.image.add(url);
 
     }
 
