@@ -174,24 +174,38 @@ class DiceChangeActionFeature extends ActionFeatureSelector {
     		return;
 
     	if(selected_new_frame === null) {
-			dice_old_slot.remove_dice(dropped_scene_dice);
-    		// dice_old_frame.remove_dice();
-    		// dropped_scene_dice.destroy();
+			dice_old_slot.dice_slots.remove_dice(dropped_scene_dice.dice);
+    		dice_old_frame.remove_dice();
+    		dropped_scene_dice.destroy();
     		return;
     	}
 		// FIXME: almost there but not quite
 
-    	let exchanged_dice = selected_new_frame.scene_dice;
+    	/*let exchanged_dice = selected_new_frame.scene_dice;
+    	selected_new_frame.set_dice(dropped_scene_dice);
+    	
     	if(exchanged_dice !== null) {
-			dice_old_slot.add_dice(exchanged_dice);
-    		//dice_old_frame.set_dice(exchanged_dice);
+    		//selected_dice_slots.dice_slots.remove_dice(exchanged_dice.dice);
+			//dice_old_slot.dice_slots.add_dice(exchanged_dice.dice);
+    		dice_old_frame.set_dice(exchanged_dice);
 		} else {
-			dice_old_slot.remove_dice(dropped_scene_dice);
-			//dice_old_frame.remove_dice();
-		}
-		selected_dice_slots.add_dice(dropped_scene_dice);
-    	//selected_new_frame.set_dice(dropped_scene_dice);
+			//dice_old_slot.dice_slots.remove_dice(dropped_scene_dice.dice);
+			dice_old_frame.remove_dice();
+		}*/
+		dice_old_frame.remove_dice();
+		dice_old_slot.dice_slots.remove_dice(dropped_scene_dice.dice);
 
+		let occupant_scene_dice = selected_new_frame.scene_dice;
+		if(occupant_scene_dice !== null) {
+			dice_old_frame.set_dice(occupant_scene_dice);
+			dice_old_slot.dice_slots.add_dice(occupant_scene_dice.dice);
+
+			selected_new_frame.remove_dice();
+			selected_dice_slots.dice_slots.remove_dice(occupant_scene_dice.dice);
+		}
+
+		selected_new_frame.set_dice(dropped_scene_dice);
+		selected_dice_slots.dice_slots.add_dice(dropped_scene_dice.dice);
     	
     	console.log("EXCHANGING " + dice_old_frame.ID + " to " + selected_new_frame.ID);
     }
@@ -226,19 +240,20 @@ class DiceChangeActionFeature extends ActionFeatureSelector {
     	});
 
     	if(selected_new_frame === null) {
-    		dice_old_frame.remove_dice();
     		dropped_scene_dice.destroy();
     		return;
     	}
 
     	this.dice_box_register.scene_dice_box.remove(dropped_scene_dice, false);
 
-    	let existing_dice = selected_new_frame.scene_dice;
-    	if(existing_dice === null) {
-    	//	selected_new_frame.remove_dice();
-    		existing_dice.destroy();
+    	let existing_scene_dice = selected_new_frame.scene_dice;
+    	if(existing_scene_dice !== null) {
+    		selected_new_frame.dice_slots.remove_dice(existing_scene_dice.dice);
+    		existing_scene_dice.destroy();
     	}
+
     	selected_new_frame.set_dice(dropped_scene_dice);
+    	selected_new_frame.dice_slots.set_dice(dropped_scene_dice.dice);
 	}
 }
 
