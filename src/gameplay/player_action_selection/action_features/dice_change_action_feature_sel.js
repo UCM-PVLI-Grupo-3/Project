@@ -1,5 +1,6 @@
 import { ActionFeatureSelector } from "./action_feature_selector.js";
 import { SceneDiceSlots } from "../../dice_slots.js";
+import { SceneDiceBox } from "../../dice_box.js";
 import { SceneDice } from "../../dice.js";
 import { KEYS_ASSETS_SPRITES } from "../../../common/common.js";
 
@@ -29,11 +30,40 @@ class DiceSlotsRegister {
 	}
 }
 
+class DiceBoxRegister {
+	/**
+	 * @type {SceneDiceBox}
+	 * */
+	scene_dice_box;
+	/**
+	 * @type {Array<Dice>}
+	 * */
+	base_dice_config = new Array();
+
+	constructor(scene_dice_box) {
+		console.assert(scene_dice_box instanceof SceneDiceBox, "error: scene_dice_box must be an instance of SceneDiceBox");
+
+		this.scene_dice_box = scene_dice_box;
+		this.base_dice_config = new Array(scene_dice_box.scene_dices.length);
+
+		this.update();
+	}
+
+	update() {
+		
+	}
+}
+
 class DiceChangeActionFeature extends ActionFeatureSelector {
 	/**
 	 * @type {Array<DiceSlotsRegister>}
 	 * */
 	dice_slots_registers;
+
+	/**
+	 * @type {DiceBoxRegister}
+	 * */
+	dice_box_register;
 
 	/**
 	 * @type {bool}
@@ -42,21 +72,30 @@ class DiceChangeActionFeature extends ActionFeatureSelector {
 
 	scene;
 
-	constructor(scene, scene_dice_slots_arr) {
+	constructor(scene, scene_dice_slots_arr, dice_box) {
 		console.assert(scene instanceof Phaser.Scene, "error: scene must be a Phaser.Scene");
 		console.assert(scene_dice_slots_arr instanceof Array, "error: scene_dice_slots_arr must be an Array");
 		scene_dice_slots_arr.forEach((scene_dice_slots) => {
 			console.assert(scene_dice_slots instanceof SceneDiceSlots, "error: element of scene_dice_slots_arr must be instance of SceneDiceSlots");
 		});
+		console.assert(dice_box instanceof SceneDiceBox, "error: dice_box must be a SceneDiceBox");
 
 		super();
 
 		this.scene = scene;
 		this.dice_slots_registers = new Array(scene_dice_slots_arr.length);
+		this.dice_box_register = new DiceBoxRegister(dice_box);
 
 		for(let i = 0; i < this.dice_slots_registers.length; i++) {
 			this.dice_slots_registers[i] = new DiceSlotsRegister(scene_dice_slots_arr[i]);
 		}
+
+		 this.scene.input.on(Phaser.Input.Events.DRAG_END, (pointer, game_object) => {
+		 	if(game_object instanceof SceneDice){
+            	this.handle_dice_drop_in_dice_slots(game_object);
+            	this.handle_dice_drop_in_dice_box(game_object);
+		 	}
+        });
 	}
 
 	update_dice_slots_registers() {
@@ -85,18 +124,110 @@ class DiceChangeActionFeature extends ActionFeatureSelector {
 		{
 			++i;
 		}
+
+		let dice_comes_from_box = this.dice_box_register.scene_dice_box.scene_dices.includes(clicked_game_object);
 		
-		return i < this.dice_slots_registers.length;
+		return i < this.dice_slots_registers.length || dice_comes_from_box;
 	}
 
 	set_selection_state(value) {
     	this._is_selected = value;
+    }
 
-    	if(value === true) return;
+    handle_dice_drop_in_dice_slots(dropped_scene_dice) {
+    	let all_dice_slot_frames = [];
 
     	this.dice_slots_registers.forEach((dice_slots_register) => {
+    		all_dice_slot_frames.push(...dice_slots_register.scene_dice_slots.scene_dice_slot_frames);
     	});
+
+    	let dice_old_frame = null;
+    	let selected_new_frame = null;
+    	let biggest_intersection_area = 0;
+
+    	let dice_bounds = dropped_scene_dice.getBounds();
+
+    	all_dice_slot_frames.forEach((dice_slot_frame) => {
+
+    		if(dice_old_frame === null && dice_slot_frame.scene_dice === dropped_scene_dice)
+    			dice_old_frame = dice_slot_frame;
+
+    		let frame_bounds = dice_slot_frame.scene_frame_nineslice.getBounds();
+    		let intersection_rect = new Phaser.Geom.Rectangle();
+
+    		Phaser.Geom.Rectangle.Intersection(frame_bounds, dice_bounds, intersection_rect);
+    		let intersection_area = intersection_rect.width * intersection_rect.height;
+    		
+    		if(intersection_area > biggest_intersection_area){
+    			biggest_intersection_area = intersection_area;
+    			selected_new_frame = dice_slot_frame;
+    		}
+    	});
+
+    	if(dice_old_frame === null) // SceneDice does not come from DiceSlot
+    		return;
+
+    	if(selected_new_frame === null) {
+    		dice_old_frame.remove_dice();
+    		dropped_scene_dice.destroy();
+    		return;
+    	}
+
+    	let exchanged_dice = selected_new_frame.scene_dice;
+    	selected_new_frame.set_dice(dropped_scene_dice);
+
+    	if(exchanged_dice !== null)
+    		dice_old_frame.set_dice(exchanged_dice);
+    	else
+			dice_old_frame.remove_dice();
+    	
+    	console.log("EXCHANGING " + dice_old_frame.ID + " to " + selected_new_frame.ID);
     }
+
+	handle_dice_drop_in_dice_box(dropped_scene_dice) {
+
+		if(!this.dice_box_register.scene_dice_box.scene_dices.includes(dropped_scene_dice)) return;
+
+		let all_dice_slot_frames = [];
+
+    	this.dice_slots_registers.forEach((dice_slots_register) => {
+    		all_dice_slot_frames.push(...dice_slots_register.scene_dice_slots.scene_dice_slot_frames);
+    	});
+
+    	let selected_new_frame = null;
+    	let biggest_intersection_area = 0;
+
+    	let dice_bounds = dropped_scene_dice.getBounds();
+
+    	all_dice_slot_frames.forEach((dice_slot_frame) => {
+
+    		let frame_bounds = dice_slot_frame.scene_frame_nineslice.getBounds();
+    		let intersection_rect = new Phaser.Geom.Rectangle();
+
+    		Phaser.Geom.Rectangle.Intersection(frame_bounds, dice_bounds, intersection_rect);
+    		let intersection_area = intersection_rect.width * intersection_rect.height;
+    		
+    		if(intersection_area > biggest_intersection_area){
+    			biggest_intersection_area = intersection_area;
+    			selected_new_frame = dice_slot_frame;
+    		}
+    	});
+
+    	if(selected_new_frame === null) {
+    		dice_old_frame.remove_dice();
+    		dropped_scene_dice.destroy();
+    		return;
+    	}
+
+    	this.dice_box_register.scene_dice_box.remove(dropped_scene_dice, false);
+
+    	let existing_dice = selected_new_frame.scene_dice;
+    	if(existing_dice === null) {
+    	//	selected_new_frame.remove_dice();
+    		existing_dice.destroy();
+    	}
+    	selected_new_frame.set_dice(dropped_scene_dice);
+	}
 }
 
 class SceneDiceChangeActionFeature extends Phaser.GameObjects.Container {
