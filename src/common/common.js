@@ -58,6 +58,10 @@ const CONSTANTS_SPRITES_MEASURES = {
         WIDTH: 344,
         HEIGHT: 460,
     },
+    SCENE_DICE: {
+        WIDTH: 154,
+        HEIGHT: 153,
+    },
 };
 
 function exit(status) {

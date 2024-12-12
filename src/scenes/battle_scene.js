@@ -11,6 +11,7 @@ import { CardHandActionFeature, SceneCardHandActionFeature } from "../gameplay/p
 import { DiceChangeActionFeature, SceneDiceChangeActionFeature } from "../gameplay/player_action_selection/action_features/dice_change_action_feature_sel.js";
 import { Player } from "../gameplay/player.js";
 import { Health } from "../gameplay/health.js";
+import { SceneDiceBox } from "../gameplay/dice_box.js";
 
 const BATTLE_SCENE_DEFAULT_SICE_SLOTS = 3;
 
@@ -73,6 +74,11 @@ class BattleScene extends Phaser.Scene {
      * @type {SceneDiceChangeActionFeature}
      * */
     dice_change_button;
+
+    /**
+     * @type {SceneDiceBox}
+     * */
+    dice_change_box;
 
     constructor() {
         super({ key: KEYS_SCENES.BATTLE });
@@ -143,7 +149,10 @@ class BattleScene extends Phaser.Scene {
             new SceneDice(this, 0, 0, DICE_TYPE.D12)
         ]));
 
-        let dice_change_feature = new DiceChangeActionFeature(this, [this.attack_dice_slots, this.defence_dice_slots, this.heal_dice_slots]);
+        this.dice_change_box = new SceneDiceBox(this, 80, 550, 4);
+        this.add.existing(this.dice_change_box);
+
+        let dice_change_feature = new DiceChangeActionFeature(this, [this.attack_dice_slots, this.defence_dice_slots, this.heal_dice_slots], this.dice_change_box);
         this.dice_change_button = new SceneDiceChangeActionFeature(this, 790, 400, dice_change_feature);
         this.add.existing(this.dice_change_button);
 

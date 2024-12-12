@@ -43,6 +43,12 @@ const DICE_TYPE = {
                 return KEYS_ASSETS_SPRITES.DICE_TYPE_D20;
         }
     },
+
+    get_random() {
+        let index = Math.floor(Math.random() * 6);
+        let types = [DICE_TYPE.D4, DICE_TYPE.D6, DICE_TYPE.D8, DICE_TYPE.D10, DICE_TYPE.D12, DICE_TYPE.D20];
+        return types[index];
+    },
 };
 
 const DICE_DEFAULTS = {
