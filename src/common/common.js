@@ -1,5 +1,9 @@
 const KEYS_SCENES = {
+    PRELOAD: "PRELOAD",
     BATTLE: "BATTLE",
+    MAIN_MENU: "MAIN_MENU",
+    GAME_OVER: "GAME_OVER",
+    GAME_WIN: "GAME_WIN",
 };
 
 const KEYS_ASSETS_SPRITES = {
@@ -38,6 +42,10 @@ const KEYS_ASSETS_SPRITES = {
     EMOTION_FEAR_ICON: "EMOTION_FEAR_ICON",
     EMOTION_CONFIDENCE_ICON: "EMOTION_CONFIDENCE_ICON",
 };
+
+const KEYS_FONT_FAMILIES = {
+    Bauhaus93: "Bauhaus93",
+}
 
 const KEYS_EVENTS = {
     PLAYER_HEALTH_SET: "PLAYER_HEALTH_SET",
@@ -143,4 +151,4 @@ function implements_interface_object(interface_class, object) {
     return fully_implemented;
 }
 
-export { KEYS_SCENES, KEYS_ASSETS_SPRITES, KEYS_EVENTS, CONSTANTS_SPRITES_MEASURES, exit, Interface, implements_interface_class, implements_interface_object };
+export { KEYS_SCENES, KEYS_ASSETS_SPRITES, KEYS_FONT_FAMILIES, KEYS_EVENTS, CONSTANTS_SPRITES_MEASURES, exit, Interface, implements_interface_class, implements_interface_object };
