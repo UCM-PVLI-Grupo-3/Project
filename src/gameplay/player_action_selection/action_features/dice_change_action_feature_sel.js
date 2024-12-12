@@ -174,24 +174,26 @@ class DiceChangeActionFeature extends ActionFeatureSelector {
     		return;
 
     	if(selected_new_frame === null) {
-			dice_old_slot.remove_dice(dropped_scene_dice);
-    		// dice_old_frame.remove_dice();
-    		// dropped_scene_dice.destroy();
+			dice_old_slot.dice_slots.remove_dice(dropped_scene_dice.dice);
+    		dice_old_frame.remove_dice();
+    		dropped_scene_dice.destroy();
     		return;
     	}
-		// FIXME: almost there but not quite
+		
+		dice_old_frame.remove_dice();
+		dice_old_slot.dice_slots.remove_dice(dropped_scene_dice.dice);
 
-    	let exchanged_dice = selected_new_frame.scene_dice;
-    	if(exchanged_dice !== null) {
-			dice_old_slot.add_dice(exchanged_dice);
-    		//dice_old_frame.set_dice(exchanged_dice);
-		} else {
-			dice_old_slot.remove_dice(dropped_scene_dice);
-			//dice_old_frame.remove_dice();
+		let occupant_scene_dice = selected_new_frame.scene_dice;
+		if(occupant_scene_dice !== null) {
+			dice_old_frame.set_dice(occupant_scene_dice);
+			dice_old_slot.dice_slots.add_dice(occupant_scene_dice.dice);
+
+			selected_new_frame.remove_dice();
+			selected_dice_slots.dice_slots.remove_dice(occupant_scene_dice.dice);
 		}
-		selected_dice_slots.add_dice(dropped_scene_dice);
-    	//selected_new_frame.set_dice(dropped_scene_dice);
 
+		selected_new_frame.set_dice(dropped_scene_dice);
+		selected_dice_slots.dice_slots.add_dice(dropped_scene_dice.dice);
     	
     	console.log("EXCHANGING " + dice_old_frame.ID + " to " + selected_new_frame.ID);
     }
@@ -200,7 +202,7 @@ class DiceChangeActionFeature extends ActionFeatureSelector {
 
 		if(!this.dice_box_register.scene_dice_box.scene_dices.includes(dropped_scene_dice)) return;
 
-		let all_dice_slot_frames = [];
+		/*let all_dice_slot_frames = [];
 
     	this.dice_slots_registers.forEach((dice_slots_register) => {
     		all_dice_slot_frames.push(...dice_slots_register.scene_dice_slots.scene_dice_slot_frames);
@@ -223,22 +225,54 @@ class DiceChangeActionFeature extends ActionFeatureSelector {
     			biggest_intersection_area = intersection_area;
     			selected_new_frame = dice_slot_frame;
     		}
+    	});*/
+    	let all_dice_slots = [];
+
+    	this.dice_slots_registers.forEach((dice_slots_register) => {
+    		all_dice_slots.push(dice_slots_register.scene_dice_slots);
+    	});
+
+    	let selected_new_frame = null;
+		let selected_dice_slots = null;
+    	let biggest_intersection_area = 0;
+
+    	let dice_bounds = dropped_scene_dice.getBounds();
+
+    	all_dice_slots.forEach((dice_slot) => {
+			dice_slot.scene_dice_slot_frames.forEach((dice_slot_frame) => {
+
+				let frame_bounds = dice_slot_frame.scene_frame_nineslice.getBounds();
+				let intersection_rect = new Phaser.Geom.Rectangle();
+
+				Phaser.Geom.Rectangle.Intersection(frame_bounds, dice_bounds, intersection_rect);
+				let intersection_area = intersection_rect.width * intersection_rect.height;
+				
+				if(intersection_area > biggest_intersection_area){
+					biggest_intersection_area = intersection_area;
+					selected_new_frame = dice_slot_frame;
+					selected_dice_slots = dice_slot;
+				}
+			});
     	});
 
     	if(selected_new_frame === null) {
-    		dice_old_frame.remove_dice();
-    		dropped_scene_dice.destroy();
+    		let dice_index_in_box = this.dice_box_register.scene_dice_box.scene_dices.indexOf(dropped_scene_dice);
+    		let dice_initial_pos = this.dice_box_register.scene_dice_box.dice_positions[dice_index_in_box];
+
+    		dropped_scene_dice.setPosition(dice_initial_pos.x, dice_initial_pos.y);
     		return;
     	}
 
-    	this.dice_box_register.scene_dice_box.remove(dropped_scene_dice, false);
+    	this.dice_box_register.scene_dice_box.remove_dice(dropped_scene_dice);
 
-    	let existing_dice = selected_new_frame.scene_dice;
-    	if(existing_dice === null) {
-    	//	selected_new_frame.remove_dice();
-    		existing_dice.destroy();
+    	let existing_scene_dice = selected_new_frame.scene_dice;
+    	if(existing_scene_dice !== null) {
+    		selected_dice_slots.dice_slots.remove_dice(existing_scene_dice.dice);
+    		existing_scene_dice.destroy();
     	}
+
     	selected_new_frame.set_dice(dropped_scene_dice);
+    	selected_dice_slots.dice_slots.add_dice(dropped_scene_dice.dice);
 	}
 }
 
