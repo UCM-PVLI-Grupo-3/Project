@@ -1,6 +1,6 @@
 import { CardDeck, SceneCardDeck } from "./card_deck.js";
 import { CardHand, SceneCardHand } from "./card_hand.js";
-import { Health, Healable, Damageable, Blocker } from "./health.js";
+import { Health, Healable, Damageable, Blocker, Block } from "./health.js";
 import { CardHandActionFeature, SceneCardHandActionFeature } from "./player_action_selection/action_features/card_hand_action_feature_sel.js";
 import { DiceChangeActionFeature, SceneDiceChangeActionFeature, DiceSlotsRegister } from "./player_action_selection/action_features/dice_change_action_feature_sel.js";
 import { ActionSelectorRadioGroup } from "./player_action_selection/action_selector_radio_group.js";
@@ -32,7 +32,7 @@ class Player {
     health = null;
 
     /**
-     * @type {Health}
+     * @type {Block}
      */
     block = null;
 
@@ -46,6 +46,7 @@ class Player {
         console.assert(card_deck instanceof CardDeck, "error: parameter card_deck must be an instance of CardDeck");
         console.assert(scene_card_hand instanceof SceneCardHand, "error: parameter card_hand must be an instance of SceneCardHand");
         console.assert(health instanceof Health, "error: parameter health must be an instance of Health");
+        console.assert(block instanceof Block, "error: parameter block must be an instance of Block");
         console.assert(dice_slots_registers instanceof Array, "error: parameter dice_slot_register must be an Array");
 
         this.card_deck = card_deck;

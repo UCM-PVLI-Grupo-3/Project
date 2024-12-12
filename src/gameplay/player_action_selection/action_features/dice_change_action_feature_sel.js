@@ -135,51 +135,63 @@ class DiceChangeActionFeature extends ActionFeatureSelector {
     }
 
     handle_dice_drop_in_dice_slots(dropped_scene_dice) {
-    	let all_dice_slot_frames = [];
+    	let all_dice_slots = [];
 
     	this.dice_slots_registers.forEach((dice_slots_register) => {
-    		all_dice_slot_frames.push(...dice_slots_register.scene_dice_slots.scene_dice_slot_frames);
+    		all_dice_slots.push(dice_slots_register.scene_dice_slots);
     	});
 
     	let dice_old_frame = null;
+		let dice_old_slot = null;
     	let selected_new_frame = null;
+		let selected_dice_slots = null;
     	let biggest_intersection_area = 0;
 
     	let dice_bounds = dropped_scene_dice.getBounds();
 
-    	all_dice_slot_frames.forEach((dice_slot_frame) => {
+    	all_dice_slots.forEach((dice_slot) => {
+			dice_slot.scene_dice_slot_frames.forEach((dice_slot_frame) => {
+				if(dice_old_frame === null && dice_slot_frame.scene_dice === dropped_scene_dice) {
+					dice_old_frame = dice_slot_frame;
+					dice_old_slot = dice_slot;
+				}
 
-    		if(dice_old_frame === null && dice_slot_frame.scene_dice === dropped_scene_dice)
-    			dice_old_frame = dice_slot_frame;
+				let frame_bounds = dice_slot_frame.scene_frame_nineslice.getBounds();
+				let intersection_rect = new Phaser.Geom.Rectangle();
 
-    		let frame_bounds = dice_slot_frame.scene_frame_nineslice.getBounds();
-    		let intersection_rect = new Phaser.Geom.Rectangle();
-
-    		Phaser.Geom.Rectangle.Intersection(frame_bounds, dice_bounds, intersection_rect);
-    		let intersection_area = intersection_rect.width * intersection_rect.height;
-    		
-    		if(intersection_area > biggest_intersection_area){
-    			biggest_intersection_area = intersection_area;
-    			selected_new_frame = dice_slot_frame;
-    		}
+				Phaser.Geom.Rectangle.Intersection(frame_bounds, dice_bounds, intersection_rect);
+				let intersection_area = intersection_rect.width * intersection_rect.height;
+				
+				if(intersection_area > biggest_intersection_area){
+					biggest_intersection_area = intersection_area;
+					selected_new_frame = dice_slot_frame;
+					selected_dice_slots = dice_slot;
+				}
+			});
     	});
 
     	if(dice_old_frame === null) // SceneDice does not come from DiceSlot
     		return;
 
     	if(selected_new_frame === null) {
-    		dice_old_frame.remove_dice();
-    		dropped_scene_dice.destroy();
+			dice_old_slot.remove_dice(dropped_scene_dice);
+    		// dice_old_frame.remove_dice();
+    		// dropped_scene_dice.destroy();
     		return;
     	}
+		// FIXME: almost there but not quite
 
     	let exchanged_dice = selected_new_frame.scene_dice;
-    	selected_new_frame.set_dice(dropped_scene_dice);
+    	if(exchanged_dice !== null) {
+			dice_old_slot.add_dice(exchanged_dice);
+    		//dice_old_frame.set_dice(exchanged_dice);
+		} else {
+			dice_old_slot.remove_dice(dropped_scene_dice);
+			//dice_old_frame.remove_dice();
+		}
+		selected_dice_slots.add_dice(dropped_scene_dice);
+    	//selected_new_frame.set_dice(dropped_scene_dice);
 
-    	if(exchanged_dice !== null)
-    		dice_old_frame.set_dice(exchanged_dice);
-    	else
-			dice_old_frame.remove_dice();
     	
     	console.log("EXCHANGING " + dice_old_frame.ID + " to " + selected_new_frame.ID);
     }
