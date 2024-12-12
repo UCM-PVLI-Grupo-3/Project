@@ -6,7 +6,7 @@ import { DiceChangeActionFeature, SceneDiceChangeActionFeature, DiceSlotsRegiste
 import { ActionSelectorRadioGroup } from "./player_action_selection/action_selector_radio_group.js";
 import { exit, implements_interface_class } from "../common/common.js";
 import { CardEffectContext } from "./card_effects/card_effect.js";
-import { CARD_ACTION_TYPE } from "./card.js";
+import { CARD_ACTION_TYPE, BattleCard } from "./card.js";
 import { DiceSlots } from "./dice_slots.js";
 
 class Player {
@@ -108,13 +108,14 @@ class Player {
                 }
                 }
 
-                card.card_effects.forEach((card_effect) => {
-                    card_effect.apply_effect(this, this, new CardEffectContext(
-                        action_dice_slots.roll(),
-                        action_dice_slots.get_max_roll_value(),
-                        scene_card_hand.scene
-                    ));
-                });
+                let battle_card = new BattleCard(card);  
+                battle_card.use(this /* HACK */, this, new CardEffectContext(
+                    action_dice_slots.roll(),
+                    action_dice_slots.get_max_roll_value(),
+                    scene_card_hand.scene,
+                    scene_card_hand.scene.scene_emotion_stack
+                ));
+                
             } else {
                 // TODO: maybe return control to game
                 console.assert(false, "unimplemented: no card selected");

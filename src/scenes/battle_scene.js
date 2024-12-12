@@ -140,14 +140,6 @@ class BattleScene extends Phaser.Scene {
     }
 
     create(data) {
-        this.scene_emotion_stack = this.add.existing(new SceneEmotionStack(this, 100, 100, [
-            EMOTION_TYPE.ANGER(),
-            EMOTION_TYPE.ANGER(),
-            EMOTION_TYPE.HAPPINESS(),
-            EMOTION_TYPE.HAPPINESS(),
-            EMOTION_TYPE.CALM()
-        ], 8));
-
         const screen_width = this.renderer.width;
         const screen_height = this.renderer.height;
 
@@ -161,6 +153,15 @@ class BattleScene extends Phaser.Scene {
         this.heal_dice_slots = this.add.existing(new SceneDiceSlots(this, screen_width / 2 + 110, 450, 3, [
             new SceneDice(this, 0, 0, DICE_TYPE.D12)
         ]));
+
+        const emotion_stack_y = this.attack_dice_slots.y;
+
+        const emotion_stack_x_offset = -150;
+        const emotion_stack_x = this.attack_dice_slots.x + emotion_stack_x_offset;
+
+        this.scene_emotion_stack = this.add.existing(new SceneEmotionStack(this, emotion_stack_x, emotion_stack_y, [
+            
+        ], 7)).setScale(0.50);
 
         this.dice_change_box = new SceneDiceBox(this, 80, 550, 4);
         this.add.existing(this.dice_change_box);
@@ -180,9 +181,9 @@ class BattleScene extends Phaser.Scene {
         let card_deck = new CardDeck(30, initial_cards);
 
         // SceneCardHands
-        this.attack_scene_card_hand = this.add.existing(new SceneCardHand(this, screen_width / 2, screen_height / 2 + 180, card_deck, 3, CARD_ACTION_TYPE.ATTACK));
-        this.defence_scene_card_hand = this.add.existing(new SceneCardHand(this, screen_width / 2, screen_height / 2 + 180, card_deck, 2, CARD_ACTION_TYPE.DEFENCE));
-        this.heal_scene_card_hand = this.add.existing(new SceneCardHand(this, screen_width / 2, screen_height / 2 + 180, card_deck, 2, CARD_ACTION_TYPE.HEAL));
+        this.attack_scene_card_hand = this.add.existing(new SceneCardHand(this, screen_width / 2, screen_height / 2 + 180, card_deck, 3, CARD_ACTION_TYPE.ATTACK)).setVisible(false);
+        this.defence_scene_card_hand = this.add.existing(new SceneCardHand(this, screen_width / 2, screen_height / 2 + 180, card_deck, 2, CARD_ACTION_TYPE.DEFENCE)).setVisible(false);
+        this.heal_scene_card_hand = this.add.existing(new SceneCardHand(this, screen_width / 2, screen_height / 2 + 180, card_deck, 2, CARD_ACTION_TYPE.HEAL)).setVisible(false);
         
         this.player = new Player(
             card_deck,
@@ -226,7 +227,7 @@ class BattleScene extends Phaser.Scene {
 
                 this.execute_turn();
             }
-        ).setOrigin(0.0, 0.0).setTint(0xCCA049).setScale(0.75);
+        ).setOrigin(0.0, 0.0).setTint(0xCCA049).setScale(0.75).setDepth(-1);
         //this.turn_execution_bell.outl
         console.log(action_selection_group);
         console.log(card_hand_selection_group);

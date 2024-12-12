@@ -1,7 +1,8 @@
 import { OPTIONAL_EMOTION_TYPE, emotion_sprite_key_from_type } from "./emotions.js";
 import { NullEffect } from "./card_effects/null_effect.js";
-import { CardEffect } from "./card_effects/card_effect.js";
+import { CardEffect, CardEffectContext } from "./card_effects/card_effect.js";
 import { KEYS_ASSETS_SPRITES } from "../common/common.js";
+import { SceneEmotionStack } from "./emotion_stack.js";
 
 const CARD_TIMELINE_TYPE = {
     PAST: "PAST",
@@ -234,4 +235,44 @@ class SceneCard extends Phaser.GameObjects.Container {
     }
 }
 
-export { CARD_TIMELINE_TYPE,  CARD_ACTION_TYPE, CARD_DEFAULTS, Card, SceneCard };
+class BattleCard {
+    /**
+     * @type {Card}
+     */
+    card;
+    
+    constructor(card) {
+        console.assert(card instanceof Card, "error: card must be an instance of Card");
+        this.card = card;
+    }
+
+    /**
+     * 
+     * @param {any} destination 
+     * @param {any} source 
+     * @param {CardEffectContext} context 
+     */
+    use(destination, source, context) {
+        // console.assert(destination instanceof SceneEmotionStack, "error: destination must be an instance of SceneEmotionStack");
+        // console.assert(source instanceof SceneEmotionStack, "error: source must be an instance of SceneEmotionStack");
+        console.assert(context instanceof CardEffectContext, "error: context must be an instance of CardEffectContext");
+        
+        const high_roll_percentage = 0.80;
+        const low_roll_percentage = 0.20;
+        const roll_percentage = context.roll / context.maximum_roll;
+        if (roll_percentage > high_roll_percentage && this.card.successful_action_emotion_type !== OPTIONAL_EMOTION_TYPE.NONE()) {
+            // TODO: check if full
+            // TODO: check if combo
+            context.scene_emotion_stack.add_emotions([this.card.successful_action_emotion_type]);
+            console.log("success");
+        } else if (roll_percentage < low_roll_percentage && this.card.failure_action_emotion_type !== OPTIONAL_EMOTION_TYPE.NONE()) {
+            context.scene_emotion_stack.add_emotions([this.card.failure_action_emotion_type]);
+        }
+
+        this.card.card_effects.forEach((card_effect) => {
+            card_effect.apply_effect(destination, source, context);
+        });
+    }
+}
+
+export { CARD_TIMELINE_TYPE,  CARD_ACTION_TYPE, CARD_DEFAULTS, Card, SceneCard, BattleCard };
