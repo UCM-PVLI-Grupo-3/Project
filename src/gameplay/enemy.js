@@ -1,9 +1,10 @@
 import {AttackList} from './AttackList.js'
 import {Attack}     from './attack.js'
+import { EnemyTypeList } from './EnemyTypeList.js';
 
- export class Enemy
+ class Enemy
 {
-    constructor(scene,health,actions,enemyType,url)
+    constructor(scene,health,actions,enemyType)
     {
         this.health = health;
         //this.imageDirection = imageDirection;            
@@ -11,11 +12,11 @@ import {Attack}     from './attack.js'
         this.action1 =actions[1];
         this.action2 =actions[2];
         this.action3 = actions[3];
-        this.action4 = action[4];
+        this.action4 = actions[4];
         this.actions = [this.action1,this.action2,this.action3,this.action4];  
         this.TopHealth = health; 
         this.scene = scene;
-        this.scene.image.add(url);
+      
 
     }
 
@@ -31,7 +32,7 @@ import {Attack}     from './attack.js'
 
     Death()
     {
-
+       
     }
     Behaviour()
     {
@@ -93,3 +94,38 @@ import {Attack}     from './attack.js'
         return this.enemyType;
     }
 }
+
+class SceneEnemy extends Phaser.GameObjects.Sprite{
+
+       /**
+     * @type {Phaser.GameObjects.Image}
+     * */
+       enemyImage;
+
+    constructor(scene,positionx,positiony,EnemyType)
+    {
+        super(scene,positionx,positiony);
+        Enemy = new Enemy(this,EnemyTypeList[EnemyType].health,EnemyTypeList[EnemyType].attacks,EnemyTypeList[EnemyType].type);
+      
+      
+        this.enemyImage = scene.add.image(100,0,EnemyTypeList[EnemyType].Url);
+    
+
+        this.setInteractive({
+            hitArea: new Phaser.Geom.Rectangle(0, 0, this.enemyImage.width, this.enemyImage.height),
+            hitAreaCallback: Phaser.Geom.Rectangle.Contains 
+        })
+        .on(Phaser.Input.Events.POINTER_DOWN, () => { console.log("EnemyTouched") });
+      
+    }
+
+
+    EnemyClicked(pointer,gameObject)
+    { 
+        if (gameObject instanceof SceneEnemy) 
+            {
+
+            }
+    }
+}
+export {Enemy,SceneEnemy};

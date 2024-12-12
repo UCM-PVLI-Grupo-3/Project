@@ -5,7 +5,7 @@ export class Attack
     {
         this.actionValue = actionValue;
         this.actionDefiner = actionDefiner;
-        this.ArrayLenght = sideEffects.lenght;
+       
      
 
         this.HitPercentaje = HitPercentaje;
