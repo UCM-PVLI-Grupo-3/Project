@@ -91,9 +91,12 @@ const SCENE_DICE_SLOT_FRAME_DEFAULTS = {
 class SceneDiceSlotFrame extends Phaser.GameObjects.Container {
     scene_frame_nineslice_width = SCENE_DICE_SLOT_FRAME_DEFAULTS.SCENE_FRAME_NINESLICE_WIDTH;
     scene_frame_nineslice_height = SCENE_DICE_SLOT_FRAME_DEFAULTS.SCENE_FRAME_NINESLICE_HEIGHT;
+    scene_frame_nineslice_center_x = 0;
+    scene_frame_nineslice_center_y = 0;
     scene_frame_nineslice = SCENE_DICE_SLOT_FRAME_DEFAULTS.SCENE_FRAME_NINESLICE;
     scene_dice = SCENE_DICE_SLOT_FRAME_DEFAULTS.SCENE_DICE;
 
+static LASTID = 0; ID;
     constructor(scene, position_x, position_y, scene_dice, width, height) {
         console.assert(scene instanceof Phaser.Scene, "error: scene must be a valid Phaser.Scene");
         console.assert(typeof position_x === "number", "error: position_x must be a number");
@@ -109,10 +112,16 @@ class SceneDiceSlotFrame extends Phaser.GameObjects.Container {
         console.assert(height > 0, "error: height must be greater than 0");
 
         super(scene, position_x, position_y);
+
+
         this.scene_frame_nineslice_width = width;
         this.scene_frame_nineslice_height = height;
-        this.scene_frame_nineslice = this.add(this.scene.add.nineslice(
-            0, 0,
+        this.scene_frame_nineslice_center_x = -width / 2;
+        this.scene_frame_nineslice_center_y = -height / 2;
+
+        this.scene_frame_nineslice = this.scene.add.nineslice(
+            this.scene_frame_nineslice_center_x, 
+            this.scene_frame_nineslice_center_y,
             KEYS_ASSETS_SPRITES.DICE_SLOT,
             0,
             width,
@@ -121,7 +130,18 @@ class SceneDiceSlotFrame extends Phaser.GameObjects.Container {
             CONSTANTS_SPRITES_MEASURES.DICE_SLOT.LINE_BORDER,
             CONSTANTS_SPRITES_MEASURES.DICE_SLOT.LINE_BORDER,
             CONSTANTS_SPRITES_MEASURES.DICE_SLOT.LINE_BORDER
-        ).setOrigin(0.5, 0.5));
+        ).setOrigin(0, 0);
+        this.add(this.scene_frame_nineslice);
+
+// TEMPORAL <<<<<<<<<<<<<<<<<<<<<<<<<<<<
+this.ID = ++SceneDiceSlotFrame.LASTID;
+this.add(scene.add.text(0,0,this.ID.toString()));/*
+this.setInteractive({
+    hitArea: new Phaser.Geom.Rectangle(-width/2, -height/2, width, height),
+    hitAreaCallback: Phaser.Geom.Rectangle.Contains 
+})
+.on(Phaser.Input.Events.POINTER_DOWN, () => { console.log("FRAME TOIUCHED " + this.ID); });*/
+//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
         this.scene_dice = scene_dice;
         if (scene_dice !== null) {
@@ -135,6 +155,7 @@ class SceneDiceSlotFrame extends Phaser.GameObjects.Container {
 
         this.scene_dice = scene_dice;
         this.scene_dice.setDisplaySize(this.scene_frame_nineslice_height * 0.75, this.scene_frame_nineslice_height * 0.75);
+        this.scene_dice.setPosition(0, 0);
         this.add(scene_dice);
     }
 
@@ -143,6 +164,10 @@ class SceneDiceSlotFrame extends Phaser.GameObjects.Container {
             this.remove(this.scene_dice, false);
         }
         this.scene_dice = null;
+    }
+
+    getFrameBounds() {
+        return this.scene_frame_nineslice.getBounds();
     }
 }
 
@@ -198,7 +223,7 @@ class SceneDiceSlots extends Phaser.GameObjects.Container {
             this.on_drag(pointer, game_object, drag_x, drag_y);
         });       
         this.scene.input.on(Phaser.Input.Events.DRAG_END, (pointer, game_object) => {
-            this.on_drag_end(pointer, game_object);
+         //   this.on_drag_end(pointer, game_object);
         });
     }
 
@@ -233,16 +258,16 @@ class SceneDiceSlots extends Phaser.GameObjects.Container {
             return frame.scene_dice == scene_dice;
         });
         if (this.dice_slots.contains_dice(scene_dice.dice)) {
-            if (frame_index === -1) {
+        /*    if (frame_index === -1) {
                 console.assert(
                     false,
                     "unreachable: dice_slots - scene_dice_slot_frames mismatch, dice should be found in the array"
                 );
                 exit("EXIT_FAILURE");
-            }
+            }*/
             return true;
         } else {
-            if (frame_index !== -1) {
+        /*    if (frame_index !== -1) {
                 console.assert(
                     false,
                     "unreachable: dice_slots - scene_dice_slot_frames mismatch, dice should not be found in the array",
@@ -250,7 +275,7 @@ class SceneDiceSlots extends Phaser.GameObjects.Container {
                     this.scene_dice_slot_frames
                 );
                 exit("EXIT_FAILURE");
-            }
+            }*/
             return false;
         }
     }

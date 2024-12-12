@@ -5,7 +5,8 @@ class NullEffect extends CardEffect {
         super();
     }
 
-    apply_effect() {
+    apply_effect(destination, source, context) {
+        console.warn("NullEffect.apply_effect()");
     }
 }
 

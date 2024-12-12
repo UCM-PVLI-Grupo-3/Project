@@ -1,5 +1,6 @@
 {
   "devDependencies": {
-    "live-server": "^1.2.2"
+    "braces": "^3.0.3",
+    "live-server": "^1.2.0"
   }
 }

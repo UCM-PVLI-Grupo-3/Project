@@ -63,7 +63,17 @@ class ActionSelectorRadioGroup {
 	}
 
 	get_selected_action_feature() {
-		
+		let selected_action_features = [];
+		this.action_features.forEach((action_feature) => {
+			if (action_feature.get_selection_state()) {
+				selected_action_features.push(action_feature);
+			}
+		});
+		if (selected_action_features.length === 1) {
+			return selected_action_features[0];
+		} else {
+			return selected_action_features;
+		}
 	}
 }
 

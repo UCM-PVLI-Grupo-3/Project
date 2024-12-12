@@ -1,27 +1,45 @@
+import { Interface } from "../../common/common.js";
+import { SceneEmotionStack } from "../emotion_stack.js";
 
-class CardEffect {
+class CardEffectContext {
+    roll = -1;
+    maximum_roll = -1;
+
+    // HACK: maybe remove, not needed
+    scene = null;
+
+    /**
+     * @type {SceneEmotionStack}
+     */
+    scene_emotion_stack = null;
+
+    constructor(roll, maximum_roll, scene, scene_emotion_stack) {
+        console.assert(typeof roll === "number", "error: roll must be a number");
+        console.assert(typeof maximum_roll === "number", "error: maximum_roll must be a number");
+        console.assert(scene !== null, "error: scene must not be null");
+        console.assert(scene_emotion_stack instanceof SceneEmotionStack, "error: scene_emotion_stack must be an instance of SceneEmotionStack");
+
+        this.roll = roll;
+        this.maximum_roll = maximum_roll;
+        this.scene = scene;
+        this.scene_emotion_stack = scene_emotion_stack;
+    }
+}
+
+class CardEffect extends Interface {
     constructor() {
-        console.assert(this.constructor !== CardEffect, "error: CardEffect is an abstract class and cannot be instantiated");
+        super();
     }
     
-    apply_effect() {
+    /**
+     * 
+     * @param {any} destination 
+     * @param {any} source 
+     * @param {CardEffectContext} context 
+     */
+    apply_effect(destination, source, context) {
         console.assert(false, "error: apply_effect() must be implemented in derived classes");
     }
 }
 
-class BlockDamageEffect extends CardEffect {
-    block_capacity = 0;
-    constructor(block_capacity) {
-        super();
-        console.assert(typeof block_capacity === 'number', "error: block_capacity must be a number");
-        console.assert(block_capacity >= 0, "error: block_capacity must be greater than or equal to 0");
-        this.block_capacity = block_capacity;
-    }
-
-    apply_effect() {
-        console.log("BlockDamageEffect.apply_effect()");
-        // TODO
-    }
-}
-
-export { CardEffect, BlockDamageEffect };
+export { CardEffectContext, CardEffect };

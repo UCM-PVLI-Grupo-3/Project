@@ -1,3 +1,5 @@
+import { Interface } from "../common/common.js";
+
 class Health {
     min_health = 0;
     max_health = 0;
@@ -39,9 +41,27 @@ class Health {
         this.health_set(this.health);
     }
 
+    set_health_clamped(new_health) {
+        this.health = Math.max(this.min_health, Math.min(this.max_health, new_health));
+        this.health_set(this.health);
+    }
+
     get_health() {
         return this.health;
     }
 }
 
-export { Health };
+class Healable extends Interface {
+    heal(amount) { }
+}
+
+class Damageable extends Interface {
+    receive_damage(amount) { }
+}
+
+class Blocker extends Interface {
+    get_block() { return 0; }
+    set_block(amount) { }
+}
+
+export { Health, Health as Block, Healable, Damageable, Blocker };
