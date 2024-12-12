@@ -1,18 +1,15 @@
-import {Enemy} from '\enemy.js'
+import {Enemy} from './enemy.js'
 export class Attack
 {
-    constructor(actionValue,actionDefiner,sideEffects,HitPercentaje,SideEffectPercentaje)
+    constructor(actionValue,actionDefiner,HitPercentaje)
     {
         this.actionValue = actionValue;
         this.actionDefiner = actionDefiner;
-        this.ArrayLenght = sideEffects.lenght;
-        var sideEffect;
-        for(i = 0;i < this.ArrayLenght;i++ )
-        {
-            sideEffect[i] = sideEffects[i];
-        }
+       
+     
+
         this.HitPercentaje = HitPercentaje;
-        this.SideEffectPercentaje = SideEffectPercentaje;
+      
     }
 
     GetHitPercentaje()
