@@ -4,7 +4,10 @@ import { Health, Healable, Damageable, Blocker } from "./health.js";
 import { CardHandActionFeature, SceneCardHandActionFeature } from "./player_action_selection/action_features/card_hand_action_feature_sel.js";
 import { DiceChangeActionFeature, SceneDiceChangeActionFeature, DiceSlotsRegister } from "./player_action_selection/action_features/dice_change_action_feature_sel.js";
 import { ActionSelectorRadioGroup } from "./player_action_selection/action_selector_radio_group.js";
-import { implements_interface_class } from "../common/common.js";
+import { exit, implements_interface_class } from "../common/common.js";
+import { CardEffectContext } from "./card_effects/card_effect.js";
+import { CARD_ACTION_TYPE } from "./card.js";
+import { DiceSlots } from "./dice_slots.js";
 
 class Player {
     // TODO: replace with scene
@@ -71,16 +74,45 @@ class Player {
         } else if (action_feature instanceof CardHandActionFeature) {
             let scene_card_hand = action_feature.scene_card_hand;
             let selected_car_index = -1;
+
+            // TODO: add only one is selected counter assertion
             scene_card_hand.scene_cards.forEach((scene_card, index) => {
                 if (scene_card.is_selected) {
                     selected_car_index = index;
                 }
             });
 
+            
             if (selected_car_index !== -1) {
                 let card = scene_card_hand.card_hand.use_hand_card(selected_car_index);
+
+                /**
+                 * @type {DiceSlots}
+                 */
+                let action_dice_slots;
+                switch (card.action_type) {
+                case CARD_ACTION_TYPE.ATTACK:
+                    action_dice_slots = this.dice_slots_registers[0].scene_dice_slots.dice_slots;
+                    break;
+                case CARD_ACTION_TYPE.DEFENCE:
+                    action_dice_slots = this.dice_slots_registers[1].scene_dice_slots.dice_slots;
+                    break;
+                case CARD_ACTION_TYPE.HEAL:
+                    action_dice_slots = this.dice_slots_registers[2].scene_dice_slots.dice_slots;
+                    break;
+                default: {
+                    console.assert(false, "unreachable: invalid card action type");
+                    exit("EXIT_FAILURE");
+                    return;
+                }
+                }
+
                 card.card_effects.forEach((card_effect) => {
-                    card_effect.apply_effect(this, this, {});
+                    card_effect.apply_effect(this, this, new CardEffectContext(
+                        action_dice_slots.roll(),
+                        action_dice_slots.get_max_roll_value(),
+                        scene_card_hand.scene
+                    ));
                 });
             } else {
                 // TODO: maybe return control to game

@@ -19,6 +19,7 @@ class DealDamageEffect extends CardEffect {
             let damageable = destination;
             damageable.receive_damage(this.amount_of_damage);
             console.log("Dealt " + this.amount_of_damage + " damage to " + destination);
+            console.log("Roll: " + context.roll + " Max Roll: " + context.maximum_roll);
         } else {
             console.assert(false, "unreachable: destination must implement Damageable interface, else this effect should not have been applied");
         }
