@@ -74,6 +74,16 @@ class BattleScene extends Phaser.Scene {
      * */
     dice_change_button;
 
+    /**
+     * @type {ActionSelectorRadioGroup}
+     */
+    card_hand_action_selector;
+
+    /**
+     * @type {Phaser.GameObjects.Sprite}
+     */
+    turn_execution_bell;
+
     constructor() {
         super({ key: KEYS_SCENES.BATTLE });
         this.attack_dice_slots = null;
@@ -108,6 +118,9 @@ class BattleScene extends Phaser.Scene {
         this.load.image(KEYS_ASSETS_SPRITES.DICE_TYPE_D20, "assets/dice/dice_d20.png");
         this.load.image(KEYS_ASSETS_SPRITES.DICE_BOX, "assets/dice/dice_box.png");
         this.load.image(KEYS_ASSETS_SPRITES.DICE_BOX_SELECTION_FRAME, "assets/dice/dice_box_selection.png");
+
+        this.load.image(KEYS_ASSETS_SPRITES.TURN_EXECUTION_RING_BUTTON_PRESSED, "assets/turn_ring_button/finish_turn_button_pressed.png");
+        this.load.image(KEYS_ASSETS_SPRITES.TURN_EXECUTION_RING_BUTTON_RELEASE, "assets/turn_ring_button/finish_turn_button_released.png");
 
         this.load.image(KEYS_ASSETS_SPRITES.EMOTION_ANGER_ICON, "assets/emotion_stack/anger_icon.png");
         this.load.image(KEYS_ASSETS_SPRITES.EMOTION_HAPPINESS_ICON, "assets/emotion_stack/happiness_icon.png");
@@ -164,7 +177,8 @@ class BattleScene extends Phaser.Scene {
         this.player = new Player(
             card_deck,
             this.attack_scene_card_hand,
-            new Health(12, 0, 12, (health) => { this.on_player_health_set(health); })
+            new Health(12, 0, 12, (health) => { this.on_player_health_set(health); }),
+            dice_change_feature.dice_slots_registers
         );
 
         // SceneCard selection
@@ -178,6 +192,7 @@ class BattleScene extends Phaser.Scene {
             false,
             true
         );
+        this.card_hand_action_selector = action_selection_group;
         
         this.attack_card_hand_button = this.add.existing(new SceneCardHandActionFeature(this, screen_width / 2 - 115 - 50, 260, attack_card_hand_feature));
         this.defence_card_hand_button = this.add.existing(new SceneCardHandActionFeature(this, screen_width / 2 - 50, 260, defence_card_hand_feature));
@@ -189,6 +204,19 @@ class BattleScene extends Phaser.Scene {
             this.heal_card_hand_button.feature_selector,
         ], true, false);
 
+        //this.dice_change_button.y += 200;
+        const bell_x = this.dice_change_button.x;
+        const bell_y_offset = 150;
+        const bell_y = this.dice_change_button.y + this.dice_change_button.height + bell_y_offset;
+        this.turn_execution_bell = 
+            this.add.sprite(bell_x, bell_y, KEYS_ASSETS_SPRITES.TURN_EXECUTION_RING_BUTTON_RELEASE)
+            .setInteractive().on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, (ptr, local_x, local_y, event) => {
+                // TODO: play bell press anim
+
+                this.execute_turn();
+            }
+        ).setOrigin(0.0, 0.0).setTint(0xCCA049).setScale(0.75);
+        //this.turn_execution_bell.outl
         console.log(action_selection_group);
         console.log(card_hand_selection_group);
     }
@@ -202,6 +230,10 @@ class BattleScene extends Phaser.Scene {
 
     on_player_health_set(health) {
         this.events.emit(KEYS_EVENTS.PLAYER_HEALTH_SET, health);
+    }
+
+    execute_turn() {
+        this.player.execute_turn(this.card_hand_action_selector);
     }
 }
 

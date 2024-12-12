@@ -78,6 +78,11 @@ class SceneCardHand extends Phaser.GameObjects.Container{
 	card_hand_panel;
 	card_deck = SCENE_CARD_HAND_DEFAULTS.SCENE_CARD_DECK;
 
+	/**
+	 * @type {Array<SceneCard>}
+	 */
+	scene_cards = [];
+
 	constructor(scene, position_x, position_y, card_deck, max_cards, cards_action_type){
 		console.assert(scene instanceof Phaser.Scene, "error: scene must be a valid Phaser.Scene");
         console.assert(typeof position_x === "number", "error: position_x must be a number");
@@ -87,9 +92,11 @@ class SceneCardHand extends Phaser.GameObjects.Container{
         console.assert(typeof cards_action_type === "string" || cards_action_type instanceof String, "error: cards_action_type must be a String");
 
         super(scene, position_x, position_y);
+		this.scene_cards = [];
 
         this.card_hand = new CardHand(card_deck, max_cards, cards_action_type);
 		this.card_deck = card_deck;
+
 
         this.card_hand_panel = scene.add.image(0, 0, KEYS_ASSETS_SPRITES.CARD_HAND_PANEL);
         this.card_hand_panel.setDisplaySize(
@@ -119,6 +126,7 @@ class SceneCardHand extends Phaser.GameObjects.Container{
 			console.log(card_positions[i].x, card_positions[i].y);
 			console.log(scene_card.x, scene_card.y);
         	scene_card.setScale(SCENE_CARD_HAND_DEFAULTS.SCENE_CARD_SCALE);
+			this.scene_cards.push(scene_card);
 			//this.scene.add.existing(scene_card);
         	this.add(scene_card);
         }

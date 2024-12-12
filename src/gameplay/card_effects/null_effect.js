@@ -6,6 +6,7 @@ class NullEffect extends CardEffect {
     }
 
     apply_effect() {
+        console.warn("NullEffect.apply_effect()");
     }
 }
 
