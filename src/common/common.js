@@ -40,6 +40,7 @@ const KEYS_ASSETS_SPRITES = {
 
 const KEYS_EVENTS = {
     PLAYER_HEALTH_SET: "PLAYER_HEALTH_SET",
+    PLAYER_BLOCK_SET: "PLAYER_BLOCK_SET",
 };
 
 const CONSTANTS_SPRITES_MEASURES = {
@@ -103,4 +104,38 @@ function exit(status) {
     throw '';
 }
 
-export { KEYS_SCENES, KEYS_ASSETS_SPRITES, KEYS_EVENTS, CONSTANTS_SPRITES_MEASURES, exit };
+class Interface {
+    constructor() {
+        console.assert(this.constructor !== Interface, "error: Interface class cannot be instantiated");
+    }
+}
+
+function implements_interface_class(interface_class, object_class) {
+    console.assert(interface_class.prototype instanceof Interface, "error: parameter interface_class must be an instance of Interface");
+    let fully_implemented = true;
+    Object.getOwnPropertyNames(interface_class.prototype).forEach((method) => {
+        if (
+            !(method in object_class.prototype)
+            || (typeof object_class.prototype[method] !== typeof interface_class.prototype[method])
+        ) {
+            fully_implemented = false;
+        }
+    });
+    return fully_implemented;
+}
+
+function implements_interface_object(interface_class, object) {
+    console.assert(interface_class.prototype instanceof Interface, "error: parameter interface_class must be an instance of Interface");
+    let fully_implemented = true;
+    Object.getOwnPropertyNames(interface_class.prototype).forEach((method) => {
+        if (
+            !(method in object)
+            || (typeof object[method] !== typeof interface_class.prototype[method])
+        ) {
+            fully_implemented = false;
+        }
+    });
+    return fully_implemented;
+}
+
+export { KEYS_SCENES, KEYS_ASSETS_SPRITES, KEYS_EVENTS, CONSTANTS_SPRITES_MEASURES, exit, Interface, implements_interface_class, implements_interface_object };

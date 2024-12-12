@@ -6,7 +6,7 @@ class StunEffect extends CardEffect {
         this.stun_duration = stun_duration;
     }
 
-    apply_effect() {
+    apply_effect(destination, source, context) {
         // TODO: implement effect application
     }
 }

@@ -1,9 +1,10 @@
 import { CardDeck, SceneCardDeck } from "./card_deck.js";
 import { CardHand, SceneCardHand } from "./card_hand.js";
-import { Health } from "./health.js";
+import { Health, Healable, Damageable, Blocker } from "./health.js";
 import { CardHandActionFeature, SceneCardHandActionFeature } from "./player_action_selection/action_features/card_hand_action_feature_sel.js";
 import { DiceChangeActionFeature, SceneDiceChangeActionFeature, DiceSlotsRegister } from "./player_action_selection/action_features/dice_change_action_feature_sel.js";
 import { ActionSelectorRadioGroup } from "./player_action_selection/action_selector_radio_group.js";
+import { implements_interface_class } from "../common/common.js";
 
 class Player {
     // TODO: replace with scene
@@ -28,11 +29,16 @@ class Player {
     health = null;
 
     /**
+     * @type {Health}
+     */
+    block = null;
+
+    /**
      * @type {Array<DiceSlotsRegister>}
      */
     dice_slots_registers = null;
 
-    constructor(card_deck, scene_card_hand, health, dice_slots_registers) {
+    constructor(card_deck, scene_card_hand, health, block, dice_slots_registers) {
         //console.assert(card_deck instanceof SceneCardDeck, "error: parameter card_deck must be an instance of SceneCardDeck");
         console.assert(card_deck instanceof CardDeck, "error: parameter card_deck must be an instance of CardDeck");
         console.assert(scene_card_hand instanceof SceneCardHand, "error: parameter card_hand must be an instance of SceneCardHand");
@@ -42,6 +48,7 @@ class Player {
         this.card_deck = card_deck;
         this.card_hand = scene_card_hand;
         this.health = health;
+        this.block = block;
 
         this.dice_slots_registers = [];
         dice_slots_registers.forEach((dice_slots_register) => {
@@ -73,7 +80,7 @@ class Player {
             if (selected_car_index !== -1) {
                 let card = scene_card_hand.card_hand.use_hand_card(selected_car_index);
                 card.card_effects.forEach((card_effect) => {
-                    card_effect.apply_effect();
+                    card_effect.apply_effect(this, this, {});
                 });
             } else {
                 // TODO: maybe return control to game
@@ -83,6 +90,30 @@ class Player {
             console.assert(false, "error: action_selector must be an instance of SceneDiceChangeActionFeature or SceneCardHandActionFeature");
         }
     }
+
+    receive_damage(amount_of_damage) {
+        if (this.block.get_health() > 0) {
+            this.block.set_health_clamped(this.block.get_health() - amount_of_damage);
+        } else {
+            this.health.set_health(this.health.get_health() - amount_of_damage);
+        }
+    }
+
+    heal(amount_of_healing) {
+        this.health.set_health(this.health.get_health() + amount_of_healing);
+    }
+
+    get_block() {
+        return this.block.get_health();
+    }
+
+    set_block(new_block) {
+        this.block.set_health_clamped(new_block);
+    }
 }
+
+console.assert(implements_interface_class(Healable, Player), "static error: Player must implement Healable");
+console.assert(implements_interface_class(Damageable, Player), "static error: Player must implement Damageable");
+console.assert(implements_interface_class(Blocker, Player), "static error: Player must implement Blocker");
 
 export { Player };

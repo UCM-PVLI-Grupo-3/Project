@@ -10,7 +10,7 @@ import { ActionSelectorRadioGroup } from "../gameplay/player_action_selection/ac
 import { CardHandActionFeature, SceneCardHandActionFeature } from "../gameplay/player_action_selection/action_features/card_hand_action_feature_sel.js";
 import { DiceChangeActionFeature, SceneDiceChangeActionFeature } from "../gameplay/player_action_selection/action_features/dice_change_action_feature_sel.js";
 import { Player } from "../gameplay/player.js";
-import { Health } from "../gameplay/health.js";
+import { Health, Block } from "../gameplay/health.js";
 
 const BATTLE_SCENE_DEFAULT_SICE_SLOTS = 3;
 
@@ -161,7 +161,7 @@ class BattleScene extends Phaser.Scene {
 
 
         const initial_cards_count = 6;
-        let initial_cards = [...GAMEPLAY_CARDS].sort(() => 0.5 - Math.random());//.slice(0, initial_cards_count);
+        let initial_cards = [...GAMEPLAY_CARDS].sort(() => 0.5 - Math.random()).slice(0, initial_cards_count);
         console.assert(initial_cards instanceof Array, "error: initial_cards must be an array");
         console.assert(initial_cards.length === initial_cards_count, "error: initial_cards.length !== initial_cards_count");
 
@@ -178,6 +178,7 @@ class BattleScene extends Phaser.Scene {
             card_deck,
             this.attack_scene_card_hand,
             new Health(12, 0, 12, (health) => { this.on_player_health_set(health); }),
+            new Block(0, 0, 6, (block) => { this.on_player_block_set(block); }),
             dice_change_feature.dice_slots_registers
         );
 
@@ -230,6 +231,10 @@ class BattleScene extends Phaser.Scene {
 
     on_player_health_set(health) {
         this.events.emit(KEYS_EVENTS.PLAYER_HEALTH_SET, health);
+    }
+
+    on_player_block_set(block) {
+        this.events.emit(KEYS_EVENTS.PLAYER_BLOCK_SET, block);
     }
 
     execute_turn() {
