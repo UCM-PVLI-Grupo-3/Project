@@ -57,6 +57,11 @@ class DiceChangeActionFeature extends ActionFeatureSelector {
 		for(let i = 0; i < this.dice_slots_registers.length; i++) {
 			this.dice_slots_registers[i] = new DiceSlotsRegister(scene_dice_slots_arr[i]);
 		}
+
+		 this.scene.input.on(Phaser.Input.Events.DRAG_END, (pointer, game_object) => {
+		 	if(game_object instanceof SceneDice)
+            	this.handle_dice_drop_in_dice_slots(game_object);
+        });
 	}
 
 	update_dice_slots_registers() {
@@ -94,11 +99,58 @@ class DiceChangeActionFeature extends ActionFeatureSelector {
 
     	if(value === true) return;
 
-    	dice_slots_registers.forEach((dice_slots_register) => {
-    		for(let i = 0; i < dice_slots_register.base_dice_config.length) {
+    	this.dice_slots_registers.forEach((dice_slots_register) => {
+    		for(let i = 0; i < dice_slots_register.base_dice_config.length; i++) {
     		//	dice_slots_register.scene_dice_slots.scene_dice_slot_frames[i] = dice_slots_register.base_dice_config[i];
     		}
     	});
+    }
+
+    handle_dice_drop_in_dice_slots(dropped_scene_dice) {
+    	let all_dice_slot_frames = [];
+
+    	this.dice_slots_registers.forEach((dice_slots_register) => {
+    		all_dice_slot_frames.push(...dice_slots_register.scene_dice_slots.scene_dice_slot_frames);
+    	});
+
+    	let dice_old_frame = null;
+    	let selected_new_frame = null;
+    	let biggest_intersection_area = 0;
+
+    	let dice_bounds = dropped_scene_dice.getBounds();
+
+    	all_dice_slot_frames.forEach((dice_slot_frame) => {
+
+    		if(dice_old_frame === null && dice_slot_frame.scene_dice === dropped_scene_dice)
+    			dice_old_frame = dice_slot_frame;
+
+    		let frame_bounds = dice_slot_frame.scene_frame_nineslice.getBounds();
+    		let intersection_rect = new Phaser.Geom.Rectangle();
+
+    		Phaser.Geom.Rectangle.Intersection(frame_bounds, dice_bounds, intersection_rect);
+    		let intersection_area = intersection_rect.width * intersection_rect.height;
+    		
+    		if(intersection_area > biggest_intersection_area){
+    			biggest_intersection_area = intersection_area;
+    			selected_new_frame = dice_slot_frame;
+    		}
+    	});
+
+    	if(selected_new_frame === null) {
+    		dice_old_frame.remove_dice();
+    		dropped_scene_dice.destroy();
+    		return;
+    	}
+
+    	let exchanged_dice = selected_new_frame.scene_dice;
+    	selected_new_frame.set_dice(dropped_scene_dice);
+
+    	if(exchanged_dice !== null)
+    		dice_old_frame.set_dice(exchanged_dice);
+    	else
+			dice_old_frame.remove_dice();
+    	
+    	console.log("EXCHANGING " + dice_old_frame.ID + " to " + selected_new_frame.ID);
     }
 }
 

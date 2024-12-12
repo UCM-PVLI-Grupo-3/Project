@@ -108,6 +108,7 @@ class BattleScene extends Phaser.Scene {
         this.load.image(KEYS_ASSETS_SPRITES.DICE_TYPE_D20, "assets/dice/dice_d20.png");
         this.load.image(KEYS_ASSETS_SPRITES.DICE_BOX, "assets/dice/dice_box.png");
         this.load.image(KEYS_ASSETS_SPRITES.DICE_BOX_SELECTION_FRAME, "assets/dice/dice_box_selection.png");
+        this.load.image(KEYS_ASSETS_SPRITES.DICE_BOX_CONTAINER, "assets/dice/dice_box_container.png");
 
         this.load.image(KEYS_ASSETS_SPRITES.EMOTION_ANGER_ICON, "assets/emotion_stack/anger_icon.png");
         this.load.image(KEYS_ASSETS_SPRITES.EMOTION_HAPPINESS_ICON, "assets/emotion_stack/happiness_icon.png");
@@ -133,13 +134,13 @@ class BattleScene extends Phaser.Scene {
 
         // TODO: populate
         this.attack_dice_slots = this.add.existing(new SceneDiceSlots(this, screen_width / 2 - 110, 450, 3, [
-            new SceneDice(this, 0, 0, DICE_TYPE.D4)
+            new SceneDice(this, 0, 0, DICE_TYPE.D6)
         ]));
         this.defence_dice_slots = this.add.existing(new SceneDiceSlots(this, screen_width / 2, 450, 3, [
             new SceneDice(this, 0, 0, DICE_TYPE.D4)
         ]));
         this.heal_dice_slots = this.add.existing(new SceneDiceSlots(this, screen_width / 2 + 110, 450, 3, [
-            new SceneDice(this, 0, 0, DICE_TYPE.D4)
+            new SceneDice(this, 0, 0, DICE_TYPE.D12)
         ]));
 
         let dice_change_feature = new DiceChangeActionFeature(this, [this.attack_dice_slots, this.defence_dice_slots, this.heal_dice_slots]);

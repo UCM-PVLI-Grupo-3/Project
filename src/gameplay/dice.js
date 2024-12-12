@@ -77,10 +77,12 @@ class SceneDice extends Phaser.GameObjects.Sprite {
     dice = new Dice(DICE_DEFAULTS.DICE_TYPE);
     constructor(scene, position_x, position_y, dice_type) {
         super(scene, position_x, position_y, DICE_TYPE.get_dice_type_image(dice_type));
+
         this.dice = new Dice(dice_type);
         
         this.setInteractive({
-            draggable: true
+            draggable: true,
+          //  hitArea: new Phaser.Geom.Rectangle(-this.displayWidth/2, -this.displayHeigth/2, this.displayWidth, this.displayHeigth)
         });
         this.on(Phaser.Input.Events.GAMEOBJECT_DRAG_START, (pointer) => {
             this.on_drag_start(pointer);
