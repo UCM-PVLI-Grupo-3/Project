@@ -13,6 +13,7 @@ import { Player, ScenePlayer } from "../gameplay/player.js";
 import { Health, Block } from "../gameplay/health.js";
 import { SceneDiceBox } from "../gameplay/dice_box.js";
 import { Enemy, SceneEnemy } from "../gameplay/enemy.js"
+import { distribute_uniform } from "../common/layouts.js";
 
 const BATTLE_SCENE_DEFAULT_SICE_SLOTS = 3;
 
@@ -104,7 +105,12 @@ class BattleScene extends Phaser.Scene {
      * @type {Array<SceneEnemy>}
      */
     enemies = [];
+    /**
+     * @type {Array<boolean>}
+     */
+    enemies_each_defeated = [];
 
+    defeated_enemy_current_count = 0;
     selected_enemy_index = -1;
 
     constructor() {
@@ -218,28 +224,22 @@ class BattleScene extends Phaser.Scene {
         // console.log(card_hand_selection_group);
         // this.Enemy = new SceneEnemy(this,1,1,1,1);
         
-        this.enemies.push(
-            this.add.existing(new SceneEnemy(
-                this, screen_width * 0.8, screen_height * 0.1 , KEYS_ASSETS_SPRITES.EMOTION_ANGER_ICON, 0, new Enemy(
-                    TIMELINE_TYPE.PAST, new Health(10, 0, 10), 2
-                )
-            )),
-            this.add.existing(new SceneEnemy(
-                this, screen_width * 0.7, screen_height * 0.1 , KEYS_ASSETS_SPRITES.EMOTION_ANGER_ICON, 0, new Enemy(
-                    TIMELINE_TYPE.PAST, new Health(2, 0, 10), 2
-                )
-            )),
-            this.add.existing(new SceneEnemy(
-                this, screen_width * 0.6, screen_height * 0.1 , KEYS_ASSETS_SPRITES.EMOTION_ANGER_ICON, 0, new Enemy(
-                    TIMELINE_TYPE.PAST, new Health(5, 0, 10), 2
-                )
-            )),
-        );
-        this.enemies.forEach((enemy, index) => {
-            enemy.sprite.setInteractive().on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, (ptr, local_x, local_y) => {
-                this.on_enemy_selected(enemy, index);
-            })
-        });
+        this.set_active_enemy_array([
+            new Enemy(
+                TIMELINE_TYPE.PAST, new Health(10, 0, 10), 2
+            ),
+            new Enemy(
+                TIMELINE_TYPE.PAST, new Health(2, 0, 10), 2
+            ),
+            new Enemy(
+                TIMELINE_TYPE.PAST, new Health(5, 0, 10), 2
+            ),
+        ]);
+        // this.enemies.forEach((enemy, index) => {
+        //     enemy.sprite.setInteractive().on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, (ptr, local_x, local_y) => {
+        //         this.on_enemy_selected(enemy, index);
+        //     })
+        // });
             // let toon_pipeline = this.plugins.get('rextoonifypipelineplugin').add(this.cameras.main, {
                 //     edgeThreshold: 1.0,
         //     hueLevels: 0.0,
@@ -255,7 +255,9 @@ class BattleScene extends Phaser.Scene {
             scanLineWidth: 1024,
         });
         let vignette = this.cameras.main.postFX.addVignette(0.5, 0.5, 0.85, 0.35);
-        
+        this.events.on(KEYS_EVENTS.CURRENT_ENEMIES_ALL_DEFEATED, () => {
+            this.on_current_enemies_all_defeated();
+        });
     }
 
     update(time_milliseconds, delta_time_milliseconds) {
@@ -281,16 +283,82 @@ class BattleScene extends Phaser.Scene {
         enemy.sprite.setTint(0xFF0000);
     }
 
+    set_active_enemy_array(enemies) {
+        this.enemies.forEach((enemy) => {
+            enemy.destroy();
+        });
+        this.enemies = [];
+        this.enemies_each_defeated = new Array(enemies.length).fill(false);
+        this.defeated_enemy_current_count = 0;
+
+        const screen_width = this.renderer.width;
+        const screen_height = this.renderer.height;
+
+        const bounds_x = screen_width * 0.6;
+        const bounds_y = screen_height * 0.1;
+
+        const bounds_width = screen_width * 0.6;
+        const bounds_height = screen_height * 0.25;
+
+        const positions = distribute_uniform(
+            bounds_width, bounds_height,
+            50, 50,
+            enemies.length, 1,
+            10, 10
+        );
+
+        console.assert(enemies instanceof Array, "error: enemies must be an array");
+        enemies.forEach((enemy, index) => {
+            console.assert(enemy instanceof Enemy, "error: enemy must be an instance of Enemy");
+            this.enemies.push(
+                this.add.existing(new SceneEnemy(
+                    this, bounds_x + positions[index].x, bounds_y + positions[index].y, KEYS_ASSETS_SPRITES.EMOTION_ANGER_ICON, 0, enemy
+                ))
+            );
+
+            let scene_enemy = this.enemies[index];
+
+            let death = scene_enemy.enemy.death;
+            scene_enemy.enemy.death = (health_object) => {
+                death(health_object);
+                this.enemies_each_defeated[index] = true;
+                this.defeated_enemy_current_count++;
+                this.selected_enemy_index = -1;
+
+                if (this.defeated_enemy_current_count === this.enemies.length) {
+                    this.events.emit(KEYS_EVENTS.CURRENT_ENEMIES_ALL_DEFEATED);
+                }
+            };
+            scene_enemy.sprite.setInteractive().on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, (ptr, local_x, local_y) => {
+                this.on_enemy_selected(scene_enemy, index);
+            });
+        });
+    }
+
     execute_turn() {
-        if (this.selected_enemy_index === -1) {
-            // TODO: maybe dice reodrder
-            return;
-        } else {
-            this.player.player.execute_turn(this.card_hand_action_selector, this.enemies[this.selected_enemy_index].enemy);
-            this.enemies.forEach((enemy) => {
-                enemy.enemy.execute_turn(this.player.player);
+        let selected_enemy = this.enemies[this.selected_enemy_index]?.enemy;
+        if (this.player.player.turn_ok(this.card_hand_action_selector, selected_enemy)) {
+            this.player.player.execute_turn(this.card_hand_action_selector, selected_enemy);
+            this.enemies.forEach((enemy, index) => {
+                if (!this.enemies_each_defeated[index]) {
+                    enemy.enemy.execute_turn(this.player.player);
+                }
             });
         }
+    }
+
+    on_current_enemies_all_defeated() {
+        this.set_active_enemy_array([
+            new Enemy(
+                TIMELINE_TYPE.PAST, new Health(10, 0, 10), 2
+            ),
+            new Enemy(
+                TIMELINE_TYPE.PAST, new Health(2, 0, 10), 2
+            ),
+            new Enemy(
+                TIMELINE_TYPE.PAST, new Health(5, 0, 10), 2
+            ),
+        ]);
     }
 }
 

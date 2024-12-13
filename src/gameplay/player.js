@@ -65,6 +65,34 @@ class Player {
      * 
      * @param {ActionSelectorRadioGroup} action_selector 
      */
+    turn_ok(action_selector, target) {
+        console.assert(action_selector instanceof ActionSelectorRadioGroup, "error: action_selector must be an instance of ActionSelectorRadioGroup");
+        let action_feature = action_selector.get_selected_action_feature();
+        if (action_feature instanceof DiceChangeActionFeature) {
+            return true;
+        } else if (action_feature instanceof CardHandActionFeature) {
+            let scene_card_hand = action_feature.scene_card_hand;
+            let selected_car_index = -1;
+
+            // TODO: add only one is selected counter assertion
+            for (let i = 0; i < scene_card_hand.scene_cards.length; i++) {
+                if (scene_card_hand.scene_cards.at(i).is_selected) {
+                    selected_car_index = i;
+                    break;
+                }
+            }
+
+            return selected_car_index !== -1
+                && target !== undefined;
+        } else {
+            console.assert(false, "fatal error: action_selector must be an instance of SceneDiceChangeActionFeature or SceneCardHandActionFeature");
+        }
+    }
+
+    /**
+     * 
+     * @param {ActionSelectorRadioGroup} action_selector 
+     */
     execute_turn(action_selector, target) {
         console.assert(action_selector instanceof ActionSelectorRadioGroup, "error: action_selector must be an instance of ActionSelectorRadioGroup");
         let action_feature = action_selector.get_selected_action_feature();
@@ -77,11 +105,12 @@ class Player {
             let selected_car_index = -1;
 
             // TODO: add only one is selected counter assertion
-            scene_card_hand.scene_cards.forEach((scene_card, index) => {
-                if (scene_card.is_selected) {
-                    selected_car_index = index;
+            for (let i = 0; i < scene_card_hand.scene_cards.length; i++) {
+                if (scene_card_hand.scene_cards.at(i).is_selected) {
+                    selected_car_index = i;
+                    break;
                 }
-            });
+            }
 
             
             if (selected_car_index !== -1) {
