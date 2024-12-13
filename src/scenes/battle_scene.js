@@ -1,7 +1,7 @@
 import { KEYS_SCENES, KEYS_ASSETS_SPRITES, KEYS_EVENTS, KEYS_SHADER_PIPELINES } from "../common/common.js";
 import { DiceSlots, SceneDiceSlots } from "../gameplay/dice_slots.js";
 import { DICE_TYPE, SceneDice, Dice } from "../gameplay/dice.js";
-import { CARD_TIMELINE_TYPE, SceneCard, Card, CARD_DEFAULTS, CARD_ACTION_TYPE} from "../gameplay/card.js";
+import { CARD_TIMELINE_TYPE, SceneCard, Card, CARD_DEFAULTS, CARD_ACTION_TYPE, TIMELINE_TYPE} from "../gameplay/card.js";
 import { SceneEmotionStack } from "../gameplay/emotion_stack.js";
 import { EMOTION_TYPE, OPTIONAL_EMOTION_TYPE } from "../gameplay/emotions.js";
 import { CardHand, SceneCardHand } from "../gameplay/card_hand.js";
@@ -100,7 +100,6 @@ class BattleScene extends Phaser.Scene {
      * */
     dice_change_box;
 
-    Enemy1;
     /**
      * @type {Enemy}
      * */
@@ -214,11 +213,25 @@ class BattleScene extends Phaser.Scene {
         //this.turn_execution_bell.outl
         // console.log(action_selection_group);
         // console.log(card_hand_selection_group);
-            this.Enemy = new SceneEnemy(this,1,1,1,1);
-            this.Enemy2 = new SceneEnemy(this,1,1,0,2);
+        // this.Enemy = new SceneEnemy(this,1,1,1,1);
         
-        // let toon_pipeline = this.plugins.get('rextoonifypipelineplugin').add(this.cameras.main, {
-        //     edgeThreshold: 1.0,
+        this.Enemy2 = this.add.existing(new SceneEnemy(
+            this, screen_width * 0.8, screen_height * 0.1 , KEYS_ASSETS_SPRITES.EMOTION_ANGER_ICON, 0, new Enemy(
+                TIMELINE_TYPE.PAST, new Health(10, 0, 10), 2
+            )
+        ));
+        this.Enemy3 = this.add.existing(new SceneEnemy(
+            this, screen_width * 0.7, screen_height * 0.1 , KEYS_ASSETS_SPRITES.EMOTION_ANGER_ICON, 0, new Enemy(
+                TIMELINE_TYPE.PAST, new Health(2, 0, 10), 2
+            )
+        ));
+        this.Enemy4 = this.add.existing(new SceneEnemy(
+            this, screen_width * 0.6, screen_height * 0.1 , KEYS_ASSETS_SPRITES.EMOTION_ANGER_ICON, 0, new Enemy(
+                TIMELINE_TYPE.PAST, new Health(5, 0, 10), 2
+            )
+        ));
+            // let toon_pipeline = this.plugins.get('rextoonifypipelineplugin').add(this.cameras.main, {
+                //     edgeThreshold: 1.0,
         //     hueLevels: 0.0,
         //     sLevels: 0.6,
         //     vLevels: 0.35,
@@ -232,7 +245,7 @@ class BattleScene extends Phaser.Scene {
             scanLineWidth: 1024,
         });
         let vignette = this.cameras.main.postFX.addVignette(0.5, 0.5, 0.85, 0.35);
-
+        
     }
 
     update(time_milliseconds, delta_time_milliseconds) {

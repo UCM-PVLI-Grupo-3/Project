@@ -5,9 +5,9 @@ class Health {
     max_health = 0;
     health = 0;
 
-    health_set = (health) => { };
+    health_set = (health_object) => { };
 
-    constructor(health, min_health, max_health, on_health_set) {
+    constructor(health, min_health, max_health, on_health_set = (health_object) => { }) {
         this.min_health = min_health;
         this.max_health = max_health;
         this.health = health;
@@ -38,7 +38,7 @@ class Health {
 
     set_health(new_health) {
         this.health = new_health;
-        this.health_set(this.health);
+        this.health_set(this);
     }
 
     set_health_clamped(new_health) {
@@ -64,4 +64,42 @@ class Blocker extends Interface {
     set_block(amount) { }
 }
 
-export { Health, Health as Block, Healable, Damageable, Blocker };
+class HealthBar extends Phaser.GameObjects.Container {
+    /**
+     * @type {Health}
+     */
+    health = null;
+
+    /**
+     * @type {Phaser.GameObjects.Rectangle}
+     */
+    background = null;
+
+    /**
+     * @type {Phaser.GameObjects.Rectangle}
+     */
+    health_bar = null;
+
+    constructor(scene, x, y, health, width, height, background_color, health_color) {
+        console.assert(scene instanceof Phaser.Scene, "error: parameter scene must be an instance of Phaser.Scene");
+        console.assert(health instanceof Health, "error: parameter health must be an instance of Health");
+        super(scene, x, y);
+        
+        this.health = health;
+        this.background = this.scene.add.rectangle(0, 0, width, height, background_color);
+        this.health_bar = this.scene.add.rectangle(0, 0, width, height, health_color);
+
+        this.add(this.background);
+        this.add(this.health_bar);
+
+        this.health.health_set = (health_object) => {
+            this.update_health_bar(health_object);
+        };
+        this.update_health_bar(this.health);
+    }
+
+    update_health_bar(health_object) {
+        this.health_bar.width = this.background.width * (health_object.get_health() / health_object.get_max_health());
+    }
+}
+export { Health, Health as Block, Healable, Damageable, Blocker, HealthBar };
