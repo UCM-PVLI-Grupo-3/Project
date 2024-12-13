@@ -1,6 +1,10 @@
 import { KEYS_FONT_FAMILIES, KEYS_SCENES, KEYS_SHADER_PIPELINES } from "../common/common.js";
 
 class MainMenuScene extends Phaser.Scene {
+    /**
+     * @type {Phaser.GameObjects.Rectangle}
+     */
+    background;
 
     /**
      * @type {Phaser.GameObjects.Container}
@@ -32,6 +36,8 @@ class MainMenuScene extends Phaser.Scene {
     create(data) {
         const screen_width = this.renderer.width;
         const screen_height = this.renderer.height;
+
+        this.background = this.add.rectangle(0, 0, screen_width, screen_height, 0xAF6235).setOrigin(0, 0);
 
         this.game_title = this.add.text(screen_width / 2, screen_height * 0.35, "Let's go [i]gambling[/i] rolling", {
             fontFamily: KEYS_FONT_FAMILIES.Bauhaus93,
@@ -76,14 +82,33 @@ class MainMenuScene extends Phaser.Scene {
     }
 
     on_play_game_button_ptr_down(ptr, local_x, local_y) {
-        //this.scene.run
-        this.scene.start(KEYS_SCENES.BATTLE);
-        this.scene.stop();
+        this.cameras.main.fadeOut(1000, 0, 0, 0, (cam, progress) => {
+            if (progress === 1) {
+                this.on_fade_out_complete();
+            }
+        });
     }
 
     on_exit_game_button_ptr_down(ptr, local_x, local_y) {
         this.game.destroy(true);
     }
+
+    scene_transition_start(from, to) {
+        to.cameras.main.fadeIn(1000, 0, 0, 0);
+    }
+
+    on_fade_out_complete() {
+        this.scene.transition({
+            target: KEYS_SCENES.BATTLE,
+            duration: 1000,
+            remove: true,
+            onStart: (from, to) => { this.scene_transition_start(from, to); },
+            allowInput: false,
+            moveAbove: true,
+            //moveBelow: true,
+        });
+    }
+
 }
 
 export { MainMenuScene };

@@ -18,6 +18,10 @@ const BATTLE_SCENE_DEFAULT_SICE_SLOTS = 3;
 
 class BattleScene extends Phaser.Scene {
     /**
+     * @type {Phaser.GameObjects.Rectangle}
+     */
+    background = null;
+    /**
      * @type {SceneDiceSlots}
      */
     attack_dice_slots;
@@ -114,6 +118,8 @@ class BattleScene extends Phaser.Scene {
     create(data) {
         const screen_width = this.renderer.width;
         const screen_height = this.renderer.height;
+
+        this.background = this.add.rectangle(0, 0, screen_width, screen_height, 0xAF6235).setOrigin(0, 0).setDepth(-2);
 
         // TODO: populate
         this.attack_dice_slots = this.add.existing(new SceneDiceSlots(this, screen_width / 2 - 110, 450, 3, [
