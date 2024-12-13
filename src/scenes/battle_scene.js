@@ -12,6 +12,7 @@ import { DiceChangeActionFeature, SceneDiceChangeActionFeature } from "../gamepl
 import { Player } from "../gameplay/player.js";
 import { Health, Block } from "../gameplay/health.js";
 import { SceneDiceBox } from "../gameplay/dice_box.js";
+import { Enemy, SceneEnemy } from "../gameplay/enemy.js"
 
 const BATTLE_SCENE_DEFAULT_SICE_SLOTS = 3;
 
