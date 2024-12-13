@@ -48,6 +48,11 @@ const KEYS_FONT_FAMILIES = {
     Bauhaus93: "Bauhaus93",
 }
 
+const KEYS_SHADER_PIPELINES = {
+    rexcrtpipelineplugin : "rexcrtpipelineplugin",
+    rextoonifypipelineplugin : "rextoonifypipelineplugin",
+};
+
 const KEYS_EVENTS = {
     PLAYER_HEALTH_SET: "PLAYER_HEALTH_SET",
     PLAYER_BLOCK_SET: "PLAYER_BLOCK_SET",
@@ -152,4 +157,4 @@ function implements_interface_object(interface_class, object) {
     return fully_implemented;
 }
 
-export { KEYS_SCENES, KEYS_ASSETS_SPRITES, KEYS_FONT_FAMILIES, KEYS_EVENTS, CONSTANTS_SPRITES_MEASURES, exit, Interface, implements_interface_class, implements_interface_object };
+export { KEYS_SCENES, KEYS_ASSETS_SPRITES, KEYS_FONT_FAMILIES, KEYS_EVENTS, KEYS_SHADER_PIPELINES, CONSTANTS_SPRITES_MEASURES, exit, Interface, implements_interface_class, implements_interface_object };

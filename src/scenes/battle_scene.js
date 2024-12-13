@@ -1,4 +1,4 @@
-import { KEYS_SCENES, KEYS_ASSETS_SPRITES, KEYS_EVENTS } from "../common/common.js";
+import { KEYS_SCENES, KEYS_ASSETS_SPRITES, KEYS_EVENTS, KEYS_SHADER_PIPELINES } from "../common/common.js";
 import { DiceSlots, SceneDiceSlots } from "../gameplay/dice_slots.js";
 import { DICE_TYPE, SceneDice, Dice } from "../gameplay/dice.js";
 import { CARD_TIMELINE_TYPE, SceneCard, Card, CARD_DEFAULTS, CARD_ACTION_TYPE} from "../gameplay/card.js";
@@ -206,6 +206,22 @@ class BattleScene extends Phaser.Scene {
             this.Enemy = new SceneEnemy(this,1,1,1,1);
             this.Enemy2 = new SceneEnemy(this,1,1,0,2);
         
+        // let toon_pipeline = this.plugins.get('rextoonifypipelineplugin').add(this.cameras.main, {
+        //     edgeThreshold: 1.0,
+        //     hueLevels: 0.0,
+        //     sLevels: 0.6,
+        //     vLevels: 0.35,
+        //     edgeColor: 0,
+        // });
+
+        let crt_pipeline = this.plugins.get(KEYS_SHADER_PIPELINES.rexcrtpipelineplugin).add(this.cameras.main, {
+            warpX: 0.25,
+            warpY: 0.25,
+            scanLineStrength: 0.2,
+            scanLineWidth: 1024,
+        });
+        let vignette = this.cameras.main.postFX.addVignette(0.5, 0.5, 0.85, 0.35);
+
     }
 
     update(time_milliseconds, delta_time_milliseconds) {

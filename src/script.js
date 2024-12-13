@@ -12,7 +12,7 @@ import { MainMenuScene } from "./scenes/main_menu_scene.js";
  * @type {Phaser.Types.Core.GameConfig}
  */
 const phaser_config = {
-    type: Phaser.AUTO,
+    type: Phaser.WEBGL,
     pixelArt: false,
     scale: {
         width: 1100,

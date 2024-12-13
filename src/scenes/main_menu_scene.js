@@ -1,4 +1,4 @@
-import { KEYS_FONT_FAMILIES, KEYS_SCENES } from "../common/common.js";
+import { KEYS_FONT_FAMILIES, KEYS_SCENES, KEYS_SHADER_PIPELINES } from "../common/common.js";
 
 class MainMenuScene extends Phaser.Scene {
 
@@ -61,6 +61,14 @@ class MainMenuScene extends Phaser.Scene {
                 fontFamily: KEYS_FONT_FAMILIES.Bauhaus93,
                 fontSize: '30px',
             }).setOrigin(0.5, 0.5));
+
+        this.plugins.get(KEYS_SHADER_PIPELINES.rexcrtpipelineplugin).add(this.cameras.main, {
+            warpX: 0.25,
+            warpY: 0.25,
+            scanLineStrength: 0.2,
+            scanLineWidth: 1024,
+        });
+        this.cameras.main.postFX.addVignette(0.5, 0.5, 0.85, 0.35);
     }
 
     update(time_milliseconds, delta_time_milliseconds) {
@@ -68,6 +76,7 @@ class MainMenuScene extends Phaser.Scene {
     }
 
     on_play_game_button_ptr_down(ptr, local_x, local_y) {
+        //this.scene.run
         this.scene.start(KEYS_SCENES.BATTLE);
         this.scene.stop();
     }
