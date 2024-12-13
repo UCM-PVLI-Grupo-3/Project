@@ -162,7 +162,7 @@ class Player {
         if (this.block.get_health() > 0) {
             this.block.set_health_clamped(this.block.get_health() - amount_of_damage);
         } else {
-            this.health.set_health(this.health.get_health() - amount_of_damage);
+            this.health.set_health_clamped(this.health.get_health() - amount_of_damage);
         }
     }
 
