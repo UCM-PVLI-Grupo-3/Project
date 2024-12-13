@@ -12,6 +12,7 @@ class PreloadScene extends Phaser.Scene {
     preload() {
         this.load.image(KEYS_ASSETS_SPRITES.MISC_DICE, "assets/misc-dice.png");
         this.load.image(KEYS_ASSETS_SPRITES.MISC_DICE_SLOT, "assets/misc-dice-slot.png");
+        this.load.image(KEYS_ASSETS_SPRITES.MISC_CARD, "assets/misc-card.png");
         this.load.image(KEYS_ASSETS_SPRITES.DICE_SLOT, "assets/dice/dice_slot.png");
         this.load.image(KEYS_ASSETS_SPRITES.PAST_CARD, "assets/card/past_card_template.png");
         this.load.image(KEYS_ASSETS_SPRITES.FUTURE_CARD, "assets/card/future_card_template.png");

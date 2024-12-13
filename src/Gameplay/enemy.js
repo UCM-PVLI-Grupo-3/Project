@@ -1,6 +1,6 @@
-import { implements_interface_class } from "../common/common.js";
+import { implements_interface_class, implements_interface_object, KEYS_FONT_FAMILIES } from "../common/common.js";
 import { TIMELINE_TYPE } from "./card.js";
-import { Damageable, Health, HealthBar } from "./health.js"
+import { Damageable, Health, HealthBar, LabeledHealthBar } from "./health.js"
 
 class Enemy {
     timeline = TIMELINE_TYPE.UNINITIALIZED;
@@ -19,8 +19,11 @@ class Enemy {
         this.health = health;
         this.attack_damage = attack_damage;
 
-        // TODO: not sure if += or just = is correct here
-        this.health_set += (health_object) => { this.on_health_set(health_object); };
+        let health_set = this.health.health_set;
+        this.health.health_set = (health_object) => { 
+            health_set(health_object);
+            this.on_health_set(health_object);
+        };
     }
 
     on_health_set(health_object) {
@@ -32,6 +35,18 @@ class Enemy {
 
     receive_damage(amount) {
         this.health.set_health_clamped(this.health.get_health() - amount);
+    }
+
+    execute_turn(target) {
+        if (implements_interface_object(Damageable, target)) {
+            /**
+             * @type {Damageable}
+             */
+            let damageable = target;
+            damageable.receive_damage(this.attack_damage);
+        } else {
+            console.assert(false, "unreachable: target must implement Damageable interface, else this effect should not have been applied");
+        }
     }
 }
 console.assert(implements_interface_class(Damageable, Enemy));
@@ -48,7 +63,7 @@ class SceneEnemy extends Phaser.GameObjects.Container {
     sprite = null;
 
     /**
-     * @type {HealthBar}
+     * @type {LabeledHealthBar}
      */
     health_bar = null;
 
@@ -62,14 +77,22 @@ class SceneEnemy extends Phaser.GameObjects.Container {
 
         this.sprite = this.scene.add.sprite(0, 0, texture, frame);
         this.health_bar = this.scene.add.existing(
-            new HealthBar(scene, 0, this.sprite.height + 20, this.enemy.health, 100, 20, 0x000000, 0xff0000)
+            new LabeledHealthBar(scene, 0, this.sprite.height + 20, this.enemy.health, 100, 20, 0x000000, 0xff0000, KEYS_FONT_FAMILIES.Bauhaus93)
         );
 
         this.add(this.sprite);
         this.add(this.health_bar);
 
-        this.enemy.health_set = (health_object) => { this.on_health_set(health_object); };
-        this.enemy.death = (health_object) => { this.on_death(health_object); };
+        let health_set = this.enemy.health_set;
+        this.enemy.health_set = (health_object) => { 
+            health_set(health_object);
+            this.on_health_set(health_object);
+        };
+        let death = this.enemy.death;
+        this.enemy.death = (health_object) => {
+            death(health_object);
+            this.on_death(health_object);
+        };
     }
 
     on_health_set(health_object) {

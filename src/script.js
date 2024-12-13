@@ -8,6 +8,7 @@ import { SceneEmotionStack } from "./gameplay/emotion_stack.js";
 import { exit, KEYS_SCENES } from "./common/common.js";
 import { MainMenuScene } from "./scenes/main_menu_scene.js";
 
+
 /**
  * @type {Phaser.Types.Core.GameConfig}
  */

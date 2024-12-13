@@ -9,7 +9,7 @@ import { CardDeck, GAMEPLAY_CARDS, SceneCardDeck } from "../gameplay/card_deck.j
 import { ActionSelectorRadioGroup } from "../gameplay/player_action_selection/action_selector_radio_group.js";
 import { CardHandActionFeature, SceneCardHandActionFeature } from "../gameplay/player_action_selection/action_features/card_hand_action_feature_sel.js";
 import { DiceChangeActionFeature, SceneDiceChangeActionFeature } from "../gameplay/player_action_selection/action_features/dice_change_action_feature_sel.js";
-import { Player } from "../gameplay/player.js";
+import { Player, ScenePlayer } from "../gameplay/player.js";
 import { Health, Block } from "../gameplay/health.js";
 import { SceneDiceBox } from "../gameplay/dice_box.js";
 import { Enemy, SceneEnemy } from "../gameplay/enemy.js"
@@ -46,7 +46,7 @@ class BattleScene extends Phaser.Scene {
      */
     scene_emotion_stack;
     /**
-     * @type {Player}
+     * @type {ScenePlayer}
      */
     player;
 
@@ -101,15 +101,18 @@ class BattleScene extends Phaser.Scene {
     dice_change_box;
 
     /**
-     * @type {Enemy}
-     * */
-    Enemy2;
+     * @type {Array<SceneEnemy>}
+     */
+    enemies = [];
+
+    selected_enemy_index = -1;
 
     constructor() {
         super({ key: KEYS_SCENES.BATTLE });
         this.attack_dice_slots = null;
         this.scene_emotion_stack = null;
         this.player = null;
+        this.enemies = [];
     }
 
     init() {
@@ -167,13 +170,13 @@ class BattleScene extends Phaser.Scene {
         this.defence_scene_card_hand = this.add.existing(new SceneCardHand(this, screen_width / 2, screen_height / 2 + 180, card_deck, 2, CARD_ACTION_TYPE.DEFENCE)).setVisible(false);
         this.heal_scene_card_hand = this.add.existing(new SceneCardHand(this, screen_width / 2, screen_height / 2 + 180, card_deck, 2, CARD_ACTION_TYPE.HEAL)).setVisible(false);
         
-        this.player = new Player(
+        this.player = this.add.existing(new ScenePlayer(this, screen_width * 0.2, screen_height * 0.1, new Player(
             card_deck,
             this.attack_scene_card_hand,
             new Health(12, 0, 12, (health) => { this.on_player_health_set(health); }),
             new Block(0, 0, 6, (block) => { this.on_player_block_set(block); }),
             dice_change_feature.dice_slots_registers
-        );
+        )));
 
         // SceneCard selection
         let attack_card_hand_feature = new CardHandActionFeature(this.attack_scene_card_hand);
@@ -215,21 +218,28 @@ class BattleScene extends Phaser.Scene {
         // console.log(card_hand_selection_group);
         // this.Enemy = new SceneEnemy(this,1,1,1,1);
         
-        this.Enemy2 = this.add.existing(new SceneEnemy(
-            this, screen_width * 0.8, screen_height * 0.1 , KEYS_ASSETS_SPRITES.EMOTION_ANGER_ICON, 0, new Enemy(
-                TIMELINE_TYPE.PAST, new Health(10, 0, 10), 2
-            )
-        ));
-        this.Enemy3 = this.add.existing(new SceneEnemy(
-            this, screen_width * 0.7, screen_height * 0.1 , KEYS_ASSETS_SPRITES.EMOTION_ANGER_ICON, 0, new Enemy(
-                TIMELINE_TYPE.PAST, new Health(2, 0, 10), 2
-            )
-        ));
-        this.Enemy4 = this.add.existing(new SceneEnemy(
-            this, screen_width * 0.6, screen_height * 0.1 , KEYS_ASSETS_SPRITES.EMOTION_ANGER_ICON, 0, new Enemy(
-                TIMELINE_TYPE.PAST, new Health(5, 0, 10), 2
-            )
-        ));
+        this.enemies.push(
+            this.add.existing(new SceneEnemy(
+                this, screen_width * 0.8, screen_height * 0.1 , KEYS_ASSETS_SPRITES.EMOTION_ANGER_ICON, 0, new Enemy(
+                    TIMELINE_TYPE.PAST, new Health(10, 0, 10), 2
+                )
+            )),
+            this.add.existing(new SceneEnemy(
+                this, screen_width * 0.7, screen_height * 0.1 , KEYS_ASSETS_SPRITES.EMOTION_ANGER_ICON, 0, new Enemy(
+                    TIMELINE_TYPE.PAST, new Health(2, 0, 10), 2
+                )
+            )),
+            this.add.existing(new SceneEnemy(
+                this, screen_width * 0.6, screen_height * 0.1 , KEYS_ASSETS_SPRITES.EMOTION_ANGER_ICON, 0, new Enemy(
+                    TIMELINE_TYPE.PAST, new Health(5, 0, 10), 2
+                )
+            )),
+        );
+        this.enemies.forEach((enemy, index) => {
+            enemy.sprite.setInteractive().on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, (ptr, local_x, local_y) => {
+                this.on_enemy_selected(enemy, index);
+            })
+        });
             // let toon_pipeline = this.plugins.get('rextoonifypipelineplugin').add(this.cameras.main, {
                 //     edgeThreshold: 1.0,
         //     hueLevels: 0.0,
@@ -263,8 +273,24 @@ class BattleScene extends Phaser.Scene {
         this.events.emit(KEYS_EVENTS.PLAYER_BLOCK_SET, block);
     }
 
+    on_enemy_selected(enemy, index) {
+        this.selected_enemy_index = index;
+        this.enemies.forEach((enemy, index) => {
+            enemy.sprite.setTint(0xFFFFFF);
+        });
+        enemy.sprite.setTint(0xFF0000);
+    }
+
     execute_turn() {
-        this.player.execute_turn(this.card_hand_action_selector);
+        if (this.selected_enemy_index === -1) {
+            // TODO: maybe dice reodrder
+            return;
+        } else {
+            this.player.player.execute_turn(this.card_hand_action_selector, this.enemies[this.selected_enemy_index].enemy);
+            this.enemies.forEach((enemy) => {
+                enemy.enemy.execute_turn(this.player.player);
+            });
+        }
     }
 }
 
