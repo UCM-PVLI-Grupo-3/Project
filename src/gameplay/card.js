@@ -281,4 +281,4 @@ class BattleCard {
     }
 }
 
-export { CARD_TIMELINE_TYPE,  CARD_ACTION_TYPE, CARD_DEFAULTS, Card, SceneCard, BattleCard };
+export { CARD_TIMELINE_TYPE, CARD_TIMELINE_TYPE as TIMELINE_TYPE,  CARD_ACTION_TYPE, CARD_DEFAULTS, Card, SceneCard, BattleCard };

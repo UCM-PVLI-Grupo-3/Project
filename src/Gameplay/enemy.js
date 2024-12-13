@@ -1,136 +1,85 @@
-import {AttackList} from './AttackList.js'
-import {Attack}     from './attack.js'
-import { EnemyTypeList } from './EnemyTypeList.js';
+import { implements_interface_class } from "../common/common.js";
+import { TIMELINE_TYPE } from "./card.js";
+import { Damageable, Health, HealthBar } from "./health.js"
 
- class Enemy
-{
-    constructor(scene,health,actions,enemyType)
-    {
+class Enemy {
+    timeline = TIMELINE_TYPE.UNINITIALIZED;
+
+    /**
+     * @type {Health}
+     */
+    health = null;
+    attack_damage = NaN;
+
+    health_set = (health_object) => { };
+    death = (health_object) => { };
+
+    constructor(timeline, health, attack_damage) {
+        this.timeline = timeline;
         this.health = health;
-        //this.imageDirection = imageDirection;            
-        this.enemyType = enemyType;
-        this.action1 =actions[1];
-        this.action2 =actions[2];
-        this.action3 = actions[3];
-        this.action4 = actions[4];
-        this.actions = [this.action1,this.action2,this.action3,this.action4];  
-        this.TopHealth = health; 
-        this.scene = scene;
-      
+        this.attack_damage = attack_damage;
 
+        // TODO: not sure if += or just = is correct here
+        this.health_set += (health_object) => { this.on_health_set(health_object); };
     }
 
-    UpdateHealth(change)
-    {
-         this.health = this.health + change;
-
-         if ( this.health <= 0 ) 
-        {
-            this.Death();
+    on_health_set(health_object) {
+        this.health_set(health_object);
+        if (health_object.get_health() <= health_object.get_min_health()) {
+            this.death(health_object);
         }
     }
 
-    Death()
-    {
-       
-    }
-    Behaviour()
-    {
-        var RndAction = Math.floor(Math.random()*100) +1;
-        if(this.health >= this.TopHealth*3/4)
-        {
-            if ( this.actions[0].GetHitPercentage() <= Rnd)
-            {
-                this.UseAttack(0);
-            }
-        }
-        else if (this.health >= this.TopHealth/2)
-        {   var Rnd = Math.floor(Math.random()*2);
-            if ( this.actions[Rnd].GetHitPercentage() <= Rnd)
-                {
-                    this.UseAttack(Rnd);
-                }
-        }
-        else if (this.health >= this.TopHealth/4)
-        {
-            var Rnd = Math.floor(Math.random()*3);
-            if ( this.actions[Rnd].GetHitPercentage() <= Rnd)
-                {
-                    this.UseAttack(Rnd);
-                }
-        }
-        else if (this.health < this.TopHealth/4)
-        {
-            var Rnd = Math.floor(Math.random()*4);
-            if ( this.actions[Rnd].GetHitPercentage() <= Rnd)
-                {
-                    this.UseAttack(Rnd);
-                }
-        }
-
-    }
-    UseAttack(actionNumber)
-    {
-        if(actionNumber == 0){
-        this.action1.UseAction(this);
-        }
-        if(actionNumber == 0){
-        this.action2.UseAction(this);
-        } 
-        if(actionNumber == 0){
-        this.action3.UseAction(this);
-        } 
-        if(actionNumber == 0){
-        this.action4.UseAction(this);
-        }
-        
-    }
-    GetHealth()
-    {
-        return this.health;
-    }
-    GetEnemyType() 
-    {
-        return this.enemyType;
+    receive_damage(amount) {
+        this.health.set_health_clamped(this.health.get_health() - amount);
     }
 }
+console.assert(implements_interface_class(Damageable, Enemy));
 
-class SceneEnemy extends Phaser.GameObjects.Sprite{
-
-       /**
-     * @type {Phaser.GameObjects.Image}
-     * */
-       enemyImage;
-
+class SceneEnemy extends Phaser.GameObjects.Container {
     /**
      * @type {Enemy}
      */
-    enemy
-
-    constructor(scene,positionx,positiony,EnemyType,EnemyNumber)
-    {
-        super(scene,positionx,positiony);
-        this.enemy = new Enemy(this.scene,EnemyTypeList[EnemyType].health,EnemyTypeList[EnemyType].attacks,EnemyTypeList[EnemyType].type);
-        this.Height = 750 - (100*EnemyNumber);
-      
-        this.enemyImage = scene.add.image(this.Height,100,EnemyTypeList[EnemyType].Url);
+    enemy = null;
     
+    /**
+     * @type {Phaser.GameObjects.Sprite}
+     */
+    sprite = null;
 
-        this.setInteractive({
-            hitArea: new Phaser.Geom.Rectangle(0, 0, this.enemyImage.width, this.enemyImage.height),
-            hitAreaCallback: Phaser.Geom.Rectangle.Contains 
-        })
-        .on(Phaser.Input.Events.POINTER_DOWN, () => { console.log("EnemyTouched") });
-      
+    /**
+     * @type {HealthBar}
+     */
+    health_bar = null;
+
+
+    constructor(scene, x, y, texture, frame, enemy) {
+        console.assert(scene instanceof Phaser.Scene, "error: parameter scene must be an instance of Phaser.Scene");
+        super(scene, x, y);
+
+        console.assert(enemy instanceof Enemy, "error: parameter enemy must be an instance of Enemy");
+        this.enemy = enemy;
+
+        this.sprite = this.scene.add.sprite(0, 0, texture, frame);
+        this.health_bar = this.scene.add.existing(
+            new HealthBar(scene, 0, this.sprite.height + 20, this.enemy.health, 100, 20, 0x000000, 0xff0000)
+        );
+
+        this.add(this.sprite);
+        this.add(this.health_bar);
+
+        this.enemy.health_set = (health_object) => { this.on_health_set(health_object); };
+        this.enemy.death = (health_object) => { this.on_death(health_object); };
     }
 
+    on_health_set(health_object) {
+        // this.health_bar.health = health_object;
+        // this.health_bar.update();
+    }
 
-    EnemyClicked(pointer,gameObject)
-    { 
-        if (gameObject instanceof SceneEnemy) 
-            {
-
-            }
+    on_death(health_object) {
+        this.destroy();
     }
 }
-export {Enemy,SceneEnemy};
+
+export { Enemy, SceneEnemy };
