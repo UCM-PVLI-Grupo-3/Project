@@ -102,13 +102,13 @@ class SceneEnemy extends Phaser.GameObjects.Sprite{
      * */
        enemyImage;
 
-    constructor(scene,positionx,positiony,EnemyType)
+    constructor(scene,positionx,positiony,EnemyType,EnemyNumber)
     {
         super(scene,positionx,positiony);
         Enemy = new Enemy(this,EnemyTypeList[EnemyType].health,EnemyTypeList[EnemyType].attacks,EnemyTypeList[EnemyType].type);
+        this.Height = 750 - (100*EnemyNumber);
       
-      
-        this.enemyImage = scene.add.image(100,0,EnemyTypeList[EnemyType].Url);
+        this.enemyImage = scene.add.image(this.Height,100,EnemyTypeList[EnemyType].Url);
     
 
         this.setInteractive({

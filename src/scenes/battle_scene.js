@@ -90,6 +90,12 @@ class BattleScene extends Phaser.Scene {
      * */
     dice_change_box;
 
+    Enemy1;
+    /**
+     * @type {Enemy}
+     * */
+    Enemy2;
+
     constructor() {
         super({ key: KEYS_SCENES.BATTLE });
         this.attack_dice_slots = null;
@@ -194,8 +200,11 @@ class BattleScene extends Phaser.Scene {
             }
         ).setOrigin(0.0, 0.0).setTint(0xCCA049).setScale(0.75).setDepth(-1);
         //this.turn_execution_bell.outl
-        console.log(action_selection_group);
-        console.log(card_hand_selection_group);
+        // console.log(action_selection_group);
+        // console.log(card_hand_selection_group);
+            this.Enemy = new SceneEnemy(this,1,1,1,1);
+            this.Enemy2 = new SceneEnemy(this,1,1,0,2);
+        
     }
 
     update(time_milliseconds, delta_time_milliseconds) {
