@@ -32,34 +32,12 @@ class DiceSlotsRegister {
 			else
 				this.base_dice_config[i] = null;
 		}
-
-		console.log(this.base_dice_config);
 	}
 
 	restore() {
 		let i = 0;
 		this.scene_dice_slots.scene_dice_slot_frames.forEach((dice_slot_frame) => {
-		/*	if(dice_slot_frame.scene_dice !== null && this.base_dice_config[i] !== null
-				&& dice_slot_frame.scene_dice.dice.dice_type !== this.base_dice_config[i].dice_type) {
-				
-				this.scene_dice_slots.dice_slots.remove_dice(dice_slot_frame.scene_dice.dice);
-				dice_slot_frame.scene_dice.destroy();
-				
-				let original_scene_dice = new SceneDice(this.scene_dice_slots.scene, 0, 0, this.base_dice_config[i].dice_type);
-				
-				dice_slot_frame.set_dice(original_scene_dice);
-				this.scene_dice_slots.dice_slots.add_dice(original_scene_dice.dice);
-			}
-			else if(dice_slot_frame.scene_dice !== null && this.base_dice_config[i] === null) {
-				this.scene_dice_slots.dice_slots.remove_dice(dice_slot_frame.scene_dice.dice);
-				dice_slot_frame.scene_dice.destroy();
-			}
-			else if(dice_slot_frame.scene_dice === null && this.base_dice_config[i] !== null) {
-				let original_scene_dice = new SceneDice(this.scene_dice_slots.scene, 0, 0, this.base_dice_config[i].dice_type);
-				
-				dice_slot_frame.set_dice(original_scene_dice);
-				this.scene_dice_slots.dice_slots.add_dice(original_scene_dice.dice);
-			}*/
+		
 			let occupant_scene_dice = dice_slot_frame.scene_dice;
 
 			if(occupant_scene_dice !== null) {
@@ -75,7 +53,6 @@ class DiceSlotsRegister {
 				dice_slot_frame.set_dice(original_scene_dice);
 				this.scene_dice_slots.dice_slots.add_dice(original_scene_dice.dice);
 			}
-			
 
 			++i;
 		});
@@ -102,7 +79,31 @@ class DiceBoxRegister {
 	}
 
 	update() {
-		
+		for(let i = 0; i < this.base_dice_config.length; i++) {
+			let scene_dice = this.scene_dice_box.scene_dices[i];
+
+			if(scene_dice !== null)
+				this.base_dice_config[i] = {...scene_dice.dice};
+			else
+				this.base_dice_config[i] = null;
+		}
+	}
+
+	restore() {
+		let i = 0;
+		this.scene_dice_box.scene_dices.forEach((scene_dice) => {
+			
+			if(scene_dice !== null) {
+				this.scene_dice_box.remove_dice(scene_dice);
+				scene_dice.destroy();
+			}
+			
+			let original_scene_dice = new SceneDice(this.scene_dice_box.scene, 0, 0, this.base_dice_config[i].dice_type);
+			this.scene_dice_box.scene.add.existing(original_scene_dice);
+
+			this.scene_dice_box.set_dice_at(i, original_scene_dice);
+			++i;
+		});
 	}
 }
 
@@ -159,6 +160,8 @@ class DiceChangeActionFeature extends ActionFeatureSelector {
 		this.dice_slots_registers.forEach((dice_slots_register) => {
 			dice_slots_register.restore();
 		});
+
+		this.dice_box_register.restore();
 	}
 
 	contains_selected_action_agent(clicked_game_object) {

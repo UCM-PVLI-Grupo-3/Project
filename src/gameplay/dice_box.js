@@ -65,6 +65,18 @@ class SceneDiceBox extends Phaser.GameObjects.Container {
         this.remove(this.scene_dices[dice_index], false);
         this.scene_dices[dice_index] = null;
     }
+
+    set_dice_at(index, scene_dice) {
+    	console.assert(index > -1, "error: index must be a valid array position");
+    	console.assert(index < this.max_dices, "error: index must be a valid array position");
+    	console.assert(scene_dice instanceof SceneDice, "error: scene_dice must be an instance of SceneDice");
+        this.remove_dice(this.scene_dices[index]);
+
+        this.scene_dices[index] = scene_dice;
+        this.scene_dices[index].setScale(0.7);
+        scene_dice.setPosition(this.dice_positions[index].x, this.dice_positions[index].y);
+        this.add(this.scene_dices[index]);
+    }
 }
 
 export { SceneDiceBox };
