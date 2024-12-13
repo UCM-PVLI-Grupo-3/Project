@@ -13,30 +13,7 @@ You are a time traveler switching between the future and the past. Your goal is 
 Equipped with what you gather from killing these enemies in turn-based, card and dice roll battles; and find in past or future locations, such as markets or online crypto-auctions, you must continue the path towards this glitched interdimensional entity and restore your world.
 
 # Controls
-The game controls are mostly UI-based. They should be quite deducible for a player that switches from PC to mobile or any ohter display for a web platform.
-
-### Keyboard and mouse
-
-| Button                   | Action  |
-| ------------------------ | ------- |
-| W, Arrow-up, Numpad-8    | Up      |
-| A, Arrow-left, Numpad-4  | Left    |
-| S, Arrow-down, Numpad-2  | Down    |
-| D, Arrow-right, Numpad-6 | Right   |
-| Enter, Space             | Confirm |
-
-*LMB* - confirms selected element 
-
-
-### Gamepad
-| Button         | Action                  |
-| -------------- | ----------------------- |
-| L-stick, D-pad | Up/Left/Down/Right      |
-| South/East button    | Confirm selected action |
-
-
-### Touch-screen
-Touch screen controls use drag-n-drop funcionality, player can select element by touching and confirm action by holding finger on element and dragging it to specific section of screen.
+The game controls are mostly UI-based and only need your mouse and your ability to press left click.
 
 
 # Style
