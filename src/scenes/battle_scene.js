@@ -1,4 +1,4 @@
-import { KEYS_SCENES, KEYS_ASSETS_SPRITES, KEYS_EVENTS, KEYS_SHADER_PIPELINES, exit } from "../common/common.js";
+import { KEYS_SCENES, KEYS_ASSETS_SPRITES, KEYS_EVENTS, KEYS_SHADER_PIPELINES, exit, KEYS_FONT_FAMILIES } from "../common/common.js";
 import { DiceSlots, SceneDiceSlots } from "../gameplay/dice_slots.js";
 import { DICE_TYPE, SceneDice, Dice } from "../gameplay/dice.js";
 import { CARD_TIMELINE_TYPE, SceneCard, Card, CARD_DEFAULTS, CARD_ACTION_TYPE, TIMELINE_TYPE} from "../gameplay/card.js";
@@ -114,6 +114,11 @@ class BattleScene extends Phaser.Scene {
     selected_enemy_index = -1;
     defeated_enemies_horde_count = 0;
 
+    /**
+     * @type {Phaser.GameObjects.Text}
+     */
+    enemies_defeated_text = null;
+
     constructor() {
         super({ key: KEYS_SCENES.BATTLE });
         this.attack_dice_slots = null;
@@ -180,8 +185,8 @@ class BattleScene extends Phaser.Scene {
         this.player = this.add.existing(new ScenePlayer(this, screen_width * 0.2, screen_height * 0.1, new Player(
             card_deck,
             this.attack_scene_card_hand,
-            new Health(12, 0, 12, (health) => { this.on_player_health_set(health); }),
-            new Block(0, 0, 6, (block) => { this.on_player_block_set(block); }),
+            new Health(26, 0, 26, (health) => { this.on_player_health_set(health); }),
+            new Block(0, 0, 14, (block) => { this.on_player_block_set(block); }),
             dice_change_feature.dice_slots_registers
         )));
 
@@ -236,6 +241,10 @@ class BattleScene extends Phaser.Scene {
         //         TIMELINE_TYPE.PAST, new Health(5, 0, 10), 2
         //     ),
         // ]);
+        this.enemies_defeated_text = this.add.text(screen_width / 2, screen_height * 0.05, "0", {
+            fontFamily: KEYS_FONT_FAMILIES.Bauhaus93,
+            fontSize: "48px",
+        }).setRotation(-Math.PI / 6);
         this.on_current_enemies_all_defeated();
         // this.enemies.forEach((enemy, index) => {
         //     enemy.sprite.setInteractive().on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, (ptr, local_x, local_y) => {
@@ -260,6 +269,17 @@ class BattleScene extends Phaser.Scene {
         this.events.on(KEYS_EVENTS.CURRENT_ENEMIES_ALL_DEFEATED, () => {
             this.on_current_enemies_all_defeated();
         });
+
+        // let shockwave_pipeline = this.plugins.get('rexshockwavepipelineplugin').add(this.player.sprite, {
+        //     center: {
+        //         x: this.player.sprite.x,
+        //         y: this.player.sprite.y
+        //     },
+        //     waveRadius: 5,
+        //     waveWidth: 20,
+        //     powBaseScale: 0.8,
+        //     powExponent: 0.1,
+        // });
     }
 
     update(time_milliseconds, delta_time_milliseconds) {
@@ -343,6 +363,7 @@ class BattleScene extends Phaser.Scene {
                 this.defeated_enemies_horde_count++;
                 this.selected_enemy_index = -1;
                 
+                this.enemies_defeated_text.setText(this.defeated_enemy_current_count.toString());
                 if (this.defeated_enemy_current_count === this.enemies.length) {
                     this.events.emit(KEYS_EVENTS.CURRENT_ENEMIES_ALL_DEFEATED);
                 }
@@ -401,7 +422,7 @@ class BattleScene extends Phaser.Scene {
             if (matching_card !== undefined) {
                 switch (matching_card.action_type) {
                 case CARD_ACTION_TYPE.ATTACK: {
-                    this.attack_scene_card_hand
+                    // this.attack_scene_card_hand
                     break;
                 }
                 case CARD_ACTION_TYPE.DEFENCE: {
