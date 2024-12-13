@@ -123,6 +123,8 @@ class SceneCard extends Phaser.GameObjects.Container {
             card_effects
         );
 
+        const CARD_ILLUSTRATION_X = 20;
+        const CARD_ILLUSTRATION_Y = 20;
         const CARD_IMG_X = (362 - 344)/2;
         const CARD_IMG_Y = (478 - 460)/2;
         const EMOTION_ICON_Y = 362;
@@ -143,6 +145,10 @@ class SceneCard extends Phaser.GameObjects.Container {
         this.is_selected = false;
 
         this.add(this._selection_frame);
+
+        let card_illustration = scene.add.sprite(CARD_ILLUSTRATION_X, CARD_ILLUSTRATION_Y, KEYS_ASSETS_SPRITES.CARD_ATLAS, this.card.card_id)
+        .setOrigin(0, 0);
+        this.add(card_illustration);
 
         let card_img;
         if(timeline_type === CARD_TIMELINE_TYPE.PAST)
