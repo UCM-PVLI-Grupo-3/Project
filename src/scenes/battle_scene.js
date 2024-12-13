@@ -112,6 +112,7 @@ class BattleScene extends Phaser.Scene {
 
     defeated_enemy_current_count = 0;
     selected_enemy_index = -1;
+    defeated_enemies_horde_count = 0;
 
     constructor() {
         super({ key: KEYS_SCENES.BATTLE });
@@ -224,17 +225,18 @@ class BattleScene extends Phaser.Scene {
         // console.log(card_hand_selection_group);
         // this.Enemy = new SceneEnemy(this,1,1,1,1);
         
-        this.set_active_enemy_array([
-            new Enemy(
-                TIMELINE_TYPE.PAST, new Health(10, 0, 10), 2
-            ),
-            new Enemy(
-                TIMELINE_TYPE.PAST, new Health(2, 0, 10), 2
-            ),
-            new Enemy(
-                TIMELINE_TYPE.PAST, new Health(5, 0, 10), 2
-            ),
-        ]);
+        // this.set_active_enemy_array([
+        //     new Enemy(
+        //         TIMELINE_TYPE.PAST, new Health(10, 0, 10), 2
+        //     ),
+        //     new Enemy(
+        //         TIMELINE_TYPE.PAST, new Health(2, 0, 10), 2
+        //     ),
+        //     new Enemy(
+        //         TIMELINE_TYPE.PAST, new Health(5, 0, 10), 2
+        //     ),
+        // ]);
+        this.on_current_enemies_all_defeated();
         // this.enemies.forEach((enemy, index) => {
         //     enemy.sprite.setInteractive().on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, (ptr, local_x, local_y) => {
         //         this.on_enemy_selected(enemy, index);
@@ -294,7 +296,7 @@ class BattleScene extends Phaser.Scene {
         const screen_width = this.renderer.width;
         const screen_height = this.renderer.height;
 
-        const bounds_x = screen_width * 0.6;
+        const bounds_x = screen_width * 0.45;
         const bounds_y = screen_height * 0.1;
 
         const bounds_width = screen_width * 0.6;
@@ -302,17 +304,30 @@ class BattleScene extends Phaser.Scene {
 
         const positions = distribute_uniform(
             bounds_width, bounds_height,
-            50, 50,
+            100, 100,
             enemies.length, 1,
             10, 10
         );
+
+        const emotion_sprite_keys = [
+            KEYS_ASSETS_SPRITES.EMOTION_ANGER_ICON,
+            KEYS_ASSETS_SPRITES.EMOTION_CALM_ICON,
+            KEYS_ASSETS_SPRITES.EMOTION_HAPPINESS_ICON,
+            KEYS_ASSETS_SPRITES.EMOTION_SADNESS_ICON,
+            KEYS_ASSETS_SPRITES.EMOTION_ECSTASY_ICON,
+            KEYS_ASSETS_SPRITES.EMOTION_CONCERN_ICON,
+            KEYS_ASSETS_SPRITES.EMOTION_FEAR_ICON,
+            KEYS_ASSETS_SPRITES.EMOTION_CONFIDENCE_ICON,
+        ];
 
         console.assert(enemies instanceof Array, "error: enemies must be an array");
         enemies.forEach((enemy, index) => {
             console.assert(enemy instanceof Enemy, "error: enemy must be an instance of Enemy");
             this.enemies.push(
                 this.add.existing(new SceneEnemy(
-                    this, bounds_x + positions[index].x, bounds_y + positions[index].y, KEYS_ASSETS_SPRITES.EMOTION_ANGER_ICON, 0, enemy
+                    this, bounds_x + positions[index].x, bounds_y + positions[index].y,
+                    emotion_sprite_keys.at(Math.floor(Math.random() * emotion_sprite_keys.length)), 0,
+                    enemy
                 ))
             );
 
@@ -323,6 +338,7 @@ class BattleScene extends Phaser.Scene {
                 death(health_object);
                 this.enemies_each_defeated[index] = true;
                 this.defeated_enemy_current_count++;
+                this.defeated_enemies_horde_count++;
                 this.selected_enemy_index = -1;
 
                 if (this.defeated_enemy_current_count === this.enemies.length) {
@@ -348,17 +364,25 @@ class BattleScene extends Phaser.Scene {
     }
 
     on_current_enemies_all_defeated() {
-        this.set_active_enemy_array([
-            new Enemy(
-                TIMELINE_TYPE.PAST, new Health(10, 0, 10), 2
-            ),
-            new Enemy(
-                TIMELINE_TYPE.PAST, new Health(2, 0, 10), 2
-            ),
-            new Enemy(
-                TIMELINE_TYPE.PAST, new Health(5, 0, 10), 2
-            ),
-        ]);
+        let new_enemies = [];
+
+        const fn_spawn_count = (horde) => { return Math.ceil((horde + 1) / 3); }
+        for (let i = 0; i < fn_spawn_count(this.defeated_enemies_horde_count); i++) {
+            const fn_max_health = (horde) => { return 10 + 2 * horde; }
+            const fn_health = (horde, max_health) => { return Math.ceil(max_health * (Math.random() * (1.0 - Math.exp(-horde - 1)))); } 
+            
+            const max_health = fn_max_health(this.defeated_enemies_horde_count);
+
+            const fn_damage = (horde) => { return Math.ceil(Math.pow(2 + 2 * horde, Math.random())); }
+            new_enemies.push(
+                new Enemy(
+                    Math.random() < 0.5 ? TIMELINE_TYPE.PAST : TIMELINE_TYPE.FUTURE,
+                    new Health(fn_health(this.defeated_enemies_horde_count, max_health), 0, max_health),
+                    fn_damage(this.defeated_enemies_horde_count)
+                )
+            )
+        }
+        this.set_active_enemy_array(new_enemies);
     }
 }
 
