@@ -1,4 +1,4 @@
-import { KEYS_SCENES, KEYS_ASSETS_SPRITES, KEYS_EVENTS, KEYS_SHADER_PIPELINES } from "../common/common.js";
+import { KEYS_SCENES, KEYS_ASSETS_SPRITES, KEYS_EVENTS, KEYS_SHADER_PIPELINES, exit } from "../common/common.js";
 import { DiceSlots, SceneDiceSlots } from "../gameplay/dice_slots.js";
 import { DICE_TYPE, SceneDice, Dice } from "../gameplay/dice.js";
 import { CARD_TIMELINE_TYPE, SceneCard, Card, CARD_DEFAULTS, CARD_ACTION_TYPE, TIMELINE_TYPE} from "../gameplay/card.js";
@@ -174,8 +174,8 @@ class BattleScene extends Phaser.Scene {
 
         // SceneCardHands
         this.attack_scene_card_hand = this.add.existing(new SceneCardHand(this, screen_width / 2, screen_height / 2 + 180, card_deck, 3, CARD_ACTION_TYPE.ATTACK)).setVisible(false);
-        this.defence_scene_card_hand = this.add.existing(new SceneCardHand(this, screen_width / 2, screen_height / 2 + 180, card_deck, 2, CARD_ACTION_TYPE.DEFENCE)).setVisible(false);
-        this.heal_scene_card_hand = this.add.existing(new SceneCardHand(this, screen_width / 2, screen_height / 2 + 180, card_deck, 2, CARD_ACTION_TYPE.HEAL)).setVisible(false);
+        this.defence_scene_card_hand = this.add.existing(new SceneCardHand(this, screen_width / 2, screen_height / 2 + 180, card_deck, 3, CARD_ACTION_TYPE.DEFENCE)).setVisible(false);
+        this.heal_scene_card_hand = this.add.existing(new SceneCardHand(this, screen_width / 2, screen_height / 2 + 180, card_deck, 3, CARD_ACTION_TYPE.HEAL)).setVisible(false);
         
         this.player = this.add.existing(new ScenePlayer(this, screen_width * 0.2, screen_height * 0.1, new Player(
             card_deck,
@@ -335,12 +335,14 @@ class BattleScene extends Phaser.Scene {
 
             let death = scene_enemy.enemy.death;
             scene_enemy.enemy.death = (health_object) => {
+                this.on_enemy_dead_try_gift_player_a_card_please(scene_enemy);
+
                 death(health_object);
                 this.enemies_each_defeated[index] = true;
                 this.defeated_enemy_current_count++;
                 this.defeated_enemies_horde_count++;
                 this.selected_enemy_index = -1;
-
+                
                 if (this.defeated_enemy_current_count === this.enemies.length) {
                     this.events.emit(KEYS_EVENTS.CURRENT_ENEMIES_ALL_DEFEATED);
                 }
@@ -383,6 +385,40 @@ class BattleScene extends Phaser.Scene {
             )
         }
         this.set_active_enemy_array(new_enemies);
+    }
+
+    /**
+     * 
+     * @param {SceneEnemy} scene_enemy 
+     */
+    on_enemy_dead_try_gift_player_a_card_please(scene_enemy) {
+        
+        // rand based on enemy max health
+        if (Math.pow(Math.random(), scene_enemy.enemy.health.max_health / 10) < 0.5) {
+            let matching_card = GAMEPLAY_CARDS.sort(() => 0.5 - Math.random()).find((card) => {
+                return card.timeline_type === scene_enemy.enemy.timeline;
+            });
+            if (matching_card !== undefined) {
+                switch (matching_card.action_type) {
+                case CARD_ACTION_TYPE.ATTACK: {
+                    this.attack_scene_card_hand
+                    break;
+                }
+                case CARD_ACTION_TYPE.DEFENCE: {
+                    break;
+                }
+                case CARD_ACTION_TYPE.HEAL: {
+                    break;
+                }
+                default: {
+                    console.assert(false, "unreachable: matching_card.action_type must be defined");
+                    exit("EXIT_FAILURE");
+                }
+                }
+            } else {
+                console.assert(false, "unreachable: matching_card must be defined");
+            }
+        }
     }
 }
 
