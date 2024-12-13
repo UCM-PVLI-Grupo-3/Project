@@ -22,6 +22,11 @@ class BattleScene extends Phaser.Scene {
      */
     background = null;
     /**
+     * @type {Phaser.GameObjects.Image}
+     */
+    background_image = null;
+
+    /**
      * @type {SceneDiceSlots}
      */
     attack_dice_slots;
@@ -119,8 +124,8 @@ class BattleScene extends Phaser.Scene {
         const screen_width = this.renderer.width;
         const screen_height = this.renderer.height;
 
-        this.background = this.add.rectangle(0, 0, screen_width, screen_height, 0xAF6235).setOrigin(0, 0).setDepth(-2);
-
+        this.background = this.add.rectangle(0, 0, screen_width, screen_height, 0xFFFFFF - 0xAF6235).setOrigin(0, 0).setDepth(-3);
+        this.background_image = this.add.image(0, 0, KEYS_ASSETS_SPRITES.BATTLE_SCENE_BACKGROUND).setOrigin(0, 0).setTint(0xAF6235).setAlpha(0.75).setDepth(-2);
         // TODO: populate
         this.attack_dice_slots = this.add.existing(new SceneDiceSlots(this, screen_width / 2 - 110, 450, 3, [
             new SceneDice(this, 0, 0, DICE_TYPE.D6)
@@ -134,7 +139,7 @@ class BattleScene extends Phaser.Scene {
 
         const emotion_stack_y = this.attack_dice_slots.y;
 
-        const emotion_stack_x_offset = -150;
+        const emotion_stack_x_offset = -130;
         const emotion_stack_x = this.attack_dice_slots.x + emotion_stack_x_offset;
 
         this.scene_emotion_stack = this.add.existing(new SceneEmotionStack(this, emotion_stack_x, emotion_stack_y, [

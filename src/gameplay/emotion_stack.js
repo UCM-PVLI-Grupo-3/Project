@@ -90,6 +90,7 @@ class SceneEmotionFrame extends Phaser.GameObjects.Container {
     scene_frame_nineslice_width = SCENE_EMOTION_FRAME_DEFAULTS.SCENE_FRAME_NINESLICE_WIDTH;
     scene_frame_nineslice_height = SCENE_EMOTION_FRAME_DEFAULTS.SCENE_FRAME_NINESLICE_HEIGHT;
     scene_frame_nineslice = SCENE_EMOTION_FRAME_DEFAULTS.SCENE_FRAME_NINESLICE;
+    scene_frame_rectangle_background = null;
     scene_emotion_icon_image = SCENE_EMOTION_FRAME_DEFAULTS.SCENE_EMOTION_ICON_IMAGE;
     constructor(scene, position_x, position_y, optional_emotion_type, width, height) {
         console.assert(scene instanceof Phaser.Scene, "error: scene must be a valid Phaser.Scene");
@@ -106,7 +107,11 @@ class SceneEmotionFrame extends Phaser.GameObjects.Container {
         this.emotion_type = optional_emotion_type;
         this.scene_frame_nineslice_width = width;
         this.scene_frame_nineslice_height = height;
-
+        this.scene_frame_rectangle_background = this.scene.add.rectangle(
+            0, 0,
+            width, height,
+            0x3562AF
+        ).setOrigin(0.5, 0.5);
         this.scene_frame_nineslice = this.scene.add.nineslice(
             0, 0,
             KEYS_ASSETS_SPRITES.MISC_DICE_SLOT,
@@ -118,6 +123,7 @@ class SceneEmotionFrame extends Phaser.GameObjects.Container {
             CONSTANTS_SPRITES_MEASURES.MISC_DICE_SLOT.SLICE_TOP,
             CONSTANTS_SPRITES_MEASURES.MISC_DICE_SLOT.SLICE_BOTTOM
         ).setOrigin(0.5, 0.5);
+        this.add(this.scene_frame_rectangle_background);
         this.add(this.scene_frame_nineslice);
         
         if (optional_emotion_type !== OPTIONAL_EMOTION_TYPE.NONE()) {

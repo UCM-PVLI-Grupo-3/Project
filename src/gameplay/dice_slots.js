@@ -94,6 +94,7 @@ class SceneDiceSlotFrame extends Phaser.GameObjects.Container {
     scene_frame_nineslice_center_x = 0;
     scene_frame_nineslice_center_y = 0;
     scene_frame_nineslice = SCENE_DICE_SLOT_FRAME_DEFAULTS.SCENE_FRAME_NINESLICE;
+    scene_frame_rectangle_background = null;
     scene_dice = SCENE_DICE_SLOT_FRAME_DEFAULTS.SCENE_DICE;
 
 static LASTID = 0; ID;
@@ -119,6 +120,13 @@ static LASTID = 0; ID;
         this.scene_frame_nineslice_center_x = -width / 2;
         this.scene_frame_nineslice_center_y = -height / 2;
 
+        this.scene_frame_rectangle_background = this.scene.add.rectangle(
+            this.scene_frame_nineslice_center_x,
+            this.scene_frame_nineslice_center_y,
+            width,
+            height,
+            0xAF6235
+        ).setOrigin(0, 0);
         this.scene_frame_nineslice = this.scene.add.nineslice(
             this.scene_frame_nineslice_center_x, 
             this.scene_frame_nineslice_center_y,
@@ -131,18 +139,8 @@ static LASTID = 0; ID;
             CONSTANTS_SPRITES_MEASURES.DICE_SLOT.LINE_BORDER,
             CONSTANTS_SPRITES_MEASURES.DICE_SLOT.LINE_BORDER
         ).setOrigin(0, 0);
+        this.add(this.scene_frame_rectangle_background);
         this.add(this.scene_frame_nineslice);
-
-// TEMPORAL <<<<<<<<<<<<<<<<<<<<<<<<<<<<
-this.ID = ++SceneDiceSlotFrame.LASTID;
-this.add(scene.add.text(0,0,this.ID.toString()));/*
-this.setInteractive({
-    hitArea: new Phaser.Geom.Rectangle(-width/2, -height/2, width, height),
-    hitAreaCallback: Phaser.Geom.Rectangle.Contains 
-})
-.on(Phaser.Input.Events.POINTER_DOWN, () => { console.log("FRAME TOIUCHED " + this.ID); });*/
-//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
         this.scene_dice = scene_dice;
         if (scene_dice !== null) {
             this.add(scene_dice);
