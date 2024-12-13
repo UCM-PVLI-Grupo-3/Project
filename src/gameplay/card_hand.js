@@ -83,6 +83,11 @@ class SceneCardHand extends Phaser.GameObjects.Container{
 	 */
 	scene_cards = [];
 
+	/**
+	 * @type {Array<Point2D>}
+	 * */
+	card_positions;
+
 	constructor(scene, position_x, position_y, card_deck, max_cards, cards_action_type){
 		console.assert(scene instanceof Phaser.Scene, "error: scene must be a valid Phaser.Scene");
         console.assert(typeof position_x === "number", "error: position_x must be a number");
@@ -108,22 +113,26 @@ class SceneCardHand extends Phaser.GameObjects.Container{
         this.card_hand_panel.setAlpha(0.6);
         this.add(this.card_hand_panel);
         
-		const card_positions = distribute_uniform(
+		this.card_positions = distribute_uniform(
 			this.card_hand_panel.width, this.card_hand_panel.height,
 			CONSTANTS_SPRITES_MEASURES.SCENE_CARD.WIDTH * 0.8, CONSTANTS_SPRITES_MEASURES.SCENE_CARD.HEIGHT,
 			this.card_hand.current_cards_count , 1,
 			0, 0
 		);
+		this.card_positions.forEach((position) => {
+			position.x += CONSTANTS_SPRITES_MEASURES.SCENE_CARD.WIDTH * -0.18 / 2;
+			position.y += CONSTANTS_SPRITES_MEASURES.SCENE_CARD.HEIGHT * 0.07 / 2;
+		});
 
-        for(let i = 0; i < card_positions.length; i++) {
+        for(let i = 0; i < this.card_positions.length; i++) {
         	let card = this.card_hand.current_cards[i];
         	let scene_card = SceneCard.from_existing_card(
         		scene, 
-        		card_positions[i].x + CONSTANTS_SPRITES_MEASURES.SCENE_CARD.WIDTH * -0.18 / 2, 
-        		card_positions[i].y + CONSTANTS_SPRITES_MEASURES.SCENE_CARD.HEIGHT * 0.07 / 2,
+        		this.card_positions[i].x, 
+        		this.card_positions[i].y,
         		card
 			);
-			console.log(card_positions[i].x, card_positions[i].y);
+			console.log(this.card_positions[i].x, this.card_positions[i].y);
 			console.log(scene_card.x, scene_card.y);
         	scene_card.setScale(SCENE_CARD_HAND_DEFAULTS.SCENE_CARD_SCALE);
 			this.scene_cards.push(scene_card);
@@ -132,18 +141,36 @@ class SceneCardHand extends Phaser.GameObjects.Container{
         }
 	}
 
-	card_clicked(pointer, game_object) {
+	use_hand_card(index) {
+		console.assert(index > -1, "error: index must be a valid array position");
+		console.assert(index < this.card_hand.current_cards.length, "error: index must be a valid array position");
         
-        if (game_object instanceof SceneCard)
-        {
-            this.card_hand.use_hand_card(game_object);
-            this.update_hand_SceneCards();
-        }
+        let card = this.card_hand.use_hand_card(index);
+        this.update_hand_SceneCards();
 
+        return card;
 	}
 
 	update_hand_SceneCards(){
-		
+		let i = 0;
+		this.card_hand.current_cards.forEach((card) => {
+			if(this.scene_cards[i].card !== card) {
+
+				this.remove(this.scene_cards[i], false);
+				this.scene_cards[i].destroy();
+
+				this.scene_cards[i] = SceneCard.from_existing_card(
+					this.scene, 
+					this.card_positions[i].x, this.card_positions[i].y,
+					card
+					);
+				this.scene_cards[i].setScale(SCENE_CARD_HAND_DEFAULTS.SCENE_CARD_SCALE);
+				
+				this.add(this.scene_cards[i]);
+			}
+
+			++i;
+		});
 	}
 }
 

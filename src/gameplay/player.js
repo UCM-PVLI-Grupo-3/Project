@@ -114,7 +114,7 @@ class Player {
 
             
             if (selected_car_index !== -1) {
-                let card = scene_card_hand.card_hand.use_hand_card(selected_car_index);
+                let card = scene_card_hand.use_hand_card(selected_car_index);
 
                 /**
                  * @type {DiceSlots}
