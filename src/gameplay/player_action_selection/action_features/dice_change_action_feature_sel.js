@@ -18,15 +18,67 @@ class DiceSlotsRegister {
 		console.assert(scene_dice_slots instanceof SceneDiceSlots, "error: scene_dice_slots must be an instance of SceneDiceSlots");
 
 		this.scene_dice_slots = scene_dice_slots;
-		this.base_dice_config = new Array(scene_dice_slots.dice_slots.dices.length);
+		this.base_dice_config = new Array(scene_dice_slots.max_slots);
 
 		this.update();
 	}
 
 	update() {
 		for(let i = 0; i < this.base_dice_config.length; i++) {
-			this.base_dice_config[i] = this.scene_dice_slots.dice_slots.dices[i];
+			let scene_dice = this.scene_dice_slots.scene_dice_slot_frames[i].scene_dice;
+
+			if(scene_dice !== null)
+				this.base_dice_config[i] = {...scene_dice.dice};
+			else
+				this.base_dice_config[i] = null;
 		}
+
+		console.log(this.base_dice_config);
+	}
+
+	restore() {
+		let i = 0;
+		this.scene_dice_slots.scene_dice_slot_frames.forEach((dice_slot_frame) => {
+		/*	if(dice_slot_frame.scene_dice !== null && this.base_dice_config[i] !== null
+				&& dice_slot_frame.scene_dice.dice.dice_type !== this.base_dice_config[i].dice_type) {
+				
+				this.scene_dice_slots.dice_slots.remove_dice(dice_slot_frame.scene_dice.dice);
+				dice_slot_frame.scene_dice.destroy();
+				
+				let original_scene_dice = new SceneDice(this.scene_dice_slots.scene, 0, 0, this.base_dice_config[i].dice_type);
+				
+				dice_slot_frame.set_dice(original_scene_dice);
+				this.scene_dice_slots.dice_slots.add_dice(original_scene_dice.dice);
+			}
+			else if(dice_slot_frame.scene_dice !== null && this.base_dice_config[i] === null) {
+				this.scene_dice_slots.dice_slots.remove_dice(dice_slot_frame.scene_dice.dice);
+				dice_slot_frame.scene_dice.destroy();
+			}
+			else if(dice_slot_frame.scene_dice === null && this.base_dice_config[i] !== null) {
+				let original_scene_dice = new SceneDice(this.scene_dice_slots.scene, 0, 0, this.base_dice_config[i].dice_type);
+				
+				dice_slot_frame.set_dice(original_scene_dice);
+				this.scene_dice_slots.dice_slots.add_dice(original_scene_dice.dice);
+			}*/
+			let occupant_scene_dice = dice_slot_frame.scene_dice;
+
+			if(occupant_scene_dice !== null) {
+				this.scene_dice_slots.dice_slots.remove_dice(occupant_scene_dice.dice);
+				dice_slot_frame.remove_dice();
+				occupant_scene_dice.destroy();
+			}
+
+			if(this.base_dice_config[i] !== null) {
+				let original_scene_dice = new SceneDice(this.scene_dice_slots.scene, 0, 0, this.base_dice_config[i].dice_type);
+				this.scene_dice_slots.scene.add.existing(original_scene_dice);
+
+				dice_slot_frame.set_dice(original_scene_dice);
+				this.scene_dice_slots.dice_slots.add_dice(original_scene_dice.dice);
+			}
+			
+
+			++i;
+		});
 	}
 }
 
@@ -104,13 +156,8 @@ class DiceChangeActionFeature extends ActionFeatureSelector {
 
 	restore_dice_placement() {
 
-		dice_slots_registers.forEach((dice_slots_register) => {
-			let scene_dice_slot_frames = dice_slots_register.scene_dice_slots.scene_dice_slot_frames;
-
-			for(let i = 0; i < scene_dice_slot_frames.length; i++) {
-				let scene_dice = new SceneDice(this.scene, 0, 0, dice_slots_register.base_dice_config[i]);
-				scene_dice_slot_frames[i].set_dice(scene_dice);
-			}
+		this.dice_slots_registers.forEach((dice_slots_register) => {
+			dice_slots_register.restore();
 		});
 	}
 
@@ -132,6 +179,8 @@ class DiceChangeActionFeature extends ActionFeatureSelector {
 
 	set_selection_state(value) {
     	this._is_selected = value;
+
+    	if(!value) this.restore_dice_placement();
     }
 
     handle_dice_drop_in_dice_slots(dropped_scene_dice) {
