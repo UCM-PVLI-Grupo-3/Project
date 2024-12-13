@@ -104,3 +104,11 @@ Due to the vast variety of cards, we have decided to give some cards synergies b
 ## Inspiration
 
 Our game is inspired by different turn based games such as darkest dungeon and games based in dice games like, dicey dungeons, slice and dice and the game dungeons and dragons.
+
+## ScreenShots
+![Captura de pantalla 2024-12-13 111825](https://github.com/user-attachments/assets/e3e9b558-5e7f-4d73-a4fc-bac6c21af8b1)
+
+![Captura de pantalla 2024-12-13 111852](https://github.com/user-attachments/assets/42bff82b-3bb2-4cda-a5f8-03c06484bc2e)
+
+![Captura de pantalla 2024-12-13 111922](https://github.com/user-attachments/assets/2cfd8197-c298-414a-82cb-1043b670ea05)
+
