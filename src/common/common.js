@@ -4,6 +4,7 @@ const KEYS_SCENES = {
     MAIN_MENU: "MAIN_MENU",
     GAME_OVER: "GAME_OVER",
     GAME_WIN: "GAME_WIN",
+    MAP: "MAP",
 };
 
 const KEYS_ASSETS_SPRITES = {

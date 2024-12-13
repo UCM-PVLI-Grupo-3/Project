@@ -80,7 +80,13 @@ class BattleScene extends Phaser.Scene {
       /**
      * @type {Enemy}
      * */
-      Enemy;
+      Enemy1;
+    /**
+     * @type {Enemy}
+     * */
+    Enemy2;
+                  
+  
 
     constructor() {
         super({ key: KEYS_SCENES.BATTLE });
@@ -161,7 +167,8 @@ class BattleScene extends Phaser.Scene {
             this.heal_card_hand_button.feature_selector,
 
         ]);
-            this.Enemy = new SceneEnemy(this,1,1,1);
+            this.Enemy = new SceneEnemy(this,1,1,1,1);
+            this.Enemy2 = new SceneEnemy(this,1,1,0,2);
         
     }
 
