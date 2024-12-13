@@ -86,6 +86,27 @@ const CONSTANTS_SPRITES_MEASURES = {
     },
 };
 
+const CARD_NAMES = {
+    SABER: "Sable", 
+    CLUB: "Porra", 
+    ARCO: "Arco", 
+    CANON: "Cañón", 
+    FIRE_SABER: "Sable Igneo", 
+    SICKLE: "Hoz de Grangero", 
+    KHOPESH: "Khopesh", 
+    SHIELD: "Escudo",
+    TOTEM: "Tótem",
+    SACRED_HORN: "Cuerno Sagrado",
+    VITAL_POTION: "Potción Vital",
+    LAZZER: "Lázzer",
+    TESLA_TOWER: "Tesla (himself)",
+    LIGHTSABER: "Sable Lázzer",
+    BLOWGUN: "Cerbatana Telescópica",
+    RADIATION: "Radiación a Domicilio",
+    FORCE_SHIELD: "Campo de Fuerza",
+    MEDICAL_KIT: "Botiquín Médico", 
+};
+
 function exit(status) {
     // http://kevin.vanzonneveld.net
     // +   original by: Brett Zamir (http://brettz9.blogspot.com)
@@ -161,4 +182,4 @@ function implements_interface_object(interface_class, object) {
     return fully_implemented;
 }
 
-export { KEYS_SCENES, KEYS_ASSETS_SPRITES, KEYS_FONT_FAMILIES, KEYS_EVENTS, KEYS_SHADER_PIPELINES, CONSTANTS_SPRITES_MEASURES, exit, Interface, implements_interface_class, implements_interface_object };
+export { KEYS_SCENES, KEYS_ASSETS_SPRITES, KEYS_FONT_FAMILIES, KEYS_EVENTS, KEYS_SHADER_PIPELINES, CONSTANTS_SPRITES_MEASURES, CARD_NAMES, exit, Interface, implements_interface_class, implements_interface_object };

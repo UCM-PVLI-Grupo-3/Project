@@ -1,7 +1,7 @@
 import { OPTIONAL_EMOTION_TYPE, emotion_sprite_key_from_type } from "./emotions.js";
 import { NullEffect } from "./card_effects/null_effect.js";
 import { CardEffect, CardEffectContext } from "./card_effects/card_effect.js";
-import { KEYS_ASSETS_SPRITES } from "../common/common.js";
+import { KEYS_ASSETS_SPRITES, CARD_NAMES } from "../common/common.js";
 import { SceneEmotionStack } from "./emotion_stack.js";
 
 const CARD_TIMELINE_TYPE = {
@@ -146,7 +146,10 @@ class SceneCard extends Phaser.GameObjects.Container {
 
         this.add(this._selection_frame);
 
-        let card_illustration = scene.add.sprite(CARD_ILLUSTRATION_X, CARD_ILLUSTRATION_Y, KEYS_ASSETS_SPRITES.CARD_ATLAS, this.card.card_id)
+        let card_illustration = scene.add.sprite(
+            CARD_ILLUSTRATION_X, CARD_ILLUSTRATION_Y, 
+            KEYS_ASSETS_SPRITES.CARD_ATLAS, 
+            this.get_illustration_frame_of(name))
         .setOrigin(0, 0);
         this.add(card_illustration);
 
@@ -226,6 +229,29 @@ class SceneCard extends Phaser.GameObjects.Container {
         
         this.is_selected = value;
         this._selection_frame.setVisible(value);
+    }
+
+    get_illustration_frame_of(card_name) {
+        return [
+            CARD_NAMES.CLUB,
+            CARD_NAMES.TESLA_TOWER,
+            CARD_NAMES.SABER,
+            CARD_NAMES.FIRE_SABER,
+            CARD_NAMES.TOTEM,
+            CARD_NAMES.ARCO,
+            CARD_NAMES.FORCE_SHIELD,
+            CARD_NAMES.CANON,
+            CARD_NAMES.SACRED_HORN,
+            CARD_NAMES.SHIELD,
+            CARD_NAMES.SICKLE,
+            CARD_NAMES.LIGHTSABER,
+            CARD_NAMES.KHOPESH,
+            CARD_NAMES.VITAL_POTION,
+            CARD_NAMES.MEDICAL_KIT
+         /*   CARD_NAMES.LAZZER
+            CARD_NAMES.BLOWGUN
+            CARD_NAMES.RADIATION*/
+            ].indexOf(card_name);
     }
 
     on_drag_start(pointer) {
