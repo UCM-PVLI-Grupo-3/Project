@@ -296,14 +296,15 @@ class BattleCard {
             // TODO: check if full
             // TODO: check if combo
             context.scene_emotion_stack.add_emotions([this.card.successful_action_emotion_type]);
-            console.log("success");
         } else if (roll_percentage < low_roll_percentage && this.card.failure_action_emotion_type !== OPTIONAL_EMOTION_TYPE.NONE()) {
             context.scene_emotion_stack.add_emotions([this.card.failure_action_emotion_type]);
         }
 
-        this.card.card_effects.forEach((card_effect) => {
-            card_effect.apply_effect(destination, source, context);
-        });
+        if (context.roll >= this.card.value) {
+            this.card.card_effects.forEach((card_effect) => {
+                card_effect.apply_effect(destination, source, context);
+            });
+        }
     }
 }
 
