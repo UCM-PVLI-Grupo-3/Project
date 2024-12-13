@@ -23,4 +23,9 @@ https://www.canva.com/design/DAGSb2_aZpQ/ZFZwUPKJRmssQXCX2dXBxQ/edit
 ## Link 
 https://ucm-pvli-grupo-3.github.io/Project/
 
+## Architecture
+
+
+
+![image](https://github.com/user-attachments/assets/5f103096-ea5d-41c0-9345-e35d008ac151)
 
