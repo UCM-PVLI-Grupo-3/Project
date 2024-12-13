@@ -142,4 +142,4 @@ class SceneDiceChangeActionFeature extends Phaser.GameObjects.Container {
     }
 }
 
-export { DiceChangeActionFeature, SceneDiceChangeActionFeature };
+export { DiceChangeActionFeature, SceneDiceChangeActionFeature, DiceSlotsRegister };
