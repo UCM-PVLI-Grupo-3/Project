@@ -1,0 +1,26 @@
+TODO:
+    Player Die
+    Player Win
+    Player Sustain
+    TUTORIAL
+    COMMENTS
+
+HACK:
+    Better Hand Repr
+    Separate All File Levels and Classes
+
+Update for Accuracy:
+    GDD
+    Website
+    MARKDOWN !Outdated
+
+Update for Usability:
+    Website
+    TUTORIAL
+    Card Use/Turn Actions
+    
+Fix:
+    Web Mispellings
+    Leveling/Scoring
+    Draw Order
+
