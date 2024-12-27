@@ -244,7 +244,7 @@ class BattleScene extends Phaser.Scene {
         this.enemies_defeated_text = this.add.text(screen_width / 2, screen_height * 0.05, "0", {
             fontFamily: KEYS_FONT_FAMILIES.Bauhaus93,
             fontSize: "48px",
-        }).setRotation(-Math.PI / 6);
+        }).setRotation(-Math.PI / 6).setOrigin(0.5, 0.5).setDepth(1);
         this.on_current_enemies_all_defeated();
         // this.enemies.forEach((enemy, index) => {
         //     enemy.sprite.setInteractive().on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, (ptr, local_x, local_y) => {
