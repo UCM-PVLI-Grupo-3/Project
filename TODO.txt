@@ -13,6 +13,8 @@ Update for Accuracy:
     GDD
     Website
     MARKDOWN !Outdated
+    DEDUPLICATE Folders
+    SET NAMING-CONVENTION
 
 Update for Usability:
     Website
