@@ -29,7 +29,7 @@ class TestScene extends Phaser.Scene {
         const defense_group_id = 1;
         const support_group_id = 2;
 
-        const initial_cards_count = 1;
+        const initial_cards_count = 6;
         let initial_cards = [...GAMEPLAY_CARDS].sort(() => 0.5 - Math.random()).slice(0, initial_cards_count);
         console.assert(initial_cards instanceof Array, "error: initial_cards must be an array");
         console.assert(initial_cards.length === initial_cards_count, "error: initial_cards.length !== initial_cards_count");
@@ -51,13 +51,17 @@ class TestScene extends Phaser.Scene {
             }
             }
             this.card_hand.add_card(card, group);
+            this.card_hand.card_groups[group].scene_cards[this.card_hand.card_groups[group].scene_cards.length - 1].setScale(0.25);
         });
-
-        this.card_hand.card_groups[0].scene_cards[0].setScale(0.5);
-        this.card_hand.set_active_group(attack_group_id).present_active_card_group();
+        this.card_hand.set_active_group(attack_group_id);
     }
 
     update(time, delta) {
+        this.card_hand.background.setSize(
+            600 * Math.sin(time * 0.001) + 600,
+            400
+        );
+        this.card_hand.present_active_card_group();
     }
 }
 

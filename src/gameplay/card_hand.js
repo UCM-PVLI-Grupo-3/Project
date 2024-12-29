@@ -110,20 +110,37 @@ class CardGroup {
 		this.on_card_selected = on_card_selected;
 	}
 
-	position_in_rect(x, y, width, height) {
-		let card_width = this.scene_cards[0].card_background_image.width;
-		let card_height = this.scene_cards[0].card_background_image.height;
-		let card_margin = card_width * SCENE_CARD_HAND_DEFAULTS.SCENE_CARD_MARGIN_FACTOR;
+	position_in_rect(x, y, width, height, horizontal_count = 0xFFFF_FFFF, vertical_count = 1) {
+		if (this.scene_cards.length > 0) {
+			let h_count = Math.min(this.scene_cards.length, horizontal_count);
+			let v_count = vertical_count;
 
-		let card_group_width = card_width + card_margin * (this.scene_cards.length - 1);
-		let card_group_x = x + (width - card_group_width) / 2;
+			const separation_x = width / (h_count + 1);
+			const separation_y = height / (v_count + 1);
 
-		let card_group_y = y + (height - card_height) / 2;
+			const start_x = x - width / 2 + separation_x;
+			const start_y = y - height / 2 + separation_y;
 
-		this.scene_cards.forEach((scene_card, index) => {
-			scene_card.x = card_group_x + index * card_margin;
-			scene_card.y = card_group_y;
-		});
+			let index = 0;
+			for (let y = 0; y < v_count; y++) {
+				if (index >= this.scene_cards.length) {
+					break;
+				}
+				
+				for (let x = 0; x < h_count; x++) {
+					index = x + y * h_count;
+					if (index >= this.scene_cards.length) {
+						break;
+					}
+					
+					this.scene_cards[index].setPosition(
+						start_x + x * separation_x,
+						start_y + y * separation_y
+					);
+				}
+			}
+		}
+		this.scene_cards_dirty = false;
 	}
 
 	select_card(index) {
@@ -139,7 +156,8 @@ class CardGroup {
 	set_group_active(active) {
 		this.active = active;
 		this.scene_cards.forEach(scene_card => {
-			scene_card.setActive(active);
+			//scene_card.setActive(active);
+			scene_card.setVisible(active);
 		});
 	}
 
@@ -248,8 +266,9 @@ class SceneCardHand extends Phaser.GameObjects.Container{
 	present_active_card_group() {
 		console.assert(this.any_card_group_active(), "error: no active card group");
 
+		const padding = 60;
 		let group = this.card_groups[this.active_card_group_index];
-		group.position_in_rect(this.x, this.y, this.background.width, this.background.height);
+		group.position_in_rect(this.x, this.y, this.background.width + padding, this.background.height, 3, 2);
 
 		return group;
 	}
