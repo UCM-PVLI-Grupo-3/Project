@@ -18,7 +18,7 @@ const phaser_config = {
         autoCenter: Phaser.Scale.CENTER_BOTH,
     },
     backgroundColor: "#AF6235",
-    scene: [LoadScene, MainMenuScene, BattleScene, EndScene],
+    scene: [LoadScene, MainMenuScene, BattleScene, EndScene, TestScene],
 };
 
 /**

@@ -1,29 +1,29 @@
-import { KEYS_ASSETS_SPRITES } from "../common/constants.js";
-import { distribute, distribute_uniform } from "../common/layouts.js";
+import { KEYS_SCENES } from "../common/constants.js";
+import { SceneCardHand } from "../gameplay/card_hand.js";
+import { Card } from "../gameplay/card.js";
 
 class TestScene extends Phaser.Scene {
+    /**
+     * @type {SceneCardHand}
+     */
+    card_hand = null;
+
     constructor() {
-      super({ key: 'TestScene' });
+        super({ key: KEYS_SCENES.TEST });
     }
 
     init(data) {
     }
 
     preload() {
-      this.load.image(KEYS_ASSETS_SPRITES.MISC_DICE, 'assets/misc-dice.png');
     }
-    
+
     create(data) {
-        const points = distribute_uniform(
-            this.renderer.width, this.renderer.height,
-            10, 10,
-            8, 8,
-            100, 100,
-            (x, y, w, h) => { return { x: x * x * w, y: y * y * h }; }
-        );
-        for (let i = 0; i < points.length; ++i) {
-            this.add.rectangle(points[i].x, points[i].y, 10, 10, 0x6666ff).setOrigin(0, 0);
-        }
+        const w = this.cameras.main.width;
+        const h = this.cameras.main.height;
+        this.card_hand = this.add.existing(new SceneCardHand(this, w * 0.5, h * 0.5, w * 0.35, h * 0.2, 3));
+        
+        this.card_hand.add_card
     }
 
     update(time, delta) {

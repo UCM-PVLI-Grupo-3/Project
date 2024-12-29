@@ -99,7 +99,7 @@ class MainMenuScene extends Phaser.Scene {
 
     on_fade_out_complete() {
         this.scene.transition({
-            target: KEYS_SCENES.BATTLE,
+            target: KEYS_SCENES.TEST,
             duration: 1000,
             remove: true,
             onStart: (from, to) => { this.scene_transition_start(from, to); },
