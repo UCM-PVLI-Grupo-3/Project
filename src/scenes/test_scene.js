@@ -3,6 +3,7 @@ import { SceneCardHand } from "../gameplay/card_hand.js";
 import { Card, CARD_ACTION_TYPE } from "../gameplay/card.js";
 import { GAMEPLAY_CARDS } from "../gameplay/card_deck.js";
 import { exit } from "../common/utility.js";
+import { SceneDiceSlots } from "../gameplay/dice_slots.js";
 
 class TestScene extends Phaser.Scene {
     /**
@@ -10,8 +11,16 @@ class TestScene extends Phaser.Scene {
      */
     card_hand = null;
 
+    /**
+     * @type {SceneDiceSlots}
+     */
+    dice_slots = null;
+
     constructor() {
         super({ key: KEYS_SCENES.TEST });
+
+        this.card_hand = null;
+        this.dice_slots = null;
     }
 
     init(data) {
@@ -23,7 +32,15 @@ class TestScene extends Phaser.Scene {
     create(data) {
         const w = this.cameras.main.width;
         const h = this.cameras.main.height;
-        this.card_hand = this.add.existing(new SceneCardHand(this, w * 0.5, h * 0.5, w * 0.35, h * 0.2, 3));
+        const card_display_rect = {
+            x: w * 0.5,
+            y: h * 0.5,
+            width: w * 0.35,
+            height: h * 0.2,
+        };
+        this.card_hand = this.add.existing(
+            new SceneCardHand(this, card_display_rect.x, card_display_rect.y, card_display_rect.width, card_display_rect.height, 3)
+        );
         
         const attack_group_id = 0;
         const defense_group_id = 1;
@@ -51,17 +68,29 @@ class TestScene extends Phaser.Scene {
             }
             }
             this.card_hand.add_card(card, group);
+
+            // !!DEBUG
             this.card_hand.card_groups[group].scene_cards[this.card_hand.card_groups[group].scene_cards.length - 1].setScale(0.25);
         });
-        this.card_hand.set_active_group(attack_group_id);
+        this.card_hand.set_active_group(attack_group_id).present_active_card_group();
+
+        this.dice_slots = this.add.existing(
+            new SceneDiceSlots(
+                this,
+                card_display_rect.x, card_display_rect.y + card_display_rect.height,
+                card_display_rect.width * 1.15, card_display_rect.height * 1.5,
+                3
+            )
+        )
     }
 
     update(time, delta) {
-        this.card_hand.background.setSize(
-            600 * Math.sin(time * 0.001) + 600,
-            400
-        );
-        this.card_hand.present_active_card_group();
+        // this.card_hand.background.setSize(
+        //     600 * Math.sin(time * 0.001) + 600,
+        //     400
+        // );
+        // this.card_hand.set_active_group(Math.floor(((3 * Math.sin(time * 0.001) + 3) + 1) / 3));
+        // this.card_hand.present_active_card_group();
     }
 }
 

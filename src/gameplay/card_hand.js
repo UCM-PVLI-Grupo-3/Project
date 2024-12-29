@@ -1,59 +1,7 @@
 import { CONSTANTS_SPRITES_MEASURES } from "../common/constants.js";
 import { CardDeck } from "./card_deck.js";
 import { Card, SceneCard, CARD_ACTION_TYPE } from "./card.js";
-
-const CARD_HAND_DEFAULTS = {
-	MAX_CARD_NUM: 4,
-};
-
-class CardHand {
-	// max_cards = CARD_HAND_DEFAULTS.MAX_CARD_NUM;
-	// cards_action_type;
-	// /**
-	//  * @type {Array<Card>}
-	//  * */
-	// current_cards = new Array(CARD_HAND_DEFAULTS.MAX_CARD_NUM);
-	// current_cards_count = 0;
-	// card_deck = new CardDeck(0,[]);
-	// card_queue = [];
-
-	// constructor(card_deck, max_cards, cards_action_type){
-	// 	console.assert(card_deck instanceof CardDeck, "error: parameter card_deck must be an instance of CardDeck");
-	// 	console.assert(typeof max_cards === "number", "error: max_cards must be a number");
-	// 	console.assert(typeof cards_action_type === "string" || cards_action_type instanceof String, "error: cards_action_type must be a String");
-
-	// 	this.card_deck = card_deck;
-	// 	this.max_cards = max_cards;
-	// 	this.current_cards = new Array(max_cards);
-	// 	this.cards_action_type = cards_action_type;
-			
-	// 	for(let i = 0; i < this.card_deck.card_count(); i++) {
-	// 		if(this.card_deck.cards[i].action_type === this.cards_action_type) {
-
-	// 			if(this.current_cards_count < this.max_cards) {
-	// 				this.current_cards[this.current_cards_count] = this.card_deck.cards[i];
-	// 				++this.current_cards_count;
-	// 			}
-	// 			else {
-	// 				this.card_queue.push(this.card_deck.cards[i]);
-	// 			}
-	// 		}
-	// 	}
-	// }
-
-	// use_hand_card(index){
-
-	// 	let used_card = this.current_cards.splice(index, 1)[0];
-	// 	this.card_queue.push(used_card);
-
-	// 	let new_hand_card = this.card_queue.shift();
-	// 	new_hand_card.instance_id = index;
-
-	// 	this.current_cards.splice(index, 0, new_hand_card);
-
-	// 	return used_card;
-	// }
-}
+import { distribute_uniform } from "../common/layouts.js";
 
 const SCENE_CARD_HAND_DEFAULTS = {
 	CARD_DECK: new CardDeck(0, []),
@@ -115,29 +63,9 @@ class CardGroup {
 			let h_count = Math.min(this.scene_cards.length, horizontal_count);
 			let v_count = vertical_count;
 
-			const separation_x = width / (h_count + 1);
-			const separation_y = height / (v_count + 1);
-
-			const start_x = x - width / 2 + separation_x;
-			const start_y = y - height / 2 + separation_y;
-
-			let index = 0;
-			for (let y = 0; y < v_count; y++) {
-				if (index >= this.scene_cards.length) {
-					break;
-				}
-				
-				for (let x = 0; x < h_count; x++) {
-					index = x + y * h_count;
-					if (index >= this.scene_cards.length) {
-						break;
-					}
-					
-					this.scene_cards[index].setPosition(
-						start_x + x * separation_x,
-						start_y + y * separation_y
-					);
-				}
+			let positions = distribute_uniform(width, height, h_count, v_count);
+			for (let i = 0; i < this.scene_cards.length; i++) {
+				this.scene_cards[i].setPosition(x + positions[i].x, y + positions[i].y);
 			}
 		}
 		this.scene_cards_dirty = false;
@@ -151,6 +79,13 @@ class CardGroup {
 		}
 		this.selected_card_index = index;
 		this.on_card_selected(this, index);
+	}
+
+	unselect_card() {
+		if (this.has_selected_card()) {
+			this.scene_cards[this.selected_card_index].set_selection_state(false);
+			this.selected_card_index = -1;
+		}
 	}
 
 	set_group_active(active) {
@@ -225,7 +160,12 @@ class SceneCardHand extends Phaser.GameObjects.Container{
 		
 		console.assert(this.any_card_group_active(), "error: no active card group");
 		console.assert(this.card_groups[this.active_card_group_index] === group, "error: invalid group");
-		// TODO
+		
+		this.card_groups.forEach((other_group) => {
+			if (other_group !== group) {
+				other_group.unselect_card();
+			}
+		});
 	}
 
 	add_card(card, group_index) {
@@ -265,13 +205,13 @@ class SceneCardHand extends Phaser.GameObjects.Container{
 
 	present_active_card_group() {
 		console.assert(this.any_card_group_active(), "error: no active card group");
-
+		
 		const padding = 60;
 		let group = this.card_groups[this.active_card_group_index];
-		group.position_in_rect(this.x, this.y, this.background.width + padding, this.background.height, 3, 2);
 
+		group.position_in_rect(this.x, this.y, this.background.width + padding, this.background.height, 3, 2);
 		return group;
 	}
 }
 
-export { CardHand, SceneCardHand };
+export { SceneCardHand };

@@ -1,54 +1,40 @@
 function distribute(
     container_width, container_height,
-    element_width, element_height,
-    horizontal_count, vertical_count,
-    spacing_x, spacing_y,
+    horizontal_count = 1, vertical_count = 1,
     distribution = (x01, y01, width, height) => { return { x: x01 * width, y: y01 * height }; }
 ) {
-    console.assert(typeof container_width === "number", "error: container_width must be a number");
-    console.assert(typeof container_height === "number", "error: container_height must be a number");
-    console.assert(typeof element_width === "number", "error: element_width must be a number");
-    console.assert(typeof element_height === "number", "error: element_height must be a number");
-    console.assert(typeof horizontal_count === "number", "error: horizontal_count must be a number");
-    console.assert(typeof vertical_count === "number", "error: vertical_count must be a number");
-    console.assert(typeof spacing_x === "number", "error: spacing_x must be a number");
-    console.assert(typeof spacing_y === "number", "error: spacing_y must be a number");
+    const width = container_width;
+    const height = container_height;
 
-    const total_width = element_width * horizontal_count + spacing_x * (horizontal_count - 1);
-    const total_height = element_height * vertical_count + spacing_y * (vertical_count - 1);
+    const separation_x = width / (horizontal_count + 1);
+    const separation_y = height / (vertical_count + 1);
 
-    const start_x = (container_width - total_width) / 2;
-    const start_y = (container_height - total_height) / 2;
+    const start_x = -width / 2 + separation_x;
+    const start_y = -height / 2 + separation_y;
 
-    let points = [];
-    for (let i = 0; i < vertical_count; ++i) {
-        for (let j = 0; j < horizontal_count; ++j) {
-            const p01 = {
-                x: j * (element_width + spacing_x) / total_width,
-                y: i * (element_height + spacing_y) / total_height
-            };
-            let p = distribution(p01.x, p01.y, total_width, total_height);
-            p.x += start_x;
-            p.y += start_y;
-            points.push(p);
+    /**
+     * @type {Array<{x: number, y: number}>}
+     */
+    let result = new Array(horizontal_count * vertical_count);
+    for (let y = 0; y < vertical_count; y++) {    
+        for (let x = 0; x < horizontal_count; x++) {
+            let index = x + y * horizontal_count;
+            result[index] = distribution(
+                (start_x + x * separation_x) / width,
+                (start_y + y * separation_y) / height,
+                width,
+                height
+            );
         }
     }
-
-    return points;
+    return result;
 }
 
 function distribute_uniform(
     container_width, container_height,
-    element_width, element_height,
-    horizontal_count, vertical_count,
-    spacing_x, spacing_y,
+    horizontal_count = 1, vertical_count = 1
 ) {
-    return distribute(
-        container_width, container_height,
-        element_width, element_height,
-        horizontal_count, vertical_count,
-        spacing_x, spacing_y
-    );
+    return distribute(container_width, container_height, horizontal_count, vertical_count);
 }
 
 export { distribute, distribute_uniform };
