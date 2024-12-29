@@ -141,7 +141,7 @@ class LoadScene extends Phaser.Scene {
 
     on_load_progress(progress) {
         this.loading_bar_fill.displayWidth = this.loading_bar_fill_max_width * progress;
-        this.loading_progress_text.setText(`${progress * 100.0}%`);
+        this.loading_progress_text.setText(`${Math.round((progress + Number.EPSILON) * 100.0 * 100.0) / 100.0}%`);
     }
 
     on_file_progress(file, progress) {
