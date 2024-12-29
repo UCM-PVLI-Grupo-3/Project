@@ -1,4 +1,4 @@
-import { KEYS_ASSETS_SPRITES } from "../common/common.js";
+import { KEYS_ASSETS_SPRITES } from "../common/constants.js";
 
 const DICE_TYPE = {
     D4: "D4",

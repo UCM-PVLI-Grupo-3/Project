@@ -1,4 +1,4 @@
-import { KEYS_SCENES, KEYS_ASSETS_SPRITES, KEYS_EVENTS, KEYS_SHADER_PIPELINES, exit, KEYS_FONT_FAMILIES } from "../common/common.js";
+import { KEYS_SCENES, KEYS_ASSETS_SPRITES, KEYS_EVENTS, KEYS_SHADER_PIPELINES, KEYS_FONT_FAMILIES } from "../common/constants.js";
 import { DiceSlots, SceneDiceSlots } from "../gameplay/dice_slots.js";
 import { DICE_TYPE, SceneDice, Dice } from "../gameplay/dice.js";
 import { CARD_TIMELINE_TYPE, SceneCard, Card, CARD_DEFAULTS, CARD_ACTION_TYPE, TIMELINE_TYPE} from "../gameplay/card.js";
@@ -14,6 +14,8 @@ import { Health, Block } from "../gameplay/health.js";
 import { SceneDiceBox } from "../gameplay/dice_box.js";
 import { Enemy, SceneEnemy } from "../gameplay/enemy.js"
 import { distribute_uniform } from "../common/layouts.js";
+import { exit } from "../common/utility.js"; 
+
 
 const BATTLE_SCENE_DEFAULT_SICE_SLOTS = 3;
 

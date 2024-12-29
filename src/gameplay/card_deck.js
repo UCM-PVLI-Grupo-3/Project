@@ -1,5 +1,5 @@
 import { Card, CARD_ACTION_TYPE, CARD_TIMELINE_TYPE, SceneCard } from "./card.js";
-import { BlockDamageEffect } from "./card_effects/BlockDamageEffect.js";
+import { BlockDamageEffect } from "./card_effects/block_damage_effect.js";
 import { DealDamageEffect } from "./card_effects/deal_damage.js";
 import { HealEffect } from "./card_effects/heal.js";
 import { EMOTION_TYPE, OPTIONAL_EMOTION_TYPE } from "./emotions.js";
@@ -9,7 +9,7 @@ const CARD_DECK_DEFAULTS = {
 };
 
 // CardDeck is the collection of cards that will appear in the fight gameplay
-class CardDeck{
+class CardDeck {
 	max_cards = CARD_DECK_DEFAULTS.MAX_CARD_NUM;
 	cards = new Array(CARD_DECK_DEFAULTS.MAX_CARD_NUM);
 

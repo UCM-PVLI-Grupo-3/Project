@@ -1,3 +1,5 @@
+import { KEYS_ASSETS_SPRITES, KEYS_SCENES, KEYS_SHADER_PIPELINES } from "../common/constants.js";
+
 class LoadScene extends Phaser.Scene {
 
     /**

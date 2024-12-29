@@ -1,5 +1,5 @@
 import { emotion_sprite_key_from_type, EMOTION_TYPE, OPTIONAL_EMOTION_TYPE } from "./emotions.js";
-import { KEYS_ASSETS_SPRITES, CONSTANTS_SPRITES_MEASURES } from "../common/common.js";
+import { KEYS_ASSETS_SPRITES, CONSTANTS_SPRITES_MEASURES } from "../common/constants.js";
 
 const EMOTION_STACK_DEFAULTS = {
     ACUMULATED_EMOTIONS: Array(EMOTION_TYPE.HAPPINESS()),

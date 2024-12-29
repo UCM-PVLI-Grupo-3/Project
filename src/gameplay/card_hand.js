@@ -1,4 +1,4 @@
-import { KEYS_ASSETS_SPRITES, CONSTANTS_SPRITES_MEASURES } from "../common/common.js";
+import { KEYS_ASSETS_SPRITES, CONSTANTS_SPRITES_MEASURES } from "../common/constants.js";
 import { CardDeck, SceneCardDeck } from "./card_deck.js";
 import { Card, SceneCard, CARD_ACTION_TYPE } from "./card.js";
 import { distribute_uniform } from "../common/layouts.js";

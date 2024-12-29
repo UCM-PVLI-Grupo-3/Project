@@ -1,6 +1,6 @@
 import { KEYS_FONT_FAMILIES, KEYS_SCENES, KEYS_SHADER_PIPELINES } from "../common/constants.js";
 
-class MainMenuScene extends Phaser.Scene {
+class EndScene extends Phaser.Scene {
     /**
      * @type {Phaser.GameObjects.Rectangle}
      */
@@ -22,7 +22,7 @@ class MainMenuScene extends Phaser.Scene {
     game_title;
 
     constructor() {
-        super({ key: KEYS_SCENES.MAIN_MENU });
+        super({ key: KEYS_SCENES.END });
     }
 
     init(data) {
@@ -39,7 +39,7 @@ class MainMenuScene extends Phaser.Scene {
 
         this.background = this.add.rectangle(0, 0, screen_width, screen_height, 0xAF6235).setOrigin(0, 0);
 
-        this.game_title = this.add.text(screen_width / 2, screen_height * 0.35, "Let's go [i]gambling[/i] rolling", {
+        this.game_title = this.add.text(screen_width / 2, screen_height * 0.35, "The End !!DEBUG", {
             fontFamily: KEYS_FONT_FAMILIES.Bauhaus93,
             fontSize: '60px',
         }).setOrigin(0.5, 0.5);
@@ -51,7 +51,7 @@ class MainMenuScene extends Phaser.Scene {
                     this.on_play_game_button_ptr_down(ptr, local_x, local_y);
                 })
             )
-            .add(this.add.text(0, 0, "Play Game", {
+            .add(this.add.text(0, 0, "Play Game !!DEBUG", {
                 fontFamily: KEYS_FONT_FAMILIES.Bauhaus93,
                 fontSize: '30px',
             }).setOrigin(0.5, 0.5));
@@ -63,7 +63,7 @@ class MainMenuScene extends Phaser.Scene {
                     this.on_exit_game_button_ptr_down(ptr, local_x, local_y);
                 })
             )
-            .add(this.add.text(0, 0, "Exit Game", {
+            .add(this.add.text(0, 0, "Exit Game !!DEBUG", {
                 fontFamily: KEYS_FONT_FAMILIES.Bauhaus93,
                 fontSize: '30px',
             }).setOrigin(0.5, 0.5));
@@ -111,4 +111,4 @@ class MainMenuScene extends Phaser.Scene {
 
 }
 
-export { MainMenuScene };
+export { EndScene };

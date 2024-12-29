@@ -1,4 +1,4 @@
-import { Interface } from "../../common/common.js";
+import { Interface } from "../../common/interface.js";
 import { SceneEmotionStack } from "../emotion_stack.js";
 
 class CardEffectContext {

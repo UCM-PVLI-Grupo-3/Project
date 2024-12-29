@@ -2,9 +2,7 @@ const KEYS_SCENES = {
     LOAD: "LOAD",
     BATTLE: "BATTLE",
     MAIN_MENU: "MAIN_MENU",
-    GAME_OVER: "GAME_OVER",
-    GAME_WIN: "GAME_WIN",
-    MAP: "MAP",
+    END: "END",
 };
 
 const KEYS_ASSETS_SPRITES = {

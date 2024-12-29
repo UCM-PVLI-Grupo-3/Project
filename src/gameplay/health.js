@@ -1,4 +1,4 @@
-import { Interface } from "../common/common.js";
+import { Interface } from "../common/interface.js";
 
 class Health {
     min_health = 0;

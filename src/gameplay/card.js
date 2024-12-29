@@ -1,7 +1,7 @@
 import { OPTIONAL_EMOTION_TYPE, emotion_sprite_key_from_type } from "./emotions.js";
 import { NullEffect } from "./card_effects/null_effect.js";
 import { CardEffect, CardEffectContext } from "./card_effects/card_effect.js";
-import { KEYS_ASSETS_SPRITES, CARD_NAMES } from "../common/common.js";
+import { KEYS_ASSETS_SPRITES, CARD_NAMES } from "../common/constants.js";
 import { SceneEmotionStack } from "./emotion_stack.js";
 
 const CARD_TIMELINE_TYPE = {

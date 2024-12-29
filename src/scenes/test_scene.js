@@ -1,4 +1,4 @@
-import { KEYS_ASSETS_SPRITES } from "../common/common.js";
+import { KEYS_ASSETS_SPRITES } from "../common/constants.js";
 import { distribute, distribute_uniform } from "../common/layouts.js";
 
 class TestScene extends Phaser.Scene {

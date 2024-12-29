@@ -2,7 +2,7 @@ import { ActionFeatureSelector } from "./action_feature_selector.js";
 import { SceneDiceSlots } from "../../dice_slots.js";
 import { SceneDiceBox } from "../../dice_box.js";
 import { SceneDice } from "../../dice.js";
-import { KEYS_ASSETS_SPRITES } from "../../../common/common.js";
+import { KEYS_ASSETS_SPRITES } from "../../../common/constants.js";
 
 class DiceSlotsRegister {
 	/**

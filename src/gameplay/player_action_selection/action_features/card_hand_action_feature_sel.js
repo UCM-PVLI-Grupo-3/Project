@@ -1,7 +1,7 @@
 import { ActionFeatureSelector } from "./action_feature_selector.js";
 import { SceneCardHand } from "../../card_hand.js";
 import { SceneCard, CARD_ACTION_TYPE } from "../../card.js";
-import { KEYS_ASSETS_SPRITES } from "../../../common/common.js";
+import { KEYS_ASSETS_SPRITES } from "../../../common/constants.js";
 
 class CardHandActionFeature extends ActionFeatureSelector {
     /**

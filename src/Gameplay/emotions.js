@@ -1,4 +1,4 @@
-import { KEYS_ASSETS_SPRITES } from "../common/common.js";
+import { KEYS_ASSETS_SPRITES } from "../common/constants.js";
 
 class EMOTION_TYPE {
     static HAPPINESS() { return "HAPPINESS" };

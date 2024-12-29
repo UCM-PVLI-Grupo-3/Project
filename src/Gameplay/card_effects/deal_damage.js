@@ -1,4 +1,4 @@
-import { implements_interface_object } from '../../common/common.js';
+import { implements_interface_object } from "../../common/interface.js";
 import { Damageable } from '../health.js';
 import { Player } from '../player.js';
 import { CardEffect } from './card_effect.js';

@@ -1,6 +1,6 @@
 import { Dice, SceneDice } from "./dice.js";
-import { KEYS_ASSETS_SPRITES, CONSTANTS_SPRITES_MEASURES, exit } from "../common/common.js";
-
+import { KEYS_ASSETS_SPRITES, CONSTANTS_SPRITES_MEASURES } from "../common/constants.js";
+import { exit } from "../common/utility.js"; 
 
 const DICE_SLOTS_DEFAULTS = {
     MAX_SLOTS: 3,

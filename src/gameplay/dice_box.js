@@ -1,4 +1,4 @@
-import { KEYS_ASSETS_SPRITES, CONSTANTS_SPRITES_MEASURES } from "../common/common.js";
+import { KEYS_ASSETS_SPRITES, CONSTANTS_SPRITES_MEASURES } from "../common/constants.js";
 import { distribute_uniform } from "../common/layouts.js";
 import { Dice, SceneDice, DICE_TYPE } from "./dice.js";
 
