@@ -127,7 +127,7 @@ class CardGroup {
 	}
 
 	select_card(index) {
-		assert(index >= 0 && index < this.scene_cards.length, "error: index out of bounds");
+		console.assert(index >= 0 && index < this.scene_cards.length, "error: index out of bounds");
 		
 		for (let i = 0; i < this.scene_cards.length; i++) {
 			this.scene_cards[i].set_selection_state(i === index);
@@ -145,12 +145,11 @@ class CardGroup {
 
 	add_card(card) {
 		this.cards.push(card);
-		let scene_card = this.scene.add.existing(new SceneCard(0, 0, card))
-			.setActive(this.active)
-			.card_background_image.setInteractive().on(
+		let scene_card = this.scene.add.existing(new SceneCard(this.scene, 0, 0, card)).setActive(this.active);
+		scene_card.card_background_image.setInteractive().on(
 			Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN,
 			(pointer, localX, localY, event) => {
-				this.select_card(this.scene_cards.length);
+				this.select_card(this.scene_cards.indexOf(scene_card));
 			}
 		);
 
@@ -205,8 +204,9 @@ class SceneCardHand extends Phaser.GameObjects.Container{
 		console.assert(group instanceof CardGroup, "error: group must be an instance of CardGroup");
 		console.assert(typeof index === "number", "error: index must be a number");
 		console.assert(index >= 0 && index < group.scene_cards.length, "error: index out of bounds");
-		console.assert(index === this.active_card_group_index, "error: index must be the active card group index");
-
+		
+		console.assert(this.any_card_group_active(), "error: no active card group");
+		console.assert(this.card_groups[this.active_card_group_index] === group, "error: invalid group");
 		// TODO
 	}
 
@@ -249,7 +249,7 @@ class SceneCardHand extends Phaser.GameObjects.Container{
 		console.assert(this.any_card_group_active(), "error: no active card group");
 
 		let group = this.card_groups[this.active_card_group_index];
-		group.position_in_rect(this.background.x, this.background.y, this.background.width, this.background.height);
+		group.position_in_rect(this.x, this.y, this.background.width, this.background.height);
 
 		return group;
 	}

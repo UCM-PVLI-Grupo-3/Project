@@ -2,6 +2,7 @@ import { BattleScene } from "./scenes/battle_scene.js";
 import { MainMenuScene } from "./scenes/main_menu_scene.js";
 import { LoadScene } from "./scenes/load_scene.js";
 import { EndScene } from "./scenes/end_scene.js";
+import { TestScene } from "./scenes/test_scene.js";
 
 
 /**

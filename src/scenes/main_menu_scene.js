@@ -82,7 +82,7 @@ class MainMenuScene extends Phaser.Scene {
     }
 
     on_play_game_button_ptr_down(ptr, local_x, local_y) {
-        this.cameras.main.fadeOut(1000, 0, 0, 0, (cam, progress) => {
+        this.cameras.main.fadeOut(100, 0, 0, 0, (cam, progress) => {
             if (progress === 1) {
                 this.on_fade_out_complete();
             }
@@ -94,13 +94,13 @@ class MainMenuScene extends Phaser.Scene {
     }
 
     scene_transition_start(from, to) {
-        to.cameras.main.fadeIn(1000, 0, 0, 0);
+        to.cameras.main.fadeIn(100, 0, 0, 0);
     }
 
     on_fade_out_complete() {
         this.scene.transition({
             target: KEYS_SCENES.TEST,
-            duration: 1000,
+            duration: 100,
             remove: true,
             onStart: (from, to) => { this.scene_transition_start(from, to); },
             allowInput: false,

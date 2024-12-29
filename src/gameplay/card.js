@@ -1,7 +1,7 @@
 import { OPTIONAL_EMOTION_TYPE, emotion_sprite_key_from_type } from "./emotions.js";
 import { NullEffect } from "./card_effects/null_effect.js";
 import { CardEffect, CardEffectContext } from "./card_effects/card_effect.js";
-import { KEYS_ASSETS_SPRITES, spritesheet_frame_from_card_name } from "../common/constants.js";
+import { CONSTANTS_SPRITES_MEASURES, KEYS_ASSETS_SPRITES, spritesheet_frame_from_card_name } from "../common/constants.js";
 
 const CARD_TIMELINE_TYPE = {
     PAST: "PAST",
@@ -26,7 +26,7 @@ const CARD_DEFAULTS = {
 };
 
 class Card {
-    card_id = CARD_DEFAULTS.CARD_ID;
+    // card_id = CARD_DEFAULTS.CARD_ID;
     name = CARD_DEFAULTS.CARD_NAME;
     value = CARD_DEFAULTS.VALUE;
     timeline_type = CARD_DEFAULTS.TIMELINE_TYPE;
@@ -37,9 +37,9 @@ class Card {
 
     card_effects = Array(CARD_DEFAULTS.CARD_EFFECT_NONE);
 
-    constructor(card_id, name, value, timeline_type, action_type, successful_action_emotion_type, failure_action_emotion_type, card_effects) {
-        console.assert(typeof card_id === 'number', "error: card_id must be a number");
-        console.assert(card_id >= 0, "error: card_id must be greater than or equal to 0");
+    constructor(name, value, timeline_type, action_type, successful_action_emotion_type, failure_action_emotion_type, card_effects) {
+        // console.assert(typeof card_id === 'number', "error: card_id must be a number");
+        // console.assert(card_id >= 0, "error: card_id must be greater than or equal to 0");
         console.assert(typeof name === 'string' || name instanceof String, "error: name must be a String");
         console.assert(value >= 0, "error: value must be greater than or equal to 0");
         console.assert(
@@ -70,7 +70,7 @@ class Card {
             console.assert(card_effect instanceof CardEffect, "error: card_effect must be an instance of CardEffect");
         });
 
-        this.card_id = card_id;
+        // this.card_id = card_id;
         this.name = name;
         this.value = value;
         this.timeline_type = timeline_type;
@@ -87,7 +87,7 @@ const SCENE_CARD_DEFAULTS = {
 
 class SceneCard extends Phaser.GameObjects.Container {
     card = new Card(
-        0xFFFF_FFFF,
+        //0xFFFF_FFFF,
         CARD_DEFAULTS.CARD_NAME,
         CARD_DEFAULTS.VALUE,
         CARD_DEFAULTS.TIMELINE_TYPE,
@@ -138,65 +138,66 @@ class SceneCard extends Phaser.GameObjects.Container {
         super(scene, position_x, position_y);
         this.card = card;
 
-        const CARD_ILLUSTRATION_X = 20;
-        const CARD_ILLUSTRATION_Y = 20;
-        const CARD_IMG_X = (362 - 344)/2;
-        const CARD_IMG_Y = (478 - 460)/2;
-        const EMOTION_ICON_Y = 362;
-        const LEFT_EMOTION_X = 104;
-        const RIGHT_EMOTION_X = 262;
-        const EMOTION_SCALE = 0.70;
-        const TEXT_X = 177;
-        const TEXT_Y = 292;
-        const VALUE_X = 87;
-        const VALUE_Y = 68;
+        const CARD_ACTION_IMAGE_X = 0;
+        const CARD_ACTION_IMAGE_Y = 120 + 20 - CONSTANTS_SPRITES_MEASURES.SCENE_CARD.HEIGHT * 0.5;
 
-        this.selection_frame = scene.add.image(0, 0, KEYS_ASSETS_SPRITES.CARD_SELECTION_FRAME)
+        const EMOTION_Y = CONSTANTS_SPRITES_MEASURES.SCENE_CARD.HEIGHT * 0.25 + 5;
+        const LEFT_EMOTION_X = -CONSTANTS_SPRITES_MEASURES.SCENE_CARD.WIDTH * 0.25 + 10;
+        const RIGHT_EMOTION_X = CONSTANTS_SPRITES_MEASURES.SCENE_CARD.WIDTH * 0.25 - 10;
+
+        const EMOTION_SCALE = 0.70;
+
+        const NAME_TEXT_X = 0;
+        const NAME_TEXT_Y = CONSTANTS_SPRITES_MEASURES.SCENE_CARD.HEIGHT * 0.1 + 5;
+
+        const VALUE_TEXT_X = -CONSTANTS_SPRITES_MEASURES.SCENE_CARD.WIDTH * 0.55 * 0.5;
+        const VALUE_TEXT_Y = -CONSTANTS_SPRITES_MEASURES.SCENE_CARD.HEIGHT * 0.75 * 0.5;
+
+        this.selection_frame = this.scene.add.image(0, 0, KEYS_ASSETS_SPRITES.CARD_SELECTION_FRAME)
             .setAlpha(0.5)
             .setTint(0xF5E90F)
-            .setVisible(false)
-            .setOrigin(0, 0);            
-        this.add(this._selection_frame);
+            .setVisible(false);      
+        this.add(this.selection_frame);
         this.is_selected = false;
 
-        this.card_action_image = scene.add.sprite(
-            CARD_ILLUSTRATION_X, CARD_ILLUSTRATION_Y, 
+        this.card_action_image = this.scene.add.sprite(
+            0, CARD_ACTION_IMAGE_Y, 
             KEYS_ASSETS_SPRITES.CARD_ATLAS, 
             spritesheet_frame_from_card_name(this.card.name)
-        ).setOrigin(0, 0);
+        );
         this.add(this.card_action_image);
 
         if (this.card.timeline_type === CARD_TIMELINE_TYPE.PAST) {
-            this.card_background_image = scene.add.image(CARD_IMG_X, CARD_IMG_Y, KEYS_ASSETS_SPRITES.PAST_CARD);
+            this.card_background_image = this.scene.add.image(0, 0, KEYS_ASSETS_SPRITES.PAST_CARD);
         } else {
-            this.card_background_image = scene.add.image(CARD_IMG_X, CARD_IMG_Y, KEYS_ASSETS_SPRITES.FUTURE_CARD);
+            this.card_background_image = this.scene.add.image(0, 0, KEYS_ASSETS_SPRITES.FUTURE_CARD);
         }
-        this.add(this.card_background_image.setOrigin(0, 0));
+        this.add(this.card_background_image);
 
         if(this.card.successful_action_emotion_type !== OPTIONAL_EMOTION_TYPE.NONE()) {
-            this.successful_emotion_image = scene.add.image(
-                LEFT_EMOTION_X, EMOTION_ICON_Y, 
+            this.successful_emotion_image = this.scene.add.image(
+                LEFT_EMOTION_X, EMOTION_Y, 
                 emotion_sprite_key_from_type(this.card.successful_action_emotion_type)
             ).setScale(EMOTION_SCALE);
             this.add(this.successful_emotion_image);
         }
         
         if(this.card.failure_action_emotion_type !== OPTIONAL_EMOTION_TYPE.NONE()) {
-            this.failure_emotion_image = scene.add.image(
-                RIGHT_EMOTION_X, EMOTION_ICON_Y,
+            this.failure_emotion_image = this.scene.add.image(
+                RIGHT_EMOTION_X, EMOTION_Y,
                 emotion_sprite_key_from_type(this.card.failure_action_emotion_type)
             ).setScale(EMOTION_SCALE);
             this.add(this.failure_emotion_image);
         }
 
-        this.card_name_text = scene.add.text(
-            TEXT_X, TEXT_Y, this.card.name, 
+        this.card_name_text = this.scene.add.text(
+            NAME_TEXT_X, NAME_TEXT_Y, this.card.name, 
             {fontFamily: '"Bauhaus 93"', fontSize: '30px', color: 'black'}
         ).setOrigin(0.5);
         this.add(this.card_name_text);
 
-        this.card_value_text = scene.add.text(
-            VALUE_X, VALUE_Y, this.card.value.toString(), 
+        this.card_value_text = this.scene.add.text(
+            VALUE_TEXT_X, VALUE_TEXT_Y, this.card.value.toString(), 
             {fontFamily: '"Bauhaus 93"', fontSize: '30px', color: 'black'}
         ).setOrigin(0.5);
         this.add(this.card_value_text);
