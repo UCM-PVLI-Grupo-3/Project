@@ -1,17 +1,7 @@
-import { CONSTANTS_SPRITES_MEASURES } from "../../common/constants.js";
-import { CardDeck } from "../card_deck.js";
-import { Card, SceneCard, CARD_ACTION_TYPE } from "./card.js";
+import { Card, CARD_ACTION_TYPE } from "./card.js";
+import { SceneCard } from "./scene_card.js";
 import { distribute_uniform } from "../../common/layouts.js";
 
-const SCENE_CARD_HAND_DEFAULTS = {
-	CARD_DECK: new CardDeck(0, []),
-	MAX_CARD_NUM: 0,
-	SCENE_CARD_DECK: null,
-	SCENE_CARD_SCALE: 0.75,
-	SCENE_CARD_MARGIN_FACTOR: 1.15,
-	SCENE_CARD_SEPARATION: CONSTANTS_SPRITES_MEASURES.SCENE_CARD.WIDTH / 1.28,
-	ACTION_TYPE: CARD_ACTION_TYPE.ATTACK,
-};
 
 class CardGroup {
 	active = false;

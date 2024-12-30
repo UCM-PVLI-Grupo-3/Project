@@ -1,7 +1,7 @@
 import { KEYS_SCENES } from "../common/constants.js";
 import { SceneCardHand } from "../gameplay/card/card_hand.js";
 import { Card, CARD_ACTION_TYPE } from "../gameplay/card/card.js";
-import { GAMEPLAY_CARDS } from "../gameplay/card_deck.js";
+import { GAMEPLAY_CARDS } from "../gameplay/card/card.js";
 import { exit } from "../common/utility.js";
 import { SceneDiceSlots } from "../gameplay/dice/scene_dice_slots.js";
 import { Dice, DICE_TYPE } from "../gameplay/dice/dice.js";

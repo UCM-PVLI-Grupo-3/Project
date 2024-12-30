@@ -1,7 +1,9 @@
-import { OPTIONAL_EMOTION_TYPE, emotion_sprite_key_from_type } from "../emotions.js";
 import { NullEffect } from "../card_effects/null_effect.js";
-import { CardEffect, CardEffectContext } from "../card_effects/card_effect.js";
-import { CONSTANTS_SPRITES_MEASURES, KEYS_ASSETS_SPRITES, spritesheet_frame_from_card_name } from "../../common/constants.js";
+import { CardEffect } from "../card_effects/card_effect.js";
+import { DealDamageEffect } from "../card_effects/deal_damage.js";
+import { BlockDamageEffect } from "../card_effects/block_damage.js";
+import { HealEffect } from "../card_effects/heal.js";
+import { EMOTION_TYPE, OPTIONAL_EMOTION_TYPE } from "../emotions.js";
 
 const CARD_TIMELINE_TYPE = {
     PAST: "PAST",
@@ -81,175 +83,33 @@ class Card {
     }
 };
 
-const SCENE_CARD_DEFAULTS = {
-    TEXT_FONT: "Bauhaus 93",
-};
+const GAMEPLAY_CARDS = [
+	new Card("Sable", 6, CARD_TIMELINE_TYPE.PAST, CARD_ACTION_TYPE.ATTACK, EMOTION_TYPE.HAPPINESS(), OPTIONAL_EMOTION_TYPE.NONE(), new DealDamageEffect(4)),
+	new Card("Porra", 4, CARD_TIMELINE_TYPE.PAST, CARD_ACTION_TYPE.ATTACK, EMOTION_TYPE.ECSTASY(), EMOTION_TYPE.FEAR(), new DealDamageEffect(6)),
+	new Card("Arco", 12, CARD_TIMELINE_TYPE.PAST, CARD_ACTION_TYPE.ATTACK, EMOTION_TYPE.CALM(), OPTIONAL_EMOTION_TYPE.SADNESS(), new DealDamageEffect(6)),
+	new Card("Cañón", 18, CARD_TIMELINE_TYPE.PAST, CARD_ACTION_TYPE.ATTACK, EMOTION_TYPE.HAPPINESS(), OPTIONAL_EMOTION_TYPE.SADNESS(), new DealDamageEffect(8)),
+	new Card("Sable Igneo", 10, CARD_TIMELINE_TYPE.PAST, CARD_ACTION_TYPE.ATTACK, OPTIONAL_EMOTION_TYPE.NONE(), OPTIONAL_EMOTION_TYPE.NONE(), new DealDamageEffect(10)),
+	new Card("Hoz de Grangero", 6, CARD_TIMELINE_TYPE.PAST, CARD_ACTION_TYPE.ATTACK, EMOTION_TYPE.CONFIDENCE(), EMOTION_TYPE.SADNESS(), new DealDamageEffect(8)),
+	new Card("Khopesh", 10, CARD_TIMELINE_TYPE.PAST, CARD_ACTION_TYPE.ATTACK, OPTIONAL_EMOTION_TYPE.NONE(), EMOTION_TYPE.ANGER(), new DealDamageEffect(12)),
+	
+	new Card("Escudo", 6, CARD_TIMELINE_TYPE.PAST, CARD_ACTION_TYPE.DEFENCE, OPTIONAL_EMOTION_TYPE.NONE(), EMOTION_TYPE.FEAR(), new BlockDamageEffect(4)),
+	new Card("Tótem", 4, CARD_TIMELINE_TYPE.PAST, CARD_ACTION_TYPE.DEFENCE, OPTIONAL_EMOTION_TYPE.NONE(), OPTIONAL_EMOTION_TYPE.NONE(), new BlockDamageEffect(2)),
 
-class SceneCard extends Phaser.GameObjects.Container {
-    card = new Card(
-        //0xFFFF_FFFF,
-        CARD_DEFAULTS.CARD_NAME,
-        CARD_DEFAULTS.VALUE,
-        CARD_DEFAULTS.TIMELINE_TYPE,
-        CARD_DEFAULTS.ACTION_TYPE,
-        CARD_DEFAULTS.EMOTION_TYPE_NONE, CARD_DEFAULTS.EMOTION_TYPE_NONE, 
-        Array(CARD_DEFAULTS.CARD_EFFECT_NONE)
-    );
+	new Card("Cuerno Sagrado", 8, CARD_TIMELINE_TYPE.PAST, CARD_ACTION_TYPE.HEAL, EMOTION_TYPE.CONFIDENCE(), EMOTION_TYPE.ANGER(), new HealEffect(6)),
+	new Card("Potción Vital", 2, CARD_TIMELINE_TYPE.PAST, CARD_ACTION_TYPE.HEAL, OPTIONAL_EMOTION_TYPE.NONE(), OPTIONAL_EMOTION_TYPE.NONE(), new HealEffect(2)),
+	
+	
+	new Card("Lázzer", 4, CARD_TIMELINE_TYPE.FUTURE, CARD_ACTION_TYPE.ATTACK, OPTIONAL_EMOTION_TYPE.NONE(), EMOTION_TYPE.FEAR(), new DealDamageEffect(6)),
+	new Card("Tesla (himself)", 8, CARD_TIMELINE_TYPE.FUTURE, CARD_ACTION_TYPE.ATTACK, OPTIONAL_EMOTION_TYPE.ECSTASY(), EMOTION_TYPE.FEAR(), new DealDamageEffect(10)),
+	new Card("Sable Lázzer", 10, CARD_TIMELINE_TYPE.FUTURE, CARD_ACTION_TYPE.ATTACK, OPTIONAL_EMOTION_TYPE.NONE(), OPTIONAL_EMOTION_TYPE.NONE(), new DealDamageEffect(8)),
+	new Card("Cervatana Telescópica", 24, CARD_TIMELINE_TYPE.FUTURE, CARD_ACTION_TYPE.ATTACK, OPTIONAL_EMOTION_TYPE.CONFIDENCE(), EMOTION_TYPE.CALM(), new DealDamageEffect(14)),
+	new Card("Radiación a Domicilio", 12, CARD_TIMELINE_TYPE.FUTURE, CARD_ACTION_TYPE.ATTACK, OPTIONAL_EMOTION_TYPE.CONFIDENCE(), EMOTION_TYPE.ECSTASY(), new DealDamageEffect(8)),
+	new Card("Lázzer", 4, CARD_TIMELINE_TYPE.FUTURE, CARD_ACTION_TYPE.ATTACK, OPTIONAL_EMOTION_TYPE.NONE(), EMOTION_TYPE.FEAR(), new DealDamageEffect(6)),
+	
+	new Card("Campo de Fuerza", 8, CARD_TIMELINE_TYPE.FUTURE, CARD_ACTION_TYPE.DEFENCE, OPTIONAL_EMOTION_TYPE.NONE(), OPTIONAL_EMOTION_TYPE.NONE(), new BlockDamageEffect(6)),
+	
+	new Card("Botiquín Médico", 4, CARD_TIMELINE_TYPE.FUTURE, CARD_ACTION_TYPE.HEAL, OPTIONAL_EMOTION_TYPE.NONE(), OPTIONAL_EMOTION_TYPE.NONE(), new HealEffect(4)),
+];
 
-    /**
-     * @type {Phaser.GameObjects.Image}
-     * */
-    selection_frame;
-    /**
-     * @type {bool}
-     * */
-    is_selected;
 
-    /**
-     * @type {Phaser.GameObjects.Image}
-     */
-    card_action_image = null;
-
-    /**
-     * @type {Phaser.GameObjects.Image}
-     * */
-    card_background_image = null;
-
-    /**
-     * @type {Phaser.GameObjects.Image}
-    */
-    successful_emotion_image = null;
-    /**
-     * @type {Phaser.GameObjects.Image}
-     */
-    failure_emotion_image = null;
-
-    /**
-     * @type {Phaser.GameObjects.Text}
-     */
-    card_name_text = null;
-
-    /**
-     * @type {Phaser.GameObjects.Text}
-     * */
-    card_value_text = null;
-
-    constructor(scene, position_x, position_y, card) {
-        super(scene, position_x, position_y);
-        this.card = card;
-
-        const CARD_ACTION_IMAGE_X = 0;
-        const CARD_ACTION_IMAGE_Y = 120 + 20 - CONSTANTS_SPRITES_MEASURES.SCENE_CARD.HEIGHT * 0.5;
-
-        const EMOTION_Y = CONSTANTS_SPRITES_MEASURES.SCENE_CARD.HEIGHT * 0.25 + 5;
-        const LEFT_EMOTION_X = -CONSTANTS_SPRITES_MEASURES.SCENE_CARD.WIDTH * 0.25 + 10;
-        const RIGHT_EMOTION_X = CONSTANTS_SPRITES_MEASURES.SCENE_CARD.WIDTH * 0.25 - 10;
-
-        const EMOTION_SCALE = 0.70;
-
-        const NAME_TEXT_X = 0;
-        const NAME_TEXT_Y = CONSTANTS_SPRITES_MEASURES.SCENE_CARD.HEIGHT * 0.1 + 5;
-
-        const VALUE_TEXT_X = -CONSTANTS_SPRITES_MEASURES.SCENE_CARD.WIDTH * 0.55 * 0.5;
-        const VALUE_TEXT_Y = -CONSTANTS_SPRITES_MEASURES.SCENE_CARD.HEIGHT * 0.75 * 0.5;
-
-        this.selection_frame = this.scene.add.image(0, 0, KEYS_ASSETS_SPRITES.CARD_SELECTION_FRAME)
-            .setAlpha(0.5)
-            .setTint(0xF5E90F)
-            .setVisible(false);      
-        this.add(this.selection_frame);
-        this.is_selected = false;
-
-        this.card_action_image = this.scene.add.sprite(
-            0, CARD_ACTION_IMAGE_Y, 
-            KEYS_ASSETS_SPRITES.CARD_ATLAS, 
-            spritesheet_frame_from_card_name(this.card.name)
-        );
-        this.add(this.card_action_image);
-
-        if (this.card.timeline_type === CARD_TIMELINE_TYPE.PAST) {
-            this.card_background_image = this.scene.add.image(0, 0, KEYS_ASSETS_SPRITES.PAST_CARD);
-        } else {
-            this.card_background_image = this.scene.add.image(0, 0, KEYS_ASSETS_SPRITES.FUTURE_CARD);
-        }
-        this.add(this.card_background_image);
-
-        if(this.card.successful_action_emotion_type !== OPTIONAL_EMOTION_TYPE.NONE()) {
-            this.successful_emotion_image = this.scene.add.image(
-                LEFT_EMOTION_X, EMOTION_Y, 
-                emotion_sprite_key_from_type(this.card.successful_action_emotion_type)
-            ).setScale(EMOTION_SCALE);
-            this.add(this.successful_emotion_image);
-        }
-        
-        if(this.card.failure_action_emotion_type !== OPTIONAL_EMOTION_TYPE.NONE()) {
-            this.failure_emotion_image = this.scene.add.image(
-                RIGHT_EMOTION_X, EMOTION_Y,
-                emotion_sprite_key_from_type(this.card.failure_action_emotion_type)
-            ).setScale(EMOTION_SCALE);
-            this.add(this.failure_emotion_image);
-        }
-
-        this.card_name_text = this.scene.add.text(
-            NAME_TEXT_X, NAME_TEXT_Y, this.card.name, 
-            {fontFamily: '"Bauhaus 93"', fontSize: '30px', color: 'black'}
-        ).setOrigin(0.5);
-        this.add(this.card_name_text);
-
-        this.card_value_text = this.scene.add.text(
-            VALUE_TEXT_X, VALUE_TEXT_Y, this.card.value.toString(), 
-            {fontFamily: '"Bauhaus 93"', fontSize: '30px', color: 'black'}
-        ).setOrigin(0.5);
-        this.add(this.card_value_text);
-    }
-
-    set_selection_state(value) {
-        console.assert(typeof value == "boolean", "error: value must be boolean in SceneCard.setSeletionState(value)");
-        
-        this.is_selected = value;
-        this.selection_frame.setVisible(value);
-    }
-}
-
-class BattleCard {
-    // /**
-    //  * @type {Card}
-    //  */
-    // card;
-    
-    // constructor(card) {
-    //     console.assert(card instanceof Card, "error: card must be an instance of Card");
-    //     this.card = card;
-    // }
-
-    // /**
-    //  * 
-    //  * @param {any} destination 
-    //  * @param {any} source 
-    //  * @param {CardEffectContext} context 
-    //  */
-    // use(destination, source, context) {
-    //     // console.assert(destination instanceof SceneEmotionStack, "error: destination must be an instance of SceneEmotionStack");
-    //     // console.assert(source instanceof SceneEmotionStack, "error: source must be an instance of SceneEmotionStack");
-    //     console.assert(context instanceof CardEffectContext, "error: context must be an instance of CardEffectContext");
-        
-    //     const high_roll_percentage = 0.80;
-    //     const low_roll_percentage = 0.20;
-    //     const roll_percentage = context.roll / context.maximum_roll;
-    //     if (roll_percentage > high_roll_percentage && this.card.successful_action_emotion_type !== OPTIONAL_EMOTION_TYPE.NONE()) {
-    //         // TODO: check if full
-    //         // TODO: check if combo
-    //         context.scene_emotion_stack.add_emotions([this.card.successful_action_emotion_type]);
-    //     } else if (roll_percentage < low_roll_percentage && this.card.failure_action_emotion_type !== OPTIONAL_EMOTION_TYPE.NONE()) {
-    //         context.scene_emotion_stack.add_emotions([this.card.failure_action_emotion_type]);
-    //     }
-
-    //     if (context.roll >= this.card.value) {
-    //         this.card.card_effects.forEach((card_effect) => {
-    //             card_effect.apply_effect(destination, source, context);
-    //         });
-    //     }
-    // }
-}
-
-export { CARD_TIMELINE_TYPE, CARD_TIMELINE_TYPE as TIMELINE_TYPE, CARD_ACTION_TYPE, CARD_DEFAULTS, Card, SceneCard, BattleCard };
+export { CARD_TIMELINE_TYPE, CARD_TIMELINE_TYPE as TIMELINE_TYPE, CARD_ACTION_TYPE, CARD_DEFAULTS, Card, GAMEPLAY_CARDS };
