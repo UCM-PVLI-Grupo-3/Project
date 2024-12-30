@@ -1,10 +1,11 @@
 import { KEYS_SCENES } from "../common/constants.js";
-import { SceneCardHand } from "../gameplay/card_hand.js";
-import { Card, CARD_ACTION_TYPE } from "../gameplay/card.js";
+import { SceneCardHand } from "../gameplay/card/card_hand.js";
+import { Card, CARD_ACTION_TYPE } from "../gameplay/card/card.js";
 import { GAMEPLAY_CARDS } from "../gameplay/card_deck.js";
 import { exit } from "../common/utility.js";
-import { SceneDiceSlots } from "../gameplay/dice_slots.js";
-import { Dice, DICE_TYPE } from "../gameplay/dice.js";
+import { SceneDiceSlots } from "../gameplay/dice/scene_dice_slots.js";
+import { Dice, DICE_TYPE } from "../gameplay/dice/dice.js";
+import { SceneDiceBox } from "../gameplay/dice/dice_box.js";
 
 class TestScene extends Phaser.Scene {
     /**
@@ -16,6 +17,11 @@ class TestScene extends Phaser.Scene {
      * @type {SceneDiceSlots}
      */
     dice_slots = null;
+
+    /**
+     * @type {SceneDiceBox}
+     */
+    dice_box = null;
 
     constructor() {
         super({ key: KEYS_SCENES.TEST });
@@ -82,13 +88,19 @@ class TestScene extends Phaser.Scene {
                 card_display_rect.width * 1.15, card_display_rect.height * 1.5,
                 3
             )
-        )
+        );
         this.dice_slots
             .add_dice(new Dice(DICE_TYPE.D4), 0)
             .add_dice(new Dice(DICE_TYPE.D6), 1)
             .add_dice(new Dice(DICE_TYPE.D8), 2)
             .add_dice(new Dice(DICE_TYPE.D10), 0)
             .present_scene_dices();
+
+        this.dice_box = this.add.existing(new SceneDiceBox(this, 160, h * 0.5, 2, 2));
+        this.dice_box
+            .add_dice(new Dice(DICE_TYPE.D12))
+            .add_dice(new Dice(DICE_TYPE.D20))
+            .position_dices();
     }
 
     update(time, delta) {
@@ -97,9 +109,9 @@ class TestScene extends Phaser.Scene {
         //     400
         // );
         this.dice_slots.present_scene_dices();
-        this.dice_slots.dice_slots.forEach((dice_slot, index) => {
-            console.log(index, dice_slot.get_max_roll_value());
-        });
+        // this.dice_slots.dice_slots.forEach((dice_slot, index) => {
+        //     console.log(index, dice_slot.get_max_roll_value());
+        // });
 
 
         // this.card_hand.background.setSize(

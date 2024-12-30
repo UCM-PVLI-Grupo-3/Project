@@ -1,7 +1,7 @@
-import { OPTIONAL_EMOTION_TYPE, emotion_sprite_key_from_type } from "./emotions.js";
-import { NullEffect } from "./card_effects/null_effect.js";
-import { CardEffect, CardEffectContext } from "./card_effects/card_effect.js";
-import { CONSTANTS_SPRITES_MEASURES, KEYS_ASSETS_SPRITES, spritesheet_frame_from_card_name } from "../common/constants.js";
+import { OPTIONAL_EMOTION_TYPE, emotion_sprite_key_from_type } from "../emotions.js";
+import { NullEffect } from "../card_effects/null_effect.js";
+import { CardEffect, CardEffectContext } from "../card_effects/card_effect.js";
+import { CONSTANTS_SPRITES_MEASURES, KEYS_ASSETS_SPRITES, spritesheet_frame_from_card_name } from "../../common/constants.js";
 
 const CARD_TIMELINE_TYPE = {
     PAST: "PAST",

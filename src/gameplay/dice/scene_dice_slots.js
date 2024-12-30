@@ -1,80 +1,9 @@
-import { Dice, SceneDice } from "./dice.js";
-import { KEYS_ASSETS_SPRITES, CONSTANTS_SPRITES_MEASURES } from "../common/constants.js";
-import { exit } from "../common/utility.js"; 
-import { distribute_uniform } from "../common/layouts.js";
-
-const DICE_SLOTS_DEFAULTS = {
-    MAX_SLOTS: 3,
-};
-
-class DiceSlots {
-    max_slots = DICE_SLOTS_DEFAULTS.MAX_SLOTS;
-    dices = new Array(DICE_SLOTS_DEFAULTS.MAX_SLOTS);
-
-    constructor(max_slots, dices) {
-        console.assert(dices.length <= max_slots, "error: dices length must be less than or equal to max_slots");
-
-        this.max_slots = max_slots;
-        this.dices = [...dices];
-    }
-
-    roll() {
-        let dice_sum = 0;
-
-        for (let i = 0; i < this.dices.length; ++i) {
-            dice_sum += this.dices[i].roll();
-        }
-
-        return dice_sum;
-    }
-
-    get_max_roll_value() {
-        let dice_sum = 0;
-        for (let i = 0; i < this.dices.length; i++) {
-            dice_sum += this.dices[i].get_max_value();
-        }
-
-        return dice_sum;
-    }
-
-    slots_count() {
-        return this.max_slots;
-    }
-
-    used_slots_count() {
-        return this.dices.length;
-    }
-
-    available_slots_count() {
-        return this.slots_count() - this.used_slots_count();
-    }
-
-    add_dice(dice) {
-        console.assert(
-            this.available_slots_count() > 0,
-            `error: there are no slots available to add more dice,
-            check with available_slots_count() > 0`
-        );
-        console.assert(dice instanceof Dice, "error: parameter dice must be an instance of Dice");
-        this.dices.push(dice);
-    }
-
-    contains_dice(dice) {
-        console.assert(dice instanceof Dice, "error: parameter dice must be an instance of Dice");
-        return this.dices.includes(dice);
-    }
-
-    remove_dice(dice) {
-        console.assert(dice instanceof Dice, "error: parameter dice must be an instance of Dice");
-        const index = this.dices.indexOf(dice);
-        console.assert(
-            index !== -1,
-            `error: dice not present in dices array;
-            use contains_dice(dice) to check if dice is present in dices array`
-        );
-        return this.dices.splice(index, 1)[0];
-    }
-}
+import { SceneDice } from "./scene_dice.js";
+import { DiceSlots } from "./dice_slots.js";
+import { distribute_uniform } from "../../common/layouts.js";
+import { KEYS_ASSETS_SPRITES, CONSTANTS_SPRITES_MEASURES, KEYS_EVENTS } from "../../common/constants.js";
+import { Dice } from "./dice.js";
+import { exit } from "../../common/utility.js";
 
 const GAME_DICE_STATUS = {
     UNINITIALIZED: "UNINITIALIZED",
@@ -97,6 +26,12 @@ class GameDice {
         box_j: -1,
     };
 
+    /**
+     * 
+     * @param {SceneDice} scene_dice 
+     * @param {GAME_DICE_STATUS} status 
+     * @param {({slot_index: number, frame_index: number} | {box_i: number, box_j: number})} status_data 
+     */
     constructor(scene_dice, status, status_data) {
         this.scene_dice = scene_dice;
         this.status = status;
@@ -241,6 +176,12 @@ class SceneDiceSlots extends Phaser.GameObjects.Container {
             this.add(scene_dice_slot_group);
         }
         this.any_scene_dice_slot_group_dirty = true;
+
+        this.scene.events.addListener(KEYS_EVENTS.GAME_DICE_DROP_ON_TARGET, this.on_game_dice_drop, this)
+            .addListener(Phaser.GameObjects.Events.DESTROY, (self, from_scene) => {
+                self.scene.events.removeListener(KEYS_EVENTS.GAME_DICE_DROP_ON_TARGET, this.on_game_dice_drop, this);
+            }
+        );
     }
 
     add_dice(dice, slot_group_index, slot_index = -1) {
@@ -256,10 +197,8 @@ class SceneDiceSlots extends Phaser.GameObjects.Container {
 
         let scene_dice = this.scene.add.existing(new SceneDice(this.scene, 0, 0, dice));
         let game_dice = new GameDice(scene_dice, GAME_DICE_STATUS.IN_SLOT, { slot_index: slot_group_index, frame_index: slot_index });
-        scene_dice.setInteractive({ draggable: true })
-            .on(Phaser.Input.Events.GAMEOBJECT_DROP, (ptr, target) => {
-                this.on_scene_dice_drag_drop(ptr, target, game_dice);
-            });
+        scene_dice.configure_drop(game_dice);
+
         this.game_dices.push(game_dice);
 
         this.scene_dice_slot_groups[slot_group_index].set_scene_dice(slot_index, scene_dice);
@@ -270,7 +209,7 @@ class SceneDiceSlots extends Phaser.GameObjects.Container {
 
     remove_dice(slot_group_index, slot_index) {
         console.assert(slot_group_index >= 0 && slot_group_index < this.dice_slots.length, "error: slot_group_index out of bounds");
-        console.assert(slot_index >= 0 && slot_index < this.dice_slots[slot_group_index].used_slots_count(), "error: slot_index out of bounds");
+        console.assert(slot_index >= 0 && slot_index < this.dice_slots[slot_group_index].slots_count(), "error: slot_index out of bounds");
 
         let game_dice_index = this.game_dices.findIndex((game_dice) => {
             return game_dice.status === GAME_DICE_STATUS.IN_SLOT
@@ -346,7 +285,7 @@ class SceneDiceSlots extends Phaser.GameObjects.Container {
         return this;
     }
 
-    on_scene_dice_drag_drop(ptr, target, game_dice) {
+    on_game_dice_drop(ptr, target, game_dice) {
         console.assert(game_dice instanceof GameDice, "error: game_dice must be an instance of GameDice");
         
         if (target instanceof Phaser.GameObjects.NineSlice) {
@@ -362,7 +301,7 @@ class SceneDiceSlots extends Phaser.GameObjects.Container {
                     const empty_target = this.scene_dice_slot_groups[slot_group_index].scene_dices[slot_index] === null;
                     if (empty_target) {
                         this.add_dice(game_dice.scene_dice.dice, slot_group_index, slot_index);
-                        this.remove_dice(current_slot_group_index, current_slot_index);
+                        this.remove_dice(current_slot_group_index, current_slot_index);              
                     } else {
                         let other_game_dice = this.game_dices.find((game_dice) => {
                             return game_dice.status === GAME_DICE_STATUS.IN_SLOT
@@ -392,4 +331,5 @@ class SceneDiceSlots extends Phaser.GameObjects.Container {
     }
 }
 
-export { DiceSlots, SceneDiceSlots };
+
+export { GAME_DICE_STATUS, GameDice, SceneDiceSlots };

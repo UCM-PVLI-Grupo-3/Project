@@ -1,4 +1,4 @@
-import { KEYS_ASSETS_SPRITES } from "../common/constants.js";
+import { KEYS_ASSETS_SPRITES } from "../../common/constants.js";
 
 const DICE_TYPE = {
     D4: "D4",
@@ -51,7 +51,7 @@ const DICE_TYPE = {
     },
 };
 
-const DICE_DEFAULTS = {
+export const DICE_DEFAULTS = {
     DICE_TYPE: DICE_TYPE.D6,
     MAX_ROLL: DICE_TYPE.get_roll_max_value(DICE_TYPE.D6),
 };
@@ -79,26 +79,4 @@ class Dice {
     }
 }
 
-class SceneDice extends Phaser.GameObjects.Sprite {
-    dice = new Dice(DICE_DEFAULTS.DICE_TYPE);
-    constructor(scene, position_x, position_y, dice) {
-        super(scene, position_x, position_y, DICE_TYPE.get_dice_type_image(dice.dice_type));
-        this.dice = dice;
-        
-        this.setInteractive({
-            draggable: true,
-        }).on(Phaser.Input.Events.GAMEOBJECT_DRAG, (pointer, dragX, dragY) => {
-            this.on_drag(pointer, dragX, dragY);
-        });
-    }
-
-    preUpdate(time_milliseconds, delta_time_milliseconds) {
-        super.preUpdate(time_milliseconds, delta_time_milliseconds);
-    }
-
-    on_drag(pointer, dragX, dragY) {
-        this.setPosition(dragX, dragY);
-    }
-}
-
-export { DICE_TYPE, Dice, SceneDice };
+export { DICE_TYPE, Dice };

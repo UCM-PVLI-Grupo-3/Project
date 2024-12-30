@@ -1,4 +1,4 @@
-import { Card, CARD_ACTION_TYPE, CARD_TIMELINE_TYPE, SceneCard } from "./card.js";
+import { Card, CARD_ACTION_TYPE, CARD_TIMELINE_TYPE, SceneCard } from "./card/card.js";
 import { BlockDamageEffect } from "./card_effects/block_damage_effect.js";
 import { DealDamageEffect } from "./card_effects/deal_damage.js";
 import { HealEffect } from "./card_effects/heal.js";

@@ -1,8 +1,8 @@
 import { Health, Healable, Damageable, Blocker, Block, LabeledHealthBar, LabeledBlockBar } from "./health.js";
 import { KEYS_ASSETS_SPRITES, KEYS_FONT_FAMILIES } from "../common/constants.js";
 import { CardEffectContext } from "./card_effects/card_effect.js";
-import { CARD_ACTION_TYPE, BattleCard } from "./card.js";
-import { DiceSlots } from "./dice_slots.js";
+import { CARD_ACTION_TYPE, BattleCard } from "./card/card.js";
+import { DiceSlots } from "./dice/dice_slots.js";
 import { exit } from "../common/utility.js"; 
 import { implements_interface_class } from "../common/interface.js";
 

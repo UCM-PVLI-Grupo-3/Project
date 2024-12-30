@@ -1,5 +1,4 @@
 import { KEYS_FONT_FAMILIES } from "../common/constants.js";
-import { TIMELINE_TYPE } from "./card.js";
 import { Damageable, Health, HealthBar, LabeledHealthBar } from "./health.js"
 import { implements_interface_class, implements_interface_object } from "../common/interface.js";
 
