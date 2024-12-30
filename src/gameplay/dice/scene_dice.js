@@ -26,7 +26,7 @@ class SceneDice extends Phaser.GameObjects.Sprite {
         this.on(Phaser.Input.Events.GAMEOBJECT_DROP, (ptr, target) => {
             this.scene.events.emit(KEYS_EVENTS.GAME_DICE_DROP_ON_TARGET, ptr, target, game_dice);
         }).on(Phaser.Input.Events.GAMEOBJECT_DRAG_END, (ptr, drag_x, drag_y, dropped) => {
-            this.scene.events.emit(KEYS_EVENTS.GAME_DICE_DRAG_END, ptr, drag_x, drag_y, dropped, game_dice);
+            this.scene.events.emit(KEYS_EVENTS.GAME_DICE_DROP, ptr, drag_x, drag_y, dropped, game_dice);
         });
         return this;
     }

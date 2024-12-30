@@ -1,7 +1,7 @@
 import { GAME_DICE_STATUS, GameDice } from "./scene_dice_slots.js";
 import { Dice } from "./dice.js";
 import { SceneDice } from "./scene_dice.js";
-import { KEYS_ASSETS_SPRITES, CONSTANTS_SPRITES_MEASURES } from "../../common/constants.js";
+import { KEYS_ASSETS_SPRITES, CONSTANTS_SPRITES_MEASURES, KEYS_EVENTS } from "../../common/constants.js";
 import { distribute_uniform } from "../../common/layouts.js";
 
 class SceneDiceBox extends Phaser.GameObjects.Container {
@@ -31,6 +31,15 @@ class SceneDiceBox extends Phaser.GameObjects.Container {
 		
 		this.game_dices = [];
 		this.game_dices_dirty = true;
+
+		this.scene.events.addListener(KEYS_EVENTS.GAME_DICE_DROP_ON_TARGET, this.on_game_dice_drop_on_target, this)
+			.addListener(KEYS_EVENTS.GAME_DICE_DROP, this.on_game_dice_drop, this);
+		this.addListener(Phaser.GameObjects.Events.DESTROY, (self, from_scene) => {
+			self.scene.events.removeListener(KEYS_EVENTS.GAME_DICE_DROP_ON_TARGET, this.on_game_dice_drop_on_target, this)
+				.removeListener(KEYS_EVENTS.GAME_DICE_DROP, this.on_game_dice_drop, this);
+			},
+			this
+		);
 	}
 
 	max_dices() {
@@ -87,6 +96,39 @@ class SceneDiceBox extends Phaser.GameObjects.Container {
 			});
 			this.game_dices_dirty = false;
 		}
+	}
+
+	on_game_dice_drop(ptr, drag_x, drag_y, dropped, game_dice) {
+        if (!dropped && game_dice.status === GAME_DICE_STATUS.IN_BOX) {
+            let box_i = game_dice.in_box_data.box_i;
+			let box_j = game_dice.in_box_data.box_j;
+
+			console.assert(this.game_dices[box_i * this.max_dices_horizontal + box_j] === game_dice, "error: game_dice not found in box");
+			this.game_dices_dirty = true;
+        }
+    }
+
+    on_game_dice_drop_on_target(ptr, target, game_dice) {
+        console.assert(game_dice instanceof GameDice, "error: game_dice must be an instance of GameDice");
+        
+        if (target instanceof Phaser.GameObjects.NineSlice) {
+            switch (game_dice.status) {
+            case GAME_DICE_STATUS.IN_SLOT: {
+                break;
+            }
+            case GAME_DICE_STATUS.IN_BOX: {
+                let box_i = game_dice.in_box_data.box_i;
+				let box_j = game_dice.in_box_data.box_j;
+				
+				this.remove_dice(box_i, box_j);
+                break;
+            }
+            default: {
+                exit("unreachable: invalid game_dice status");
+                break;
+            }
+            }
+        }
 	}
 }
 

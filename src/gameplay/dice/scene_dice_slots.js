@@ -177,10 +177,13 @@ class SceneDiceSlots extends Phaser.GameObjects.Container {
         }
         this.any_scene_dice_slot_group_dirty = true;
 
-        this.scene.events.addListener(KEYS_EVENTS.GAME_DICE_DROP_ON_TARGET, this.on_game_dice_drop, this)
-            .addListener(Phaser.GameObjects.Events.DESTROY, (self, from_scene) => {
-                self.scene.events.removeListener(KEYS_EVENTS.GAME_DICE_DROP_ON_TARGET, this.on_game_dice_drop, this);
-            }
+        this.scene.events.addListener(KEYS_EVENTS.GAME_DICE_DROP_ON_TARGET, this.on_game_dice_drop_on_target, this)
+            .addListener(KEYS_EVENTS.GAME_DICE_DROP, this.on_game_dice_drop, this);
+        this.addListener(Phaser.GameObjects.Events.DESTROY, (self, from_scene) => {
+                self.scene.events.removeListener(KEYS_EVENTS.GAME_DICE_DROP_ON_TARGET, this.on_game_dice_drop_on_target, this)
+                    .removeListener(KEYS_EVENTS.GAME_DICE_DROP, this.on_game_dice_drop, this);
+            },
+            this
         );
     }
 
@@ -285,7 +288,17 @@ class SceneDiceSlots extends Phaser.GameObjects.Container {
         return this;
     }
 
-    on_game_dice_drop(ptr, target, game_dice) {
+    on_game_dice_drop(ptr, drag_x, drag_y, dropped, game_dice) {
+        if (!dropped && game_dice.status === GAME_DICE_STATUS.IN_SLOT) {
+            let slot_group_index = game_dice.in_slot_data.slot_index;
+            let slot_index = game_dice.in_slot_data.frame_index;
+
+            this.scene_dice_slot_groups[slot_group_index].scene_dices_dirty = true;
+            this.any_scene_dice_slot_group_dirty = true;
+        }
+    }
+
+    on_game_dice_drop_on_target(ptr, target, game_dice) {
         console.assert(game_dice instanceof GameDice, "error: game_dice must be an instance of GameDice");
         
         if (target instanceof Phaser.GameObjects.NineSlice) {
@@ -319,7 +332,16 @@ class SceneDiceSlots extends Phaser.GameObjects.Container {
                 break;
             }
             case GAME_DICE_STATUS.IN_BOX: {
-                exit("unimplemented: game_dice must be in slot");
+                const empty_target = this.scene_dice_slot_groups[slot_group_index].scene_dices[slot_index] === null;
+                if (empty_target) {
+                    this.add_dice(game_dice.scene_dice.dice, slot_group_index, slot_index);
+                } else if (this.dice_slots[slot_group_index].available_slots_count() > 0) {
+                    this.add_dice(game_dice.scene_dice.dice, slot_group_index);
+                } else {
+                    console.warn("warning: no available slots to add more dices, REPLACING EXISTING");
+                    this.remove_dice(slot_group_index, slot_index);
+                    this.add_dice(game_dice.scene_dice.dice, slot_group_index, slot_index);
+                }
                 break;
             }
             default: {

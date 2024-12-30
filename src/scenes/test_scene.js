@@ -109,6 +109,7 @@ class TestScene extends Phaser.Scene {
         //     400
         // );
         this.dice_slots.present_scene_dices();
+        this.dice_box.position_dices();
         // this.dice_slots.dice_slots.forEach((dice_slot, index) => {
         //     console.log(index, dice_slot.get_max_roll_value());
         // });
