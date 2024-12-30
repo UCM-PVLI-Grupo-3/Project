@@ -81,9 +81,9 @@ class Dice {
 
 class SceneDice extends Phaser.GameObjects.Sprite {
     dice = new Dice(DICE_DEFAULTS.DICE_TYPE);
-    constructor(scene, position_x, position_y, dice_type) {
-        super(scene, position_x, position_y, DICE_TYPE.get_dice_type_image(dice_type));
-        this.dice = new Dice(dice_type);
+    constructor(scene, position_x, position_y, dice) {
+        super(scene, position_x, position_y, DICE_TYPE.get_dice_type_image(dice.dice_type));
+        this.dice = dice;
         
         this.setInteractive({
             draggable: true,

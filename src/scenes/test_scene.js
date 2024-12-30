@@ -4,6 +4,7 @@ import { Card, CARD_ACTION_TYPE } from "../gameplay/card.js";
 import { GAMEPLAY_CARDS } from "../gameplay/card_deck.js";
 import { exit } from "../common/utility.js";
 import { SceneDiceSlots } from "../gameplay/dice_slots.js";
+import { Dice, DICE_TYPE } from "../gameplay/dice.js";
 
 class TestScene extends Phaser.Scene {
     /**
@@ -82,9 +83,25 @@ class TestScene extends Phaser.Scene {
                 3
             )
         )
+        this.dice_slots
+            .add_dice(new Dice(DICE_TYPE.D4), 0)
+            .add_dice(new Dice(DICE_TYPE.D6), 1)
+            .add_dice(new Dice(DICE_TYPE.D8), 2)
+            .add_dice(new Dice(DICE_TYPE.D10), 0)
+            .present_scene_dices();
     }
 
     update(time, delta) {
+        // this.dice_slots.setPosition(
+        //     600 * Math.sin(time * 0.001) + 600,
+        //     400
+        // );
+        this.dice_slots.present_scene_dices();
+        this.dice_slots.dice_slots.forEach((dice_slot, index) => {
+            console.log(index, dice_slot.get_max_roll_value());
+        });
+
+
         // this.card_hand.background.setSize(
         //     600 * Math.sin(time * 0.001) + 600,
         //     400
