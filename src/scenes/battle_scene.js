@@ -1,9 +1,8 @@
 import { KEYS_SCENES, KEYS_ASSETS_SPRITES, KEYS_EVENTS, KEYS_SHADER_PIPELINES, KEYS_FONT_FAMILIES } from "../common/constants.js";
-import { SceneEmotionStack } from "../gameplay/emotion_stack.js";
-import { EMOTION_TYPE, OPTIONAL_EMOTION_TYPE } from "../gameplay/emotions.js";
-import { Player, ScenePlayer } from "../gameplay/player.js";
-import { Health, Block } from "../gameplay/health.js";
-import { Enemy, SceneEnemy } from "../gameplay/enemy.js"
+import { SceneEmotionStack } from "../gameplay/emotion/emotion_stack.js";
+import { EMOTION_TYPE, OPTIONAL_EMOTION_TYPE } from "../gameplay/emotion/emotions.js";
+import { Player } from "../gameplay/player/player.js";
+import { Enemy } from "../gameplay/enemy/enemy.js"
 import { distribute_uniform } from "../common/layouts.js";
 import { exit } from "../common/utility.js"; 
 

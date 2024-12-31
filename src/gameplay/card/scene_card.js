@@ -1,8 +1,8 @@
 import { CARD_TIMELINE_TYPE, Card } from "./card.js";
 import { KEYS_ASSETS_SPRITES, CONSTANTS_SPRITES_MEASURES } from "../../common/constants.js";
-import { emotion_sprite_key_from_type } from "../emotions.js";
+import { emotion_sprite_key_from_type } from "../emotion/emotions.js";
 import { spritesheet_frame_from_card_name } from "../../common/constants.js";
-import { OPTIONAL_EMOTION_TYPE } from "../emotions.js";
+import { OPTIONAL_EMOTION_TYPE } from "../emotion/emotions.js";
 
 class SceneCard extends Phaser.GameObjects.Container {
     /**

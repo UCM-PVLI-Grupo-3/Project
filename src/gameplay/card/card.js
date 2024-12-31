@@ -3,7 +3,7 @@ import { CardEffect } from "../card_effects/card_effect.js";
 import { DealDamageEffect } from "../card_effects/deal_damage.js";
 import { BlockDamageEffect } from "../card_effects/block_damage.js";
 import { HealEffect } from "../card_effects/heal.js";
-import { EMOTION_TYPE, OPTIONAL_EMOTION_TYPE } from "../emotions.js";
+import { EMOTION_TYPE, OPTIONAL_EMOTION_TYPE } from "../emotion/emotions.js";
 
 const CARD_TIMELINE_TYPE = {
     PAST: "PAST",

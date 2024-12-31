@@ -1,6 +1,5 @@
 import { implements_interface_object } from "../../common/interface.js";
-import { Damageable } from '../health.js';
-import { Player } from '../player.js';
+import { Damageable } from '../health/health.js';
 import { CardEffect } from './card_effect.js';
 
 class DealDamageEffect extends CardEffect {

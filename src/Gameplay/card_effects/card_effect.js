@@ -1,5 +1,5 @@
 import { Interface } from "../../common/interface.js";
-import { SceneEmotionStack } from "../emotion_stack.js";
+import { SceneEmotionStack } from "../emotion/emotion_stack.js";
 
 class CardEffectContext {
     roll = -1;
