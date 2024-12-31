@@ -139,7 +139,9 @@ class SceneDiceSlots extends Phaser.GameObjects.Container {
     scene_dice_slot_groups = [];
     any_scene_dice_slot_group_dirty = true;
 
-    constructor(scene, x, y, width, height, dice_slots_count) {
+    received_dice_drop = (ptr, target, previous_game_dice, received_game_dice) => {};
+
+    constructor(scene, x, y, width, height, dice_slots_count, on_received_dice_drop) {
         super(scene, x, y);
         this.rect = this.scene.add.zone(0, 0, width, height);
         this.add(this.rect);
@@ -185,6 +187,8 @@ class SceneDiceSlots extends Phaser.GameObjects.Container {
             },
             this
         );
+
+        this.received_dice_drop = on_received_dice_drop;
     }
 
     add_dice(dice, slot_group_index, slot_index = -1) {
@@ -313,6 +317,10 @@ class SceneDiceSlots extends Phaser.GameObjects.Container {
                 if (current_slot_index !== slot_index || current_slot_group_index !== slot_group_index) {
                     const empty_target = this.scene_dice_slot_groups[slot_group_index].scene_dices[slot_index] === null;
                     if (empty_target) {
+                        this.received_dice_drop(ptr, target, new GameDice(
+                            null, GAME_DICE_STATUS.IN_SLOT, { slot_index: slot_group_index, frame_index: slot_index }
+                        ), game_dice);
+
                         this.add_dice(game_dice.scene_dice.dice, slot_group_index, slot_index);
                         this.remove_dice(current_slot_group_index, current_slot_index);              
                     } else {
@@ -323,6 +331,8 @@ class SceneDiceSlots extends Phaser.GameObjects.Container {
                         });
 
                         console.assert(other_game_dice !== undefined, "fatal error: other_game_dice must be defined");
+                        this.received_dice_drop(ptr, target, other_game_dice, game_dice);
+
                         this.exchange_in_slot_dices(game_dice, other_game_dice);
                     }
                 } else {
@@ -334,11 +344,29 @@ class SceneDiceSlots extends Phaser.GameObjects.Container {
             case GAME_DICE_STATUS.IN_BOX: {
                 const empty_target = this.scene_dice_slot_groups[slot_group_index].scene_dices[slot_index] === null;
                 if (empty_target) {
+                    this.received_dice_drop(ptr, target, new GameDice(
+                        null, GAME_DICE_STATUS.IN_SLOT, { slot_index: slot_group_index, frame_index: slot_index }
+                    ), game_dice);
+
                     this.add_dice(game_dice.scene_dice.dice, slot_group_index, slot_index);
                 } else if (this.dice_slots[slot_group_index].available_slots_count() > 0) {
+                    this.received_dice_drop(ptr, target, new GameDice(
+                        null, GAME_DICE_STATUS.IN_SLOT, { 
+                            slot_index: slot_group_index,
+                            frame_index: this.dice_slots[slot_group_index].used_slots_count()
+                        }
+                    ), game_dice);
+
                     this.add_dice(game_dice.scene_dice.dice, slot_group_index);
                 } else {
                     console.warn("warning: no available slots to add more dices, REPLACING EXISTING");
+                    let other_game_dice = this.game_dices.find((game_dice) => {
+                        return game_dice.status === GAME_DICE_STATUS.IN_SLOT
+                            && game_dice.in_slot_data.slot_index === slot_group_index
+                            && game_dice.in_slot_data.frame_index === slot_index;
+                    });
+                    this.received_dice_drop(ptr, target, other_game_dice, game_dice);
+
                     this.remove_dice(slot_group_index, slot_index);
                     this.add_dice(game_dice.scene_dice.dice, slot_group_index, slot_index);
                 }

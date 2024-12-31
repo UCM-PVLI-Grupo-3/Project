@@ -79,4 +79,13 @@ class Dice {
     }
 }
 
-export { DICE_TYPE, Dice };
+const GAMEPLAY_DICE = [
+    new Dice(DICE_TYPE.D4),
+    new Dice(DICE_TYPE.D6),
+    new Dice(DICE_TYPE.D8),
+    new Dice(DICE_TYPE.D10),
+    new Dice(DICE_TYPE.D12),
+    new Dice(DICE_TYPE.D20),
+];
+
+export { DICE_TYPE, Dice, GAMEPLAY_DICE };

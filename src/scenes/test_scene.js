@@ -13,6 +13,8 @@ import { Player } from "../gameplay/player/player.js";
 import { Block, Health } from "../gameplay/health/health.js";
 import { SceneEnemy } from "../gameplay/enemy/scene_enemy.js";
 import { Enemy } from "../gameplay/enemy/enemy.js";
+import { SceneEnemyWave } from "../gameplay/enemy/scene_enemy_wave.js";
+import { EnemyWave } from "../gameplay/enemy/enemy_wave.js";
 
 class TestScene extends Phaser.Scene {
     /**
@@ -39,6 +41,11 @@ class TestScene extends Phaser.Scene {
      * @type {ScenePlayer}
      */
     player = null;
+    
+    /**
+     * @type {SceneEnemyWave}
+     */
+    active_enemy_wave = null;
 
     constructor() {
         super({ key: KEYS_SCENES.TEST });
@@ -50,6 +57,7 @@ class TestScene extends Phaser.Scene {
         this.emotion_stack = null;
 
         this.player = null;
+        this.active_enemy_wave = null;
     }
 
     init(data) {
@@ -140,11 +148,9 @@ class TestScene extends Phaser.Scene {
             this.card_hand, new Health(24, 0, 24), new Block(0, 0 , 12)
         )));
 
-        let sample_enemy = this.add.existing(new SceneEnemy(
-            this, w * 0.75, h * 0.25, KEYS_ASSETS_SPRITES.EMOTION_ANGER_ICON, 0, new Enemy(
-                TIMELINE_TYPE.PAST, new Health(24, 0, 24), new Block(0, 0, 12)
-            )
-        ));
+        this.active_enemy_wave = new SceneEnemyWave(this, w * 0.75, h * 0.25, 600, 200, EnemyWave.next_wave(15), (wave) => {
+            this.on_wave_defeated(wave);
+        });
     }
 
     update(time, delta) {
@@ -165,6 +171,14 @@ class TestScene extends Phaser.Scene {
         // );
         // this.card_hand.set_active_group(Math.floor(((3 * Math.sin(time * 0.001) + 3) + 1) / 3));
         // this.card_hand.present_active_card_group();
+    }
+
+    /**
+     * 
+     * @param {EnemyWave} wave 
+     */
+    on_wave_defeated(wave) {
+        console.log("wave defeated");
     }
 }
 

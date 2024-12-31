@@ -50,7 +50,7 @@ class SceneEnemy extends Phaser.GameObjects.Container {
     }
 
     on_death(health_object) {
-        this.destroy();
+        this.setVisible(false);
     }
 }
 

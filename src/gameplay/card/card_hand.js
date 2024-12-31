@@ -55,7 +55,8 @@ class CardGroup {
 
 			let positions = distribute_uniform(width, height, h_count, v_count);
 			for (let i = 0; i < this.scene_cards.length; i++) {
-				this.scene_cards[i].setPosition(x + positions[i].x, y + positions[i].y);
+				this.scene_cards[i].setPosition(x + positions[i].x, y + positions[i].y)
+					.setScale(0.35);
 			}
 		}
 		this.scene_cards_dirty = false;
@@ -122,21 +123,24 @@ class SceneCardHand extends Phaser.GameObjects.Container{
 	any_card_group_dirty = true;
 	active_card_group_index = -1;
 
+	card_selected = (group, index) => {};
+
 	any_card_group_active() {
 		return this.active_card_group_index !== -1;
 	}
 
-	constructor(scene, x, y, width, height, card_group_count) {
+	constructor(scene, x, y, width, height, card_group_count, on_card_selected) {
 		super(scene, x, y);
 
 		this.background = scene.add.rectangle(0, 0, width, height, 0x000000, 0.5);
 		this.add(this.background);
 
+		this.card_selected = on_card_selected;
 		this.card_groups = new Array(card_group_count);
 		for (let i = 0; i < card_group_count; i++) {
 			// TODO: dice_slots
 			this.card_groups[i] = new CardGroup(scene, [], null, (group, index) => {
-				this.on_card_selected(group, index);
+				this.card_selected(group, index);
 			});
 		}
 		this.any_card_group_dirty = true;
@@ -156,6 +160,7 @@ class SceneCardHand extends Phaser.GameObjects.Container{
 				other_group.unselect_card();
 			}
 		});
+		this.card_selected(group, index);
 	}
 
 	add_card(card, group_index) {
@@ -172,6 +177,11 @@ class SceneCardHand extends Phaser.GameObjects.Container{
 		this.any_card_group_dirty = true;
 
 		return this;
+	}
+
+	active_group_equals(group_index) {
+		console.assert(group_index >= 0 && group_index < this.card_groups.length, "error: group_index out of bounds");
+		return this.active_card_group_index === group_index;
 	}
 
 	set_active_group(group_index) {
