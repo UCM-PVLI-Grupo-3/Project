@@ -33,7 +33,7 @@ class SceneEmotionStack extends Phaser.GameObjects.Container {
         console.assert(typeof max_emotion_count === "number", "error: max_emotion_count must be a number");
         super(scene, x, y);
         
-        this.background = this.scene.add.rectangle(0, 0, width, height, 0x020406, 0.95);
+        this.background = this.scene.add.rectangle(0, 0, width * 1.1, height, 0x020406, 0.95);
         this.add(this.background);
 
         this.frames = new Array(max_emotion_count);

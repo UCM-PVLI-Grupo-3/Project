@@ -19,6 +19,14 @@ const HEAL_CARD_GROUP_INDEX = 2;
 
 const CARD_GROUP_COUNT = 3;
 
+const LAYER_FAR_BACKGROUND = -3;
+const LAYER_BACKGROUND = -2;
+const LAYER_BEHIND = -1;
+const LAYER_ZERO = 0;
+const LAYER_UI = 1;
+const LAYER_FRONT_UI = 2;
+const LAYER_TOP = 3;
+
 class BattleScene extends Phaser.Scene {
     /**
      * @type {Phaser.GameObjects.Rectangle}
@@ -91,37 +99,36 @@ class BattleScene extends Phaser.Scene {
 
         this.background = this.add.rectangle(0, 0, sw, sh, 0xFFFFFF - 0xAF6235)
             .setOrigin(0, 0)
-            .setDepth(-3);
+            .setDepth(LAYER_FAR_BACKGROUND);
         this.background_image = this.add.image(0, 0, KEYS_ASSETS_SPRITES.BATTLE_SCENE_BACKGROUND)
             .setOrigin(0, 0)
             .setTint(0xAF6235)
             .setAlpha(0.75)
-            .setDepth(-2);
-
-        this.player_card_hand = this.add.existing(this.create_player_card_hand(
-            sw * 0.5, sh * 0.75, sw * 0.45, sh * 0.2, 6, (group, index) => { this.on_card_selected(group, index); }
-        ));
+            .setDepth(LAYER_BACKGROUND);
+            
+        const min_initial_slot_dice = 3;
+        const max_initial_slot_dice = 5;
+        this.dice_slots = this.create_dice_slots(sw * 0.5, sh * 0.8 - 20, sw * 0.45, sh * 0.4, max_initial_slot_dice, min_initial_slot_dice);
         
         const min_initial_box_dice = 0;
         const max_initial_box_dice = 2;
-        this.dice_box = this.add.existing(this.create_dice_box(160, sh * 0.6, max_initial_box_dice, min_initial_box_dice));
-
-        const min_initial_slot_dice = 3;
-        const max_initial_slot_dice = 5;
-        this.dice_slots = this.add.existing(
-            this.create_dice_slots(sw * 0.5, sh * 0.65, sw * 0.3, sh * 0.4, max_initial_slot_dice, min_initial_slot_dice)
+        this.dice_box = this.create_dice_box(150, sh - 150, max_initial_box_dice, min_initial_box_dice);
+        
+        this.player_card_hand = this.create_player_card_hand(
+            sw * 0.5, sh * 0.5, sw * 0.45, sh * 0.2, 6, (group, index) => { this.on_card_selected(group, index); }
         );
 
-        const emotion_stack_y = sh * 0.5 + 120;
-        const emotion_stack_x = sw * 0.25;
+        const emotion_stack_y = sh * 0.6 + 100;
+        const emotion_stack_x = sw - 100 * 0.5;
         this.scene_emotion_stack = this.add.existing(
-            new SceneEmotionStack(this, emotion_stack_x, emotion_stack_y, 120, 120 * 8, 8)
+            new SceneEmotionStack(this, emotion_stack_x, emotion_stack_y, 75, 50 * 8, 8)
         );
 
-        let card_group_buttons = this.create_card_group_buttons_in_rect(sw * 0.5, sh * 0.5 + 20, sw * 0.45, sh * 0.1);
+        let card_group_buttons = this.create_card_group_buttons_in_rect(sw * 0.5, sh * 0.3 + 20, sw * 0.45, sh * 0.1);
         this.card_group_buttons = [];
         card_group_buttons.forEach((button) => {
-            this.card_group_buttons.push(this.add.existing(button));
+            button.setScale(0.5);
+            this.card_group_buttons.push(button);
         });
 
         this.player = this.add.existing(new ScenePlayer(this, sw * 0.2, sh * 0.1, new Player(
@@ -136,12 +143,12 @@ class BattleScene extends Phaser.Scene {
 
         const bell_x = sw * 0.8;
         const bell_y = sh * 0.8;
-        this.turn_bell_button = this.add.existing(this.create_bell_button(bell_x, bell_y));
+        this.turn_bell_button = this.create_bell_button(bell_x, bell_y);
 
         this.enemies_defeated_text = this.add.text(sw * 0.5, sh * 0.05, "0", {
             fontFamily: KEYS_FONT_FAMILIES.Bauhaus93,
             fontSize: "48px",
-        }).setRotation(-Math.PI / 6).setOrigin(0.5, 0.5).setDepth(1);
+        }).setRotation(-Math.PI / 6).setOrigin(0.5, 0.5).setDepth(LAYER_UI);
 
         let crt_pipeline = this.plugins.get(KEYS_SHADER_PIPELINES.rexcrtpipelineplugin).add(this.cameras.main, {
             warpX: 0.25,
@@ -153,12 +160,12 @@ class BattleScene extends Phaser.Scene {
     }
 
     create_dice_slots(x, y, w, h, max_initial_slot_dice, min_initial_slot_dice) {
-        let dice_slots = new SceneDiceSlots(
+        let dice_slots = this.add.existing(new SceneDiceSlots(
             this, x, y, w, h, CARD_GROUP_COUNT,
             (ptr, target, previous_game_dice, new_game_dice) => {
                 this.on_dice_slot_selected(ptr, target, previous_game_dice, new_game_dice);
             }
-        );
+        ));
         let remaining_slot_dice_count = Math.floor(Math.random() * (max_initial_slot_dice - min_initial_slot_dice + 1)) + min_initial_slot_dice;
         for (let i = 0; i < CARD_GROUP_COUNT; i++) {
             const max_dice_count = Math.min(remaining_slot_dice_count, dice_slots.dice_slots[i].available_slots_count());
@@ -174,9 +181,9 @@ class BattleScene extends Phaser.Scene {
     }
 
     create_dice_box(x, y, max_initial_box_dice, min_initial_box_dice) {
-        let dice_box = new SceneDiceBox(this, x, y, 2, 2);
+        let dice_box = this.add.existing(new SceneDiceBox(this, x, y, 2, 2));
         let box_dice_count = Math.floor(Math.random() * (max_initial_box_dice - min_initial_box_dice + 1)) + min_initial_box_dice;
-        for (let i = 0; i < box_dice_count.length; i++) {
+        for (let i = 0; i < box_dice_count; i++) {
             dice_box.add_dice(GAMEPLAY_DICE[Math.floor(Math.random() * GAMEPLAY_DICE.length)]);
         }
 
@@ -188,7 +195,7 @@ class BattleScene extends Phaser.Scene {
         console.assert(initial_cards instanceof Array, "error: initial_cards must be an array");
         console.assert(initial_cards.length === initial_cards_count, "error: initial_cards.length !== initial_cards_count");
 
-        let card_hand = new SceneCardHand(this, x, y, width, height, CARD_GROUP_COUNT, on_card_selected);
+        let card_hand = this.add.existing(new SceneCardHand(this, x, y, width, height, CARD_GROUP_COUNT, on_card_selected));
         initial_cards.forEach((card) => {
             let group;
             switch (card.action_type) {
@@ -273,18 +280,18 @@ class BattleScene extends Phaser.Scene {
         let card_group_buttons = [];
         for (let i = 0; i < CARD_GROUP_COUNT; i++) {
             card_group_buttons.push(
-                this.create_card_group_button(
+                this.add.existing(this.create_card_group_button(
                     x + positions[i].x, y + positions[i].y,
                     this.player_card_hand,
                     i
                 )
-            );
+            ));
         }
         return card_group_buttons;
     }
 
     create_bell_button(x, y) {
-        return new Phaser.GameObjects.Sprite(this, x, y, KEYS_ASSETS_SPRITES.TURN_EXECUTION_RING_BUTTON_RELEASE)
+        return this.add.sprite(x, y, KEYS_ASSETS_SPRITES.TURN_EXECUTION_RING_BUTTON_RELEASE, 0)
             .setInteractive()
             .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, (ptr, local_x, local_y, event) => {
                 // TODO: play bell press anim
