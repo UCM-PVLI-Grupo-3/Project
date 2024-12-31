@@ -27,6 +27,12 @@ const LAYER_UI = 1;
 const LAYER_FRONT_UI = 2;
 const LAYER_TOP = 3;
 
+const PLAYER_TURN_ACTION_TYPE = {
+    NONE: "NONE",
+    CARD_ACTION: "CARD_ACTION",
+    DICE_SWAP: "DICE_SWAP",
+};
+
 class BattleScene extends Phaser.Scene {
     /**
      * @type {Phaser.GameObjects.Rectangle}
@@ -82,8 +88,11 @@ class BattleScene extends Phaser.Scene {
      */
     enemies_defeated_text = null;
 
+    current_player_turn_action = PLAYER_TURN_ACTION_TYPE.NONE;
+
     constructor() {
         super({ key: KEYS_SCENES.BATTLE });
+        this.current_player_turn_action = PLAYER_TURN_ACTION_TYPE.NONE;
     }
 
     init() {
@@ -127,7 +136,6 @@ class BattleScene extends Phaser.Scene {
         let card_group_buttons = this.create_card_group_buttons_in_rect(sw * 0.5, sh * 0.3 + 20, sw * 0.45, sh * 0.1);
         this.card_group_buttons = [];
         card_group_buttons.forEach((button) => {
-            button.setScale(0.5);
             this.card_group_buttons.push(button);
         });
 
@@ -163,7 +171,7 @@ class BattleScene extends Phaser.Scene {
         let dice_slots = this.add.existing(new SceneDiceSlots(
             this, x, y, w, h, CARD_GROUP_COUNT,
             (ptr, target, previous_game_dice, new_game_dice) => {
-                this.on_dice_slot_selected(ptr, target, previous_game_dice, new_game_dice);
+                this.on_received_dice_drop(ptr, target, previous_game_dice, new_game_dice);
             }
         ));
         let remaining_slot_dice_count = Math.floor(Math.random() * (max_initial_slot_dice - min_initial_slot_dice + 1)) + min_initial_slot_dice;
@@ -250,7 +258,11 @@ class BattleScene extends Phaser.Scene {
         }
         }
 
-        let button_selection = this.add.sprite(0, 0, KEYS_ASSETS_SPRITES.CARD_ACTION_SELECTION_FRAME).setVisible(false);
+        const button_scale = 0.65;
+        let button_selection = this.add.sprite(0, 0, KEYS_ASSETS_SPRITES.CARD_ACTION_SELECTION_FRAME)
+            .setScale(1.0)
+            .setTint(0xCCA049)
+            .setVisible(false);
         let button_sprite = this.add.sprite(0, 0, sprite_key)
             .setInteractive()
             .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, (ptr, local_x, local_y, event) => {
@@ -263,7 +275,8 @@ class BattleScene extends Phaser.Scene {
         );
         let button = new Phaser.GameObjects.Container(this, x, y)
             .add(button_selection)
-            .add(button_sprite);
+            .add(button_sprite)
+            .setScale(button_scale);
         if (button.userdata === undefined) {
             button.userdata = {};
         }
@@ -271,6 +284,10 @@ class BattleScene extends Phaser.Scene {
         button.userdata.button_sprite = button_sprite;
 
         return button;
+    }
+
+    get_card_group_button_selections() {
+        return this.card_group_buttons.map((button) => button.userdata.button_selection);
     }
 
     create_card_group_buttons_in_rect(x, y, width, height) {
@@ -302,12 +319,47 @@ class BattleScene extends Phaser.Scene {
     }
 
     on_card_selected(group, index) {
-        // TODO
+        switch (this.current_player_turn_action) {
+        case PLAYER_TURN_ACTION_TYPE.NONE: {
+            const group_index = this.player_card_hand.card_groups.indexOf(group);
+            console.assert(group_index >= 0, "error: group not found");
+
+            this.get_card_group_button_selections().forEach((selection, selection_index) => {
+                selection.setVisible(selection_index === group_index);
+            });
+            break;
+        }
+        case PLAYER_TURN_ACTION_TYPE.CARD_ACTION: {
+            break;
+        }
+        case PLAYER_TURN_ACTION_TYPE.DICE_SWAP: {
+            break;
+        }
+        default: {
+            console.assert(false, "unreachable: invalid player turn action type");
+            exit("EXIT_FAILURE");
+        }
+        }
     }
 
-    on_dice_slot_selected(ptr, target, previous_game_dice, new_game_dice) {
-        // TODO
+    on_received_dice_drop(ptr, target, previous_game_dice, new_game_dice) {
+        switch (this.current_player_turn_action) {
+        case PLAYER_TURN_ACTION_TYPE.NONE: {
+            break;
+        }
+        case PLAYER_TURN_ACTION_TYPE.CARD_ACTION: {
+            break;
+        }
+        case PLAYER_TURN_ACTION_TYPE.DICE_SWAP: {
+            break;
+        }
+        default: {
+            console.assert(false, "unreachable: invalid player turn action type");
+            exit("EXIT_FAILURE");
+        }
+        }
     }
+
 
     update(time_milliseconds, delta_time_milliseconds) {
         if (this.player_card_hand.any_card_group_active()) {
