@@ -5,7 +5,7 @@ import { CARD_ACTION_TYPE, GAMEPLAY_CARDS } from "../gameplay/card/card.js";
 import { SceneCardHand } from "../gameplay/card/card_hand.js";
 import { DICE_TYPE, GAMEPLAY_DICE } from "../gameplay/dice/dice.js";
 import { SceneDiceBox } from "../gameplay/dice/dice_box.js";
-import { SceneDiceSlots } from "../gameplay/dice/scene_dice_slots.js";
+import { GAME_DICE_STATUS, GameDice, SceneDiceSlots } from "../gameplay/dice/scene_dice_slots.js";
 import { SceneEmotionStack } from "../gameplay/emotion/emotion_stack.js";
 import { EnemyWave } from "../gameplay/enemy/enemy_wave.js";
 import { SceneEnemyWave } from "../gameplay/enemy/scene_enemy_wave.js";
@@ -52,6 +52,10 @@ class BattleScene extends Phaser.Scene {
      * @type {SceneDiceBox}
      */
     dice_box = null;
+    /**
+     * @type {Phaser.GameObjects.Container}
+     */
+    dice_box_selection = null;
 
     /**
      * @type {SceneDiceSlots}
@@ -88,11 +92,16 @@ class BattleScene extends Phaser.Scene {
      */
     enemies_defeated_text = null;
 
-    current_player_turn_action = PLAYER_TURN_ACTION_TYPE.NONE;
+    current_player_turn_action_type = PLAYER_TURN_ACTION_TYPE.NONE;
+    /**
+     * @type {Array<GameDice>}
+     */
+    current_player_turn_game_dices = [];
 
     constructor() {
         super({ key: KEYS_SCENES.BATTLE });
-        this.current_player_turn_action = PLAYER_TURN_ACTION_TYPE.NONE;
+        this.current_player_turn_action_type = PLAYER_TURN_ACTION_TYPE.NONE;
+        this.current_player_trun_game_dices = [];
     }
 
     init() {
@@ -122,7 +131,12 @@ class BattleScene extends Phaser.Scene {
         const min_initial_box_dice = 0;
         const max_initial_box_dice = 2;
         this.dice_box = this.create_dice_box(150, sh - 150, max_initial_box_dice, min_initial_box_dice);
-        
+
+        const dice_box_bounds = this.dice_box.getBounds();
+        this.dice_box_selection = 
+            this.create_dice_box_selection(dice_box_bounds.x + dice_box_bounds.width * 0.25 + 50, dice_box_bounds.y - 80 * 0.75)
+            .setScale(0.75);
+
         this.player_card_hand = this.create_player_card_hand(
             sw * 0.5, sh * 0.5, sw * 0.45, sh * 0.2, 6, (group, index) => { this.on_card_selected(group, index); }
         );
@@ -152,6 +166,7 @@ class BattleScene extends Phaser.Scene {
         const bell_x = sw * 0.8;
         const bell_y = sh * 0.8;
         this.turn_bell_button = this.create_bell_button(bell_x, bell_y);
+        this.store_game_dices();
 
         this.enemies_defeated_text = this.add.text(sw * 0.5, sh * 0.05, "0", {
             fontFamily: KEYS_FONT_FAMILIES.Bauhaus93,
@@ -196,6 +211,21 @@ class BattleScene extends Phaser.Scene {
         }
 
         return dice_box;
+    }
+
+    create_dice_box_selection(x, y) {
+        let dice_box_selection = this.add.container(x, y);
+        let dice_box_selection_outline = this.add.image(0, 0, KEYS_ASSETS_SPRITES.DICE_BOX_SELECTION_FRAME)
+            .setScale(1.0)
+            .setTint(0xCCA049)
+            .setVisible(false);
+        let dice_box_selection_image = this.add.image(0, 0, KEYS_ASSETS_SPRITES.DICE_BOX);
+        if (dice_box_selection.userdata === undefined) {
+            dice_box_selection.userdata = {};
+        }
+        dice_box_selection.userdata.dice_box_selection_outline = dice_box_selection_outline;
+        dice_box_selection.userdata.dice_box_selection_image = dice_box_selection_image;
+        return dice_box_selection.add(dice_box_selection_outline).add(dice_box_selection_image);
     }
 
     create_player_card_hand(x, y, width, height, initial_cards_count, on_card_selected) {
@@ -290,6 +320,10 @@ class BattleScene extends Phaser.Scene {
         return this.card_group_buttons.map((button) => button.userdata.button_selection);
     }
 
+    get_dice_box_selection_outline() {
+        return this.dice_box_selection.userdata.dice_box_selection_outline;
+    }
+
     create_card_group_buttons_in_rect(x, y, width, height) {
         console.assert(this.player_card_hand !== null, "error: player_card_hand must be defined");
 
@@ -318,21 +352,36 @@ class BattleScene extends Phaser.Scene {
         ).setTint(0xCCA049).setScale(0.75);
     }
 
-    on_card_selected(group, index) {
-        switch (this.current_player_turn_action) {
-        case PLAYER_TURN_ACTION_TYPE.NONE: {
-            const group_index = this.player_card_hand.card_groups.indexOf(group);
-            console.assert(group_index >= 0, "error: group not found");
+    store_game_dices() {
+        this.current_player_turn_game_dices = [...this.dice_slots.game_dices].concat([...this.dice_box.game_dices]);
+    }
 
-            this.get_card_group_button_selections().forEach((selection, selection_index) => {
-                selection.setVisible(selection_index === group_index);
-            });
+    restore_from_game_dices() {
+        this.dice_slots.clear_dices();
+        this.dice_box.clear_dices();
+
+        let slot_dices = this.current_player_turn_game_dices.filter((game_dice) => game_dice.status === GAME_DICE_STATUS.IN_SLOT);
+        let box_dices = this.current_player_turn_game_dices.filter((game_dice) => game_dice.status === GAME_DICE_STATUS.IN_BOX);
+
+        slot_dices.forEach((game_dice) => {
+            this.dice_slots.add_dice(game_dice.dice, game_dice.in_slot_data.slot_index, game_dice.in_slot_data.frame_index);
+        });
+        box_dices.forEach((game_dice) => {
+            this.dice_box.add_dice(game_dice.dice);
+        });
+    }
+
+    on_card_selected(group, index) {
+        switch (this.current_player_turn_action_type) {
+        case PLAYER_TURN_ACTION_TYPE.NONE: {
             break;
         }
         case PLAYER_TURN_ACTION_TYPE.CARD_ACTION: {
             break;
         }
         case PLAYER_TURN_ACTION_TYPE.DICE_SWAP: {
+            this.restore_from_game_dices();
+            this.get_dice_box_selection_outline().setVisible(false);
             break;
         }
         default: {
@@ -340,14 +389,29 @@ class BattleScene extends Phaser.Scene {
             exit("EXIT_FAILURE");
         }
         }
+
+        const group_index = this.player_card_hand.card_groups.indexOf(group);
+        console.assert(group_index >= 0, "error: group not found");
+
+        this.get_card_group_button_selections().forEach((selection, selection_index) => {
+            selection.setVisible(selection_index === group_index);
+        });
+    
+        this.current_player_turn_action_type = PLAYER_TURN_ACTION_TYPE.CARD_ACTION;
     }
 
     on_received_dice_drop(ptr, target, previous_game_dice, new_game_dice) {
-        switch (this.current_player_turn_action) {
+        switch (this.current_player_turn_action_type) {
         case PLAYER_TURN_ACTION_TYPE.NONE: {
             break;
         }
-        case PLAYER_TURN_ACTION_TYPE.CARD_ACTION: {
+        case PLAYER_TURN_ACTION_TYPE.CARD_ACTION: {            
+            this.player_card_hand.card_groups.forEach((group) => {
+                group.unselect_card();
+            });
+            this.get_card_group_button_selections().forEach((selection) => {
+                selection.setVisible(false);
+            });
             break;
         }
         case PLAYER_TURN_ACTION_TYPE.DICE_SWAP: {
@@ -358,6 +422,9 @@ class BattleScene extends Phaser.Scene {
             exit("EXIT_FAILURE");
         }
         }
+        this.get_dice_box_selection_outline().setVisible(true);
+
+        this.current_player_turn_action_type = PLAYER_TURN_ACTION_TYPE.DICE_SWAP;
     }
 
 
@@ -390,7 +457,8 @@ class BattleScene extends Phaser.Scene {
     }
 
     execute_turn() {
-        // TODO
+        console.log("execute_turn");
+        this.store_game_dices();
     }}
 
 export { BattleScene };

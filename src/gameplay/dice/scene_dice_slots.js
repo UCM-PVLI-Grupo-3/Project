@@ -16,6 +16,10 @@ class GameDice {
      * @type {SceneDice}
      */
     scene_dice = null;
+    /**
+     * @type {Dice}
+     */
+    dice = null;
     status = GAME_DICE_STATUS.UNINITIALIZED;
     in_slot_data = {
         slot_index: -1,
@@ -28,12 +32,13 @@ class GameDice {
 
     /**
      * 
-     * @param {SceneDice} scene_dice 
+     * @param {SceneDice?} scene_dice 
      * @param {GAME_DICE_STATUS} status 
      * @param {({slot_index: number, frame_index: number} | {box_i: number, box_j: number})} status_data 
      */
     constructor(scene_dice, status, status_data) {
         this.scene_dice = scene_dice;
+        this.dice = scene_dice !== null ? new Dice(scene_dice.dice.dice_type) : null;
         this.status = status;
         if (status === GAME_DICE_STATUS.IN_SLOT) {
             this.in_slot_data = { ...status_data };
@@ -235,6 +240,16 @@ class SceneDiceSlots extends Phaser.GameObjects.Container {
         return this;
     }
 
+    clear_dices() {
+        let game_dices = [...this.game_dices];
+        game_dices.forEach((game_dice) => {
+            let slot_group_index = game_dice.in_slot_data.slot_index;
+            let slot_index = game_dice.in_slot_data.frame_index;
+            this.remove_dice(slot_group_index, slot_index);
+        });
+        return this;
+    }
+
     exchange_in_slot_dices(game_dice_1, game_dice_2) {
         console.assert(game_dice_1 instanceof GameDice, "error: game_dice_1 must be an instance of GameDice");
         console.assert(game_dice_2 instanceof GameDice, "error: game_dice_2 must be an instance of GameDice");
@@ -320,7 +335,7 @@ class SceneDiceSlots extends Phaser.GameObjects.Container {
                         this.received_dice_drop(ptr, target, new GameDice(
                             null, GAME_DICE_STATUS.IN_SLOT, { slot_index: slot_group_index, frame_index: slot_index }
                         ), game_dice);
-
+                        
                         this.add_dice(game_dice.scene_dice.dice, slot_group_index, slot_index);
                         this.remove_dice(current_slot_group_index, current_slot_index);              
                     } else {
@@ -331,8 +346,8 @@ class SceneDiceSlots extends Phaser.GameObjects.Container {
                         });
 
                         console.assert(other_game_dice !== undefined, "fatal error: other_game_dice must be defined");
+                        
                         this.received_dice_drop(ptr, target, other_game_dice, game_dice);
-
                         this.exchange_in_slot_dices(game_dice, other_game_dice);
                     }
                 } else {
@@ -347,7 +362,7 @@ class SceneDiceSlots extends Phaser.GameObjects.Container {
                     this.received_dice_drop(ptr, target, new GameDice(
                         null, GAME_DICE_STATUS.IN_SLOT, { slot_index: slot_group_index, frame_index: slot_index }
                     ), game_dice);
-
+                    
                     this.add_dice(game_dice.scene_dice.dice, slot_group_index, slot_index);
                 } else if (this.dice_slots[slot_group_index].available_slots_count() > 0) {
                     this.received_dice_drop(ptr, target, new GameDice(
@@ -356,7 +371,7 @@ class SceneDiceSlots extends Phaser.GameObjects.Container {
                             frame_index: this.dice_slots[slot_group_index].used_slots_count()
                         }
                     ), game_dice);
-
+                    
                     this.add_dice(game_dice.scene_dice.dice, slot_group_index);
                 } else {
                     console.warn("warning: no available slots to add more dices, REPLACING EXISTING");
@@ -366,7 +381,7 @@ class SceneDiceSlots extends Phaser.GameObjects.Container {
                             && game_dice.in_slot_data.frame_index === slot_index;
                     });
                     this.received_dice_drop(ptr, target, other_game_dice, game_dice);
-
+                    
                     this.remove_dice(slot_group_index, slot_index);
                     this.add_dice(game_dice.scene_dice.dice, slot_group_index, slot_index);
                 }

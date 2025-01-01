@@ -81,6 +81,15 @@ class SceneDiceBox extends Phaser.GameObjects.Container {
 		return this;
     }
 
+	clear_dices() {
+		let game_dices = [...this.game_dices];
+		game_dices.forEach((game_dice) => {
+			let box_i = game_dice.in_box_data.box_i;
+			let box_j = game_dice.in_box_data.box_j;
+			this.remove_dice(box_i, box_j);
+		});
+	}
+
     position_dices() {
 		if (this.game_dices_dirty) {
 			let positions = distribute_uniform(

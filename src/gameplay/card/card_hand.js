@@ -140,7 +140,7 @@ class SceneCardHand extends Phaser.GameObjects.Container{
 		for (let i = 0; i < card_group_count; i++) {
 			// TODO: dice_slots
 			this.card_groups[i] = new CardGroup(scene, [], null, (group, index) => {
-				this.card_selected(group, index);
+				this.on_card_selected(group, index);
 			});
 		}
 		this.any_card_group_dirty = true;
