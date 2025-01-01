@@ -165,7 +165,7 @@ class BattleScene extends Phaser.Scene {
             new Block(0, 0, 14, (block) => { this.on_player_block_set(block); })
         )));
         
-        this.active_enemy_wave = new SceneEnemyWave(this, sw * 0.8, sh * 0.1, sw * 0.6, sh * 0.4, EnemyWave.next_wave(15),
+        this.active_enemy_wave = new SceneEnemyWave(this, sw * 0.8, sh * 0.1, sw * 0.6, sh * 0.4, EnemyWave.next_wave(0),
             (enemy_wave) => {
                 this.on_wave_defeated(enemy_wave);
             }, (wave, scene_enemies) => {
@@ -553,7 +553,7 @@ class BattleScene extends Phaser.Scene {
             }
             }
             card.card_effects.forEach((effect) => {
-                effect.apply_effect(source, target, context);
+                effect.apply_effect(target, source, context);
             });
 
         } else {
@@ -605,6 +605,10 @@ class BattleScene extends Phaser.Scene {
             this.current_player_turn_selected_card_index = -1;
             this.current_player_turn_action_type = PLAYER_TURN_ACTION_TYPE.NONE;
             this.current_player_turn_enemy_selection_index = -1;
+
+            this.active_enemy_wave.scene_enemies.forEach((scene_enemy) => {
+                scene_enemy.userdata.selection.setVisible(false);
+            });
         }
     }}
 
