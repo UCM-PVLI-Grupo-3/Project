@@ -3,11 +3,13 @@ import { distribute_uniform } from "../common/layouts.js";
 import { exit } from "../common/utility.js";
 import { CARD_ACTION_TYPE, GAMEPLAY_CARDS } from "../gameplay/card/card.js";
 import { SceneCardHand } from "../gameplay/card/card_hand.js";
+import { CardEffectContext } from "../gameplay/card_effects/card_effect.js";
 import { DICE_TYPE, GAMEPLAY_DICE } from "../gameplay/dice/dice.js";
 import { SceneDiceBox } from "../gameplay/dice/dice_box.js";
 import { GAME_DICE_STATUS, GameDice, SceneDiceSlots } from "../gameplay/dice/scene_dice_slots.js";
 import { SceneEmotionStack } from "../gameplay/emotion/emotion_stack.js";
 import { EnemyWave } from "../gameplay/enemy/enemy_wave.js";
+import { SceneEnemy } from "../gameplay/enemy/scene_enemy.js";
 import { SceneEnemyWave } from "../gameplay/enemy/scene_enemy_wave.js";
 import { Block, Health } from "../gameplay/health/health.js";
 import { Player } from "../gameplay/player/player.js";
@@ -93,6 +95,9 @@ class BattleScene extends Phaser.Scene {
     enemies_defeated_text = null;
 
     current_player_turn_action_type = PLAYER_TURN_ACTION_TYPE.NONE;
+    current_player_turn_enemy_selection_index = -1;
+    current_player_turn_selected_card_group_index = -1;
+    current_player_turn_selected_card_index = -1;
     /**
      * @type {Array<GameDice>}
      */
@@ -101,6 +106,7 @@ class BattleScene extends Phaser.Scene {
     constructor() {
         super({ key: KEYS_SCENES.BATTLE });
         this.current_player_turn_action_type = PLAYER_TURN_ACTION_TYPE.NONE;
+        this.current_player_turn_enemy_selection_index = -1;
         this.current_player_trun_game_dices = [];
     }
 
@@ -143,7 +149,7 @@ class BattleScene extends Phaser.Scene {
 
         const emotion_stack_y = sh * 0.6 + 100;
         const emotion_stack_x = sw - 100 * 0.5;
-        this.scene_emotion_stack = this.add.existing(
+        this.emotion_stack = this.add.existing(
             new SceneEmotionStack(this, emotion_stack_x, emotion_stack_y, 75, 50 * 8, 8)
         );
 
@@ -159,9 +165,13 @@ class BattleScene extends Phaser.Scene {
             new Block(0, 0, 14, (block) => { this.on_player_block_set(block); })
         )));
         
-        this.active_enemy_wave = new SceneEnemyWave(this, sw * 0.8, sh * 0.1, sw * 0.6, sh * 0.4, EnemyWave.next_wave(0), (enemy_wave) => {
-            this.on_wave_defeated(enemy_wave);
-        });
+        this.active_enemy_wave = new SceneEnemyWave(this, sw * 0.8, sh * 0.1, sw * 0.6, sh * 0.4, EnemyWave.next_wave(15),
+            (enemy_wave) => {
+                this.on_wave_defeated(enemy_wave);
+            }, (wave, scene_enemies) => {
+                this.on_wave_set(wave, scene_enemies);
+            }
+        );
 
         const bell_x = sw * 0.8;
         const bell_y = sh * 0.8;
@@ -396,7 +406,9 @@ class BattleScene extends Phaser.Scene {
         this.get_card_group_button_selections().forEach((selection, selection_index) => {
             selection.setVisible(selection_index === group_index);
         });
-    
+        
+        this.current_player_turn_selected_card_group_index = group_index;
+        this.current_player_turn_selected_card_index = index;
         this.current_player_turn_action_type = PLAYER_TURN_ACTION_TYPE.CARD_ACTION;
     }
 
@@ -412,6 +424,8 @@ class BattleScene extends Phaser.Scene {
             this.get_card_group_button_selections().forEach((selection) => {
                 selection.setVisible(false);
             });
+            this.current_player_turn_selected_card_group_index = -1;
+            this.current_player_turn_selected_card_index = -1;
             break;
         }
         case PLAYER_TURN_ACTION_TYPE.DICE_SWAP: {
@@ -423,7 +437,7 @@ class BattleScene extends Phaser.Scene {
         }
         }
         this.get_dice_box_selection_outline().setVisible(true);
-
+        
         this.current_player_turn_action_type = PLAYER_TURN_ACTION_TYPE.DICE_SWAP;
     }
 
@@ -434,6 +448,7 @@ class BattleScene extends Phaser.Scene {
         }
         this.dice_box.position_dices();
         this.dice_slots.present_scene_dices();
+        this.active_enemy_wave.present_scene_enemies();
     }
 
     on_player_health_set(health) {
@@ -445,20 +460,152 @@ class BattleScene extends Phaser.Scene {
     }
 
     on_enemy_selected(enemy, index) {
-        this.selected_enemy_index = index;
-        this.enemies.forEach((enemy, index) => {
-            enemy.sprite.setTint(0xFFFFFF);
+        this.current_player_turn_enemy_selection_index = index;
+        this.active_enemy_wave.scene_enemies.forEach((scene_enemy, i) => {
+            scene_enemy.userdata.selection.setVisible(index === i);
         });
-        enemy.sprite.setTint(0xFF0000);
     }
 
+    /**
+     * 
+     * @param {EnemyWave} enemy_wave 
+     */
     on_wave_defeated(enemy_wave) {
         // TODO
     }
 
+    /**
+     * 
+     * @param {EnemyWave} enemy_wave 
+     * @param {Array<SceneEnemy>} scene_enemies 
+     */
+    on_wave_set(enemy_wave, scene_enemies) {
+        scene_enemies.forEach((scene_enemy, index) => {
+            if (scene_enemy.userdata === undefined) {
+                scene_enemy.userdata = {};
+            }
+            scene_enemy.userdata.selection = this.add.sprite(
+                0, 0, scene_enemy.sprite.texture.key, scene_enemy.sprite.frame.name
+            ).setScale(1.2)
+            .setTintFill(0xCCA049)
+            .setVisible(false);
+            scene_enemy.add(scene_enemy.userdata.selection);
+            scene_enemy.userdata.selection.setBelow(scene_enemy.sprite);
+            
+            scene_enemy.sprite.setInteractive()
+                .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, (ptr, local_x, local_y, event) => {
+                    this.on_enemy_selected(scene_enemy, index);
+                });
+        });
+    }
+
+    on_player_turn_action_none() {
+        // TODO anim and text
+        return false;
+    }
+
+    on_player_turn_action_card() {
+        if (this.current_player_turn_enemy_selection_index === -1) {
+            // TODO select enemy anim
+            return false;
+        }
+        if (this.current_player_turn_selected_card_group_index === -1
+            || this.current_player_turn_selected_card_index === -1
+        ) {
+            // TODO select card anim
+            return false;
+        }
+
+        let enemy = this.active_enemy_wave.scene_enemies[this.current_player_turn_enemy_selection_index];
+        const card = this.player_card_hand.card_groups[this.current_player_turn_selected_card_group_index]
+            .cards[this.current_player_turn_selected_card_index];
+        
+        const dice_slots = this.dice_slots.dice_slots[this.current_player_turn_selected_card_group_index];
+        let roll = dice_slots.roll();
+        let max_roll = dice_slots.get_max_roll_value();
+
+        if (roll >= card.value) {
+            let source = null;
+            let target = null;
+            const context = new CardEffectContext(
+                roll, max_roll, this, this.emotion_stack
+            );
+
+            switch (card.action_type) {
+            case CARD_ACTION_TYPE.ATTACK: {
+                source = this.player.player;
+                target = enemy.enemy;
+                break;
+            }
+            case CARD_ACTION_TYPE.DEFENCE: {
+                source = this.player.player;
+                target = this.player.player;
+                break;
+            }
+            case CARD_ACTION_TYPE.HEAL: {
+                source = this.player.player;
+                target = this.player.player;
+                break;
+            }
+            default: {
+                console.assert(false, "unreachable: invalid card action type");
+                exit("EXIT_FAILURE");
+            }
+            }
+            card.card_effects.forEach((effect) => {
+                effect.apply_effect(source, target, context);
+            });
+
+        } else {
+            // TODO failure anim
+        }
+
+        return true;
+    }
+
+    on_player_turn_action_dice_swap() {
+        // TODO anim and text
+        return true;
+    }
+
     execute_turn() {
-        console.log("execute_turn");
-        this.store_game_dices();
+        let continue_turn = true;
+        switch (this.current_player_turn_action_type) {
+        case PLAYER_TURN_ACTION_TYPE.NONE: {
+            continue_turn = this.on_player_turn_action_none();
+            break;
+        }
+        case PLAYER_TURN_ACTION_TYPE.CARD_ACTION: {
+            continue_turn = this.on_player_turn_action_card();
+            break;
+        }
+        case PLAYER_TURN_ACTION_TYPE.DICE_SWAP: {
+            continue_turn = this.on_player_turn_action_dice_swap();
+            break;
+        }
+        default: {
+            console.assert(false, "unreachable: invalid player turn action type");
+            exit("EXIT_FAILURE");
+        }
+        }
+
+        if (continue_turn) {
+            this.active_enemy_wave.execute_turn(this.player.player)
+    
+            this.get_dice_box_selection_outline().setVisible(false);
+            this.player_card_hand.card_groups.forEach((group) => {
+                group.unselect_card();
+            });
+            this.get_card_group_button_selections().forEach((selection) => {
+                selection.setVisible(false);
+            });
+    
+            this.store_game_dices();
+            this.current_player_turn_selected_card_group_index = -1;
+            this.current_player_turn_selected_card_index = -1;
+            this.current_player_turn_action_type = PLAYER_TURN_ACTION_TYPE.NONE;
+            this.current_player_turn_enemy_selection_index = -1;
+        }
     }}
 
 export { BattleScene };

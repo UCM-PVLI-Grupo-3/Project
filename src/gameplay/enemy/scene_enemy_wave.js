@@ -35,21 +35,26 @@ class SceneEnemyWave {
      * @type {Array<SceneEnemy>}
      */
     scene_enemies = [];
+    scene_enemies_dirty = true;
+
     /**
      * @type {Array<EnemyStatus>}
      */
     scene_enemies_status = [];
     wave_defeated = (wave) => {};
+    wave_set = (wave, scene_enemies) => {};
 
-    constructor(scene, x, y, width, height, wave, on_wave_defeated) {
+    constructor(scene, x, y, width, height, wave, on_wave_defeated, on_wave_set) {
         this.scene = scene;
 
         this.rect = this.scene.add.zone(x, y, width, height);
         this.scene.add.existing(this.rect);
 
         this.scene_enemies = [];
+        this.scene_enemies_dirty = true;
         this.scene_enemies_status = [];
         this.wave_defeated = on_wave_defeated;
+        this.wave_set = on_wave_set;
 
         this.set_wave(wave);
     }
@@ -102,11 +107,29 @@ class SceneEnemyWave {
             this.scene_enemies.push(scene_enemy);
             this.scene_enemies_status.push(new EnemyStatus(true, 0));
         }
+
+        this.scene_enemies_dirty = true;
+        this.wave_set(this.current_wave, this.scene_enemies);
+    }
+
+    present_scene_enemies() {
+        if (this.scene_enemies_dirty) {
+            let positions = distribute_uniform(this.rect.width, this.rect.height, this.scene_enemies_status.filter(
+                (status) => status.alive
+            ).length, 1);
+            for (let i = 0; i < this.scene_enemies.length; i++) {
+                if (this.scene_enemies_status[i].alive) {
+                    this.scene_enemies[i].setPosition(this.rect.x + positions[i].x, this.rect.y + positions[i].y);
+                }
+            }
+            this.scene_enemies_dirty = false;
+        }
     }
 
     on_enemy_death(scene_enemy, current_wave_index) {
         this.current_wave_alive_count -= 1;
         this.scene_enemies_status[current_wave_index].alive = false;
+        this.scene_enemies_dirty = true
 
         if (this.current_wave_alive_count <= 0) {
             this.wave_defeated(this.current_wave);
