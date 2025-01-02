@@ -100,7 +100,7 @@ class BattleScene extends Phaser.Scene {
     /**
      * @type {Phaser.GameObjects.Text}
      */
-    enemies_defeated_text = null;
+    waves_defeated_text = null;
 
     current_player_turn_action_type = PLAYER_TURN_ACTION_TYPE.NONE;
     current_player_turn_enemy_selection_index = -1;
@@ -174,8 +174,10 @@ class BattleScene extends Phaser.Scene {
 
         const emotion_stack_y = sh * 0.6 + 100;
         const emotion_stack_x = sw - 100 * 0.5;
+        const emotion_stack_width = 75;
+        const emotion_stack_height = 50 * 8;
         this.emotion_stack = this.add.existing(
-            new SceneEmotionStack(this, emotion_stack_x, emotion_stack_y, 75, 50 * 8, 8)
+            new SceneEmotionStack(this, emotion_stack_x, emotion_stack_y, emotion_stack_width, emotion_stack_height, 8)
         );
 
         let card_group_buttons = this.create_card_group_buttons_in_rect(sw * 0.5, sh * 0.55 + 20, sw * 0.45, sh * 0.1);
@@ -214,9 +216,16 @@ class BattleScene extends Phaser.Scene {
         this.turn_bell_button = this.create_bell_button(bell_x, bell_y);
         this.store_game_dices();
 
-        this.enemies_defeated_text = this.add.text(sw * 0.5, sh * 0.05, "0", {
+        this.waves_defeated_text = this.add.text(
+            this.emotion_stack.x,
+            this.emotion_stack.y - emotion_stack_height * 0.5 - 50,
+            "WAVE:\n0", {
             fontFamily: KEYS_FONT_FAMILIES.Bauhaus93,
-            fontSize: "48px",
+            fontSize: "36px",
+            color: "#000000",
+            stroke: "#FFFFFF",
+            strokeThickness: 4,
+            align: "center",
         }).setRotation(-Math.PI / 6).setOrigin(0.5, 0.5).setDepth(LAYER_UI);
 
         let crt_pipeline = this.plugins.get(KEYS_SHADER_PIPELINES.rexcrtpipelineplugin).add(this.cameras.main, {
@@ -770,6 +779,8 @@ class BattleScene extends Phaser.Scene {
             enemy_wave.wave_enemies.reduce((acc, enemy) => acc + enemy.health.get_max_health(), 0)
             * wave_percentage_heal
         ));
+
+        this.waves_defeated_text.setText(`WAVE:\n${enemy_wave.wave_level}`);
     }
 
     /**
@@ -794,6 +805,24 @@ class BattleScene extends Phaser.Scene {
                 .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, (ptr, local_x, local_y, event) => {
                     this.on_enemy_selected(scene_enemy, index);
                 });
+            
+            const x = scene_enemy.x;
+            const y = scene_enemy.y;
+            scene_enemy.setPosition(this.cameras.main.width * 1.5, y);
+            this.tweens.add({
+                targets: scene_enemy,
+                x: x,
+                y: y,
+                duration: 1000,
+                yoyo: false,
+
+                repeat: 0,
+                ease: "Sine.easeInOut",
+
+                onComplete: () => {
+                    this.active_enemy_wave.scene_enemies_dirty = true;
+                }
+            });
         });
     }
 
@@ -882,7 +911,7 @@ class BattleScene extends Phaser.Scene {
             if (card.successful_action_emotion_type !== OPTIONAL_EMOTION_TYPE.NONE()) {                     
                 this.emotion_stack.push_back_cycle(card.successful_action_emotion_type);
             }
-        } else if (roll_ratio < 0.25) {
+        } else if (roll_ratio < 0.5) {
             if (card.failure_action_emotion_type !== OPTIONAL_EMOTION_TYPE.NONE()) {
                 this.emotion_stack.push_back_cycle(card.failure_action_emotion_type);
             }
