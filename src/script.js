@@ -2,7 +2,6 @@ import { BattleScene } from "./scenes/battle_scene.js";
 import { MainMenuScene } from "./scenes/main_menu_scene.js";
 import { LoadScene } from "./scenes/load_scene.js";
 import { EndScene } from "./scenes/end_scene.js";
-import { TestScene } from "./scenes/test_scene.js";
 
 
 /**
@@ -14,12 +13,12 @@ const phaser_config = {
     scale: {
         width: 1100,
         height: 800,
-        parent: "game-container",
+        parent: "game-window",
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,
     },
     backgroundColor: "#AF6235",
-    scene: [LoadScene, MainMenuScene, BattleScene, EndScene, TestScene],
+    scene: [LoadScene, MainMenuScene, BattleScene, EndScene],
 };
 
 /**

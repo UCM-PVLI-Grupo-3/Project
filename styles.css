@@ -1,80 +1,124 @@
 body {
-   background-color: gainsboro;
+    background-color: #121212;
+    color: #e0e0e0;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
 }
 
-h1 
-{
-    color:rgb(107, 63, 147);font-size: 75px;text-align: center;
-}
-h2
-{
-  color:rgb(177, 110, 238);font-size: 55px;text-align: center;
-  
-}.clase 
-{
-  color:rgb(181, 123, 209);font-size:30px; text-align: center;
+h1 {
+    color: rgb(107, 63, 147);
+    font-size: 75px;
+    text-align: center;
 }
 
-.backgrounded
-{
-   
-   background-image: 
-   url('https://images.vexels.com/media/users/3/140057/isolated/preview/f81b565034ebd3bda48bfd33b4aed3f3-dados-de-juguete.png'),
-   url('https://images.vexels.com/media/users/3/140057/isolated/preview/f81b565034ebd3bda48bfd33b4aed3f3-dados-de-juguete.png'),
-   url('https://images.vexels.com/media/users/3/140057/isolated/preview/f81b565034ebd3bda48bfd33b4aed3f3-dados-de-juguete.png'),
-   url('https://images.vexels.com/media/users/3/140057/isolated/preview/f81b565034ebd3bda48bfd33b4aed3f3-dados-de-juguete.png'),
-   url('https://images.vexels.com/media/users/3/140057/isolated/preview/f81b565034ebd3bda48bfd33b4aed3f3-dados-de-juguete.png'),
-   url('https://www.macaumr.com/wp-content/uploads/2024/08/casino-dice.webp'),
-   url('https://www.macaumr.com/wp-content/uploads/2024/08/casino-dice.webp'),
-   url('https://www.macaumr.com/wp-content/uploads/2024/08/casino-dice.webp'); 
-
-
-   background-position: 
-   10% 15%, 
-   70% 30%, 
-   35% 85%, 
-   90% 10%, 
-   30% 45%,
-   90% 60%,
-   98% 75%,
-   10% 90%;
-   
-
-background-size: 
-   100px 100px, 
-   120px 120px, 
-   90px 90px, 
-   110px 110px, 
-   120px 120px,
-   120px 120px, 
-   90px 90px,
-   110px 110px; 
-   
-background-repeat: no-repeat;
-  
-    
-   position: relative;
-}
-.chart1
-{
-   width:100px;
-   background-color: black;
-   position:relative;
-   left: 27%;
-}
-.chart2
-{
-   width:100px;
-   background-color: black;
-   position:relative;
-   left: 35%;
-}
-.tr 
-{
-   background-color: antiquewhite;
+h2 {
+    color: rgb(177, 110, 238);
+    font-size: 55px;
+    text-align: center;
 }
 
-.title
-{
-   background-color: darkslategray;
+.tr {
+    background-color: antiquewhite;
+}
+
+.title {
+    background-color: darkslategray;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    flex-wrap: nowrap;
+}
+
+.game-window {
+    flex: 1 1 70%;
+    height: 600px;
+    background-color: #1e1e1e;
+    border: 2px solid #333;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 10px;
+}
+
+.instructions {
+    flex: 1 1 25%;
+    background-color: #1e1e1e;
+    border: 2px solid #333;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 10px;
+}
+
+.instructions h2 {
+    color: #bb86fc;
+    text-align: center;
+}
+
+.instructions ul {
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+.instructions li {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.info {
+    background-color: #1e1e1e;
+    border: 2px solid #333;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px;
+}
+
+.info h3 {
+    color: #bb86fc;
+}
+
+.info p {
+    line-height: 1.6;
+}
+
+.footer-divider {
+    border: 1px solid #333;
+    margin: 20px 0;
+}
+
+footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+}
+
+.footer-left, .footer-right {
+    flex: 1;
+    text-align: center;
+}
+
+.footer-vline {
+    border-left: 1px solid #333;
+    height: 40px;
+    margin: 0 20px;
+}
+
+footer p {
+    color: #e0e0e0;
+}
+
+footer a {
+    color: #bb86fc;
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+.float-right {
+    float: right;
 }

@@ -2,175 +2,74 @@
 <html lang="es">
 
 <head>
-    <meta charset="utf-8">
-    <title>HTML</title>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Let's Go Rolling</title>
     <link rel="stylesheet" href="styles.css">
     <script src="./src/lib/phaser.js"></script>
     <script src="./src/script.js" type="module"></script>
 </head>
 
-<body class="backgrounded">
-    <h1><strong>Lets Go Rolling</strong></h1>
-    <div id="game-container"></div>
-    <h2>
-        Creado por Guardian Enigma
-    </h2>
-    <table>
-        <tbody>
-            <tr>
-                <td>
-                    <nav>
-                        INDICE <br><a href="#Objetivo">ºObjetivo del juego</a><br><a href="#Controles">ºComo Jugar</a><br><a href="#Descripción">ºSobre el Juego</a><br><a href="#Autores">ºAutores y
-                            creditos</a><br><a href="#Siguenos">ºSiguenos</a>
-                    </nav>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <lu class="clase">
-        <li>
-            <h3 id="Objetivo" >
-                OBJETIVO DEL JUEGO
-            </h3>
-            <p>
-              Eres un viajero en el tiempo que alterna entre el futuro y el pasado. Tu objetivo es derrotar a la entidad interdimensional que está provocando una brecha en el espacio-tiempo, retorciendo el mundo y reuniendo peligros de tiempos antiguos y peligros futuristas no presenciados.
-
-              Equipado con lo que obtienes al matar a estos enemigos en batallas por turnos, con cartas y tiradas de dados; y encontrar en ubicaciones pasadas o futuras, como mercados o cripto-subastas en línea, debes continuar el camino hacia esta entidad interdimensional fallida y restaurar tu mundo.
-            </p>
-        </li>
-        <!-- <li>
-            <h3 id="Controles">
-                COMO JUGAR
-                
-            </h3>
-       <p><strong> PC </strong></p>
-       <table class="chart1">
-           <tbody>
-               <tr>
-                   <td class="title">
-                       Button
-                   </td>
-                   <td class="tr">
-                       W, Arrow-up, Numpad-8
-                   </td>
-                   <td class="tr">
-                       A, Arrow-left, Numpad-4
-                   </td>
-                   <td class="tr">
-                       S, Arrow-down, Numpad-2
-                   </td>
-                   <td class="tr">
-                       D, Arrow-right, Numpad-6
-                   </td>
-                   <td class="tr">
-                       Enter, Space
-                   </td>
-               </tr>
-               <tr>
-                   <td class="title" >
-                     Action
-                   </td>
-                    <td class="tr">
-                       Up
-                   </td>
-                    <td class="tr">
-                       Left
-                   </td>
-                    <td class="tr">
-                       Down
-                   </td>
-                    <td class="tr">
-                      Right 
-                   </td>
-                    <td class="tr">
-                       Confirm
-                   </td>
-               </tr>
-           </tbody>
-       </table>
-            LMB - confirms selected element
-
-        <p><strong>GAMEPAD</strong></p>  
-            <table class="chart2">
-                <tbody>
-                    <tr>
-                        <td class="title">
-                            Button
-                        </td >
-                         <td class="tr">
-                            L-stick, D-pad
-                        </td>
-                         <td class="tr">
-                            South/East button
-                        </td>
-                    </tr>
-                    <tr>
-                         <td class="title">
-                            Action
-                        </td>
-                         <td class="tr">
-                            Up/Left/Down/Right
-                        </td>
-                         <td class="tr">
-                           Confirm selected action
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <p><strong>TOUCH SCREEN</strong></p>
-            <p>Touch screen controls use drag-n-drop funcionality, player can select element by touching and confirm action by holding finger on element and dragging it to specific section of screen.</p>
-            
-        </li> -->
-        <li id="Descripción" class="clase">
-            <h3>
-                SOBRE NUESTRO JUEGO
-            </h3>
-            <p>
-                Nuestro juego es un roguelike por turnos presentado en un futuro distopico en el el boss final ha
-                corrompido la linea temporal y es tu deber salvarla.Pelea con difererntes Clases de monstruos,elige tu
-                propia estrategía, tus propias acciones y tu propio camino alternando entre el futuro y el pasado para
-                conseguir las recompensas que mas tte intresen.<br><br>
-                <strong>Mecanicas</strong><br>
-                La mecanica principal del juegos es la suerte que, inspirandonos en dicey dungeons y en el antiguo juego
-                Dungeons & and dragons, decidira a traves de dados si vuestros ataque y acciones aciertan o no,he
-                incluso va más allá creando en algunos casos efectos secundarios como daño critico,stunear e incluso
-                controlar las emociones.
-            </p>
-        <li id="Autores" class="clase">
-            <h3 class="clase">
-                AUTORES Y CREDITOS
-            </h3>
-            <p>
-                Hola a todos muchas gracias por jugar nuestro juego.Aunque la compañía se llame Guardian Enigma,
-                nosotros solo somos 4 alumnos de segundo del grado de desarrollo de videojuegos de la ucm.Y queremos
-                agradeceros a todos por haber jugado a nuestro juego.<br>
-                <strong>Autores:</strong><br>
-                ºJavier Cáceres<br>
-                ºTelmo Kissoca <br>
-                ºJose Narcisos<br>
-                ºDaniil Sosiedka <br>
-            </p>
-        <li id="Siguenos" class="clase">
-            <h3>
-                SIGUENOS
-            </h3>
-            <p>
-                Si quieres apoyarnos y seguir nuestro progreso siguenos en nuestra cuenta de instagram: guardian_enigma.
-                Aunque estate atento porque pronto tendremos twitter tambien.
-            </p>
-        </li>
-
-        </li>
-
-        </li>
-
-    </lu>
+<body>
+    <div class="container">
+        <div class="game-window" id="game-window">
+        </div>
+        <div class="instructions">
+            <h2>Cómo Jugar</h2>
+            <ul>
+                <li>Elige tu clase de personaje.</li>
+                <li>Explora el mapa y encuentra enemigos.</li>
+                <li>Usa tus habilidades y estrategias para vencer.</li>
+                <li>Recoge recompensas y mejora tu personaje.</li>
+                <li>Salva la línea temporal y derrota al jefe final.</li>
+            </ul>
+        </div>
+    </div>
+    <div class="info">
+        <h3>Sobre el Juego</h3>
+        <p>
+            Nuestro juego es un roguelike por turnos presentado en un futuro distópico en el que el jefe final ha
+            corrompido la línea temporal y es tu deber salvarla. Pelea con diferentes clases de monstruos, elige tu
+            propia estrategia, tus propias acciones y tu propio camino alternando entre el futuro y el pasado para
+            conseguir las recompensas que más te interesen.
+        </p>
+        <h3>Mecánicas</h3>
+        <p>
+            La mecánica principal del juego es la suerte que, inspirándonos en Dicey Dungeons y en el antiguo juego
+            Dungeons & Dragons, decidirá a través de dados si vuestros ataques y acciones aciertan o no, e incluso va
+            más allá creando en algunos casos efectos secundarios como daño crítico e incluso controlar las
+            emociones.
+        </p>
+        <h3>Autores y Créditos</h3>
+        <p>
+            Hola a todos, muchas gracias por jugar nuestro juego. Aunque la compañía se llame Guardian Enigma, nosotros
+            solo somos 4 alumnos de segundo del grado de desarrollo de videojuegos de la UCM. Queremos agradeceros a
+            todos por haber jugado a nuestro juego.
+            <br><strong>Autores:</strong><br>
+            º Javier Cáceres<br>
+            º Telmo Kissoca<br>
+            º José Narciso Robles<br>
+            º Daniil Sosiedka<br>
+        </p>
+        <h3>Síguenos</h3>
+        <p>
+            Si quieres apoyarnos y seguir nuestro progreso, síguenos en nuestra cuenta de Instagram: guardian_enigma.
+            Aunque estate atento porque pronto tendremos Twitter también.
+        </p>
+    </div>
     <footer class="container">
-        <hr class="footer-divider">
-        <p class="float-right"><a href="#">Back to top</a></p>
-        <p>Grado en Desarrollo de Videojuegos &middot; <a target="_blank" href="http://informatica.ucm.es">Facultad de
-                Informática</a> &middot; <a target="_blank" href="http://www.ucm.es">UCM</a></p>
+        <div class="footer-left">
+            <p class="float-right"><a href="#">Back to top</a></p>
+        </div>
+        <div class="footer-vline"></div>
+        <div class="footer-right">
+            <p>Grado en Desarrollo de Videojuegos &middot;
+                <a target="_blank" href="http://informatica.ucm.es">Facultad de Informática</a>
+                &middot;
+                <a target="_blank" href="http://www.ucm.es">UCM</a>
+            </p>
+        </div>
     </footer>
 </body>
+
+</html>
