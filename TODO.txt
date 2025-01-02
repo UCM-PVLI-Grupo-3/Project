@@ -10,10 +10,10 @@ HACK:
     Separate All File Levels and Classes    //
 
 Update for Accuracy:
-    GDD
+    GDD                     //
     Website                 //
-    MARKDOWN !Outdated
-    DEDUPLICATE Folders
+    MARKDOWN !Outdated      
+    DEDUPLICATE Folders     //
     SET NAMING-CONVENTION   //
 
 Update for Usability:

@@ -7,7 +7,6 @@ This game is a second year university project for  [Grado en Desarrollo de Video
 ## Social Media
 
 - [Instagram](https://www.instagram.com/guardian_enigma/)
-- Twitter (coming soon)
 
 ## About Game
 
