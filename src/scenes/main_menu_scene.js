@@ -57,7 +57,7 @@ class MainMenuScene extends Phaser.Scene {
                 .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OUT, (ptr, local_x, local_y) => {
                     this.play_game_button.setScale(1.0);
                 })
-            ).add(this.add.text(0, 0, "Play Game", {
+            ).add(this.add.text(0, 0, "Jugar", {
                 fontFamily: KEYS_FONT_FAMILIES.Bauhaus93,
                 fontSize: '30px',
             }).setOrigin(0.5, 0.5));
@@ -74,7 +74,7 @@ class MainMenuScene extends Phaser.Scene {
                 .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OUT, (ptr, local_x, local_y) => {
                     this.exit_game_button.setScale(1.0);
                 })
-            ).add(this.add.text(0, 0, "Exit Game", {
+            ).add(this.add.text(0, 0, "Salir", {
                 fontFamily: KEYS_FONT_FAMILIES.Bauhaus93,
                 fontSize: '30px',
             }).setOrigin(0.5, 0.5));

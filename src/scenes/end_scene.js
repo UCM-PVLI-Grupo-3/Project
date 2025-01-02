@@ -59,7 +59,7 @@ class EndScene extends Phaser.Scene {
         this.background = this.add.rectangle(0, 0, screen_width, screen_height, 0xAF6235).setOrigin(0, 0);
 
         this.game_end_text = this.add.text(screen_width / 2, screen_height * 0.35,
-            `Game Over!`, {
+            `Fin de la Partida!`, {
             fontFamily: KEYS_FONT_FAMILIES.Bauhaus93,
             fontSize: '60px',
             align: "center",
@@ -70,7 +70,7 @@ class EndScene extends Phaser.Scene {
         }).setOrigin(0.5, 0.5);
 
         this.waves_text = this.add.text(screen_width / 2, screen_height * 0.45,
-            `Waves Defeated: ${this.init_data.waves_defeated}`, {
+            `Oleadas Vencidas: ${this.init_data.waves_defeated}`, {
             fontFamily: KEYS_FONT_FAMILIES.Bauhaus93,
             fontSize: '30px',
             align: "center",
@@ -93,7 +93,7 @@ class EndScene extends Phaser.Scene {
                     this.play_game_button.setScale(1.0);
                 })
             )
-            .add(this.add.text(0, 0, "Play Again", {
+            .add(this.add.text(0, 0, "Jugar otra Vez", {
                 fontFamily: KEYS_FONT_FAMILIES.Bauhaus93,
                 fontSize: '30px',
             }).setOrigin(0.5, 0.5));
@@ -111,7 +111,7 @@ class EndScene extends Phaser.Scene {
                     this.exit_game_button.setScale(1.0);
                 })
             )
-            .add(this.add.text(0, 0, "Exit Game", {
+            .add(this.add.text(0, 0, "Salir", {
                 fontFamily: KEYS_FONT_FAMILIES.Bauhaus93,
                 fontSize: '30px',
             }).setOrigin(0.5, 0.5));
