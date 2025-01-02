@@ -3,14 +3,21 @@ import { Dice, DICE_DEFAULTS, DICE_TYPE } from "./dice.js";
 
 class SceneDice extends Phaser.GameObjects.Sprite {
     dice = new Dice(DICE_DEFAULTS.DICE_TYPE);
+    drag_over_last_scale = 1.0;
     constructor(scene, position_x, position_y, dice) {
         super(scene, position_x, position_y, DICE_TYPE.get_dice_type_image(dice.dice_type));
         this.dice = dice;
+        this.drag_over_last_scale = 1.0;
 
         this.setInteractive({
             draggable: true,
         }).on(Phaser.Input.Events.GAMEOBJECT_DRAG, (pointer, dragX, dragY) => {
             this.on_drag(pointer, dragX, dragY);
+        }).on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, (ptr, x, y) => {
+            this.drag_over_last_scale = this.scale;
+            this.setScale(this.drag_over_last_scale * 1.1);
+        }).on(Phaser.Input.Events.GAMEOBJECT_POINTER_OUT, (ptr) => {
+            this.setScale(this.drag_over_last_scale);
         });
     }
 
