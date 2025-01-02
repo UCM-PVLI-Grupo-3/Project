@@ -41,10 +41,11 @@ class SceneEnemyWave {
      * @type {Array<EnemyStatus>}
      */
     scene_enemies_status = [];
+    enemy_death = (wave, scene_enemy) => {};
     wave_defeated = (wave) => {};
     wave_set = (wave, scene_enemies) => {};
 
-    constructor(scene, x, y, width, height, wave, on_wave_defeated, on_wave_set) {
+    constructor(scene, x, y, width, height, wave, on_enemy_death, on_wave_defeated, on_wave_set) {
         this.scene = scene;
 
         this.rect = this.scene.add.zone(x, y, width, height);
@@ -53,6 +54,7 @@ class SceneEnemyWave {
         this.scene_enemies = [];
         this.scene_enemies_dirty = true;
         this.scene_enemies_status = [];
+        this.enemy_death = on_enemy_death;
         this.wave_defeated = on_wave_defeated;
         this.wave_set = on_wave_set;
 
@@ -117,19 +119,24 @@ class SceneEnemyWave {
             let positions = distribute_uniform(this.rect.width, this.rect.height, this.scene_enemies_status.filter(
                 (status) => status.alive
             ).length, 1);
+
+            let j = 0;
             for (let i = 0; i < this.scene_enemies.length; i++) {
-                if (this.scene_enemies_status[i].alive) {
-                    this.scene_enemies[i].setPosition(this.rect.x + positions[i].x, this.rect.y + positions[i].y);
+                if (this.scene_enemies_status[i].alive && j < positions.length) {
+                    this.scene_enemies[i].setPosition(this.rect.x + positions[j].x, this.rect.y + positions[j].y);
+                    j += 1;
                 }
             }
             this.scene_enemies_dirty = false;
         }
     }
 
-    on_enemy_death(scene_enemy, current_wave_index) {
+    on_enemy_death(scene_enemy, enemy_index) {
         this.current_wave_alive_count -= 1;
-        this.scene_enemies_status[current_wave_index].alive = false;
+        this.scene_enemies_status[enemy_index].alive = false;
         this.scene_enemies_dirty = true
+
+        this.enemy_death(this.current_wave, scene_enemy);
 
         if (this.current_wave_alive_count <= 0) {
             this.wave_defeated(this.current_wave);

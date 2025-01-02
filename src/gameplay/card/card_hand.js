@@ -102,7 +102,7 @@ class CardGroup {
 	}
 
 	remove_card(index) {
-		assert(index >= 0 && index < this.scene_cards.length, "error: index out of bounds");
+		console.assert(index >= 0 && index < this.scene_cards.length, "error: index out of bounds");
 		this.cards.splice(index, 1);
 		let removed = this.scene_cards.splice(index, 1).at(0);
 		removed.destroy();
@@ -203,14 +203,20 @@ class SceneCardHand extends Phaser.GameObjects.Container{
 		return this;
 	}
 
-	present_active_card_group() {
-		console.assert(this.any_card_group_active(), "error: no active card group");
+	present_card_group(group_index) {
+		console.assert(group_index >= 0 && group_index < this.card_groups.length, "error: group_index out of bounds");
 		
 		const padding = 60;
-		let group = this.card_groups[this.active_card_group_index];
-
-		group.position_in_rect(this.x, this.y, this.background.width + padding, this.background.height, 3, 2);
+		let group = this.card_groups[group_index];
+		if (group.scene_cards_dirty) {
+			group.position_in_rect(this.x, this.y, this.background.width + padding, this.background.height, 3, 2);
+		}
 		return group;
+	}
+
+	present_active_card_group() {
+		console.assert(this.any_card_group_active(), "error: no active card group");
+		return this.present_card_group(this.active_card_group_index);
 	}
 }
 

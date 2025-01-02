@@ -3,6 +3,7 @@ import { distribute_uniform } from "../common/layouts.js";
 import { exit } from "../common/utility.js";
 import { CARD_ACTION_TYPE, GAMEPLAY_CARDS } from "../gameplay/card/card.js";
 import { SceneCardHand } from "../gameplay/card/card_hand.js";
+import { SceneCard } from "../gameplay/card/scene_card.js";
 import { CardEffectContext } from "../gameplay/card_effects/card_effect.js";
 import { DICE_TYPE, GAMEPLAY_DICE } from "../gameplay/dice/dice.js";
 import { SceneDiceBox } from "../gameplay/dice/dice_box.js";
@@ -65,6 +66,12 @@ class BattleScene extends Phaser.Scene {
     dice_slots = null;
 
     /**
+     * @type {Array<Phaser.GameObjects.Text>}
+     */
+    dice_slots_roll_texts = [];
+    dice_slots_roll_texts_dirty = false;
+
+    /**
      * @type {SceneEmotionStack}
      */
     emotion_stack = null;
@@ -85,7 +92,7 @@ class BattleScene extends Phaser.Scene {
     active_enemy_wave = null;
 
     /**
-     * @type {Phaser.GameObjects.Sprite}
+     * @type {Phaser.GameObjects.Container}
      */
     turn_bell_button = null;
 
@@ -134,6 +141,23 @@ class BattleScene extends Phaser.Scene {
         const max_initial_slot_dice = 5;
         this.dice_slots = this.create_dice_slots(sw * 0.5, sh * 0.8 - 20, sw * 0.45, sh * 0.4, max_initial_slot_dice, min_initial_slot_dice);
         
+        this.dice_slots_roll_texts = this.dice_slots.dice_slots.map((dice_slot, index) => {
+            const bounds = this.dice_slots.scene_dice_slot_groups[index].getBounds();
+            return this.add.text(
+                bounds.x + bounds.width * 0.5,
+                bounds.y + bounds.height * 0.95,
+                `${dice_slot.get_max_roll_value()}`, {
+                    fontFamily: KEYS_FONT_FAMILIES.Bauhaus93,
+                    fontSize: "24px",
+                    color: "#000000",
+                    stroke: "#FFFFFF",
+                    strokeThickness: 4,
+                    align: "center",    
+                }
+            ).setOrigin(0.5, 0.5).setDepth(LAYER_UI);
+        });
+        this.dice_slots_roll_texts_dirty = true;
+
         const min_initial_box_dice = 0;
         const max_initial_box_dice = 2;
         this.dice_box = this.create_dice_box(150, sh - 150, max_initial_box_dice, min_initial_box_dice);
@@ -144,7 +168,7 @@ class BattleScene extends Phaser.Scene {
             .setScale(0.75);
 
         this.player_card_hand = this.create_player_card_hand(
-            sw * 0.5, sh * 0.5, sw * 0.45, sh * 0.2, 6, (group, index) => { this.on_card_selected(group, index); }
+            sw * 0.5, sh * 0.4, sw * 0.45, sh * 0.3, 6, (group, index) => { this.on_card_selected(group, index); }
         );
 
         const emotion_stack_y = sh * 0.6 + 100;
@@ -153,7 +177,7 @@ class BattleScene extends Phaser.Scene {
             new SceneEmotionStack(this, emotion_stack_x, emotion_stack_y, 75, 50 * 8, 8)
         );
 
-        let card_group_buttons = this.create_card_group_buttons_in_rect(sw * 0.5, sh * 0.3 + 20, sw * 0.45, sh * 0.1);
+        let card_group_buttons = this.create_card_group_buttons_in_rect(sw * 0.5, sh * 0.55 + 20, sw * 0.45, sh * 0.1);
         this.card_group_buttons = [];
         card_group_buttons.forEach((button) => {
             this.card_group_buttons.push(button);
@@ -166,6 +190,9 @@ class BattleScene extends Phaser.Scene {
         )));
         
         this.active_enemy_wave = new SceneEnemyWave(this, sw * 0.8, sh * 0.1, sw * 0.6, sh * 0.4, EnemyWave.next_wave(0),
+            (wave, scene_enemy) => {
+                this.on_enemy_death(wave, scene_enemy);
+            },
             (enemy_wave) => {
                 this.on_wave_defeated(enemy_wave);
             }, (wave, scene_enemies) => {
@@ -352,14 +379,28 @@ class BattleScene extends Phaser.Scene {
     }
 
     create_bell_button(x, y) {
-        return this.add.sprite(x, y, KEYS_ASSETS_SPRITES.TURN_EXECUTION_RING_BUTTON_RELEASE, 0)
+        let bell_selection = this.add.sprite(0, 0, KEYS_ASSETS_SPRITES.TURN_EXECUTION_RING_BUTTON_RELEASE, 0)
+            .setTintFill(0xCCA049)
+            .setScale(1.05)
+            .setVisible(false);
+        let bell_sprite = this.add.sprite(0, 0, KEYS_ASSETS_SPRITES.TURN_EXECUTION_RING_BUTTON_RELEASE, 0)
             .setInteractive()
-            .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, (ptr, local_x, local_y, event) => {
+            .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, (ptr, local_x, local_y, event) => {
+                bell_selection.setVisible(true);
+            }).on(Phaser.Input.Events.GAMEOBJECT_POINTER_OUT, (ptr, local_x, local_y, event) => {
+                bell_selection.setVisible(false);
+            }).on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, (ptr, local_x, local_y, event) => {
                 // TODO: play bell press anim
 
                 this.execute_turn();
             }
-        ).setTint(0xCCA049).setScale(0.75);
+        ).setTint(0xCCA049);
+
+        let bell_button = this.add.container(x, y)
+            .add(bell_selection)
+            .add(bell_sprite)
+            .setScale(0.75);
+        return bell_button;
     }
 
     store_game_dices() {
@@ -406,6 +447,32 @@ class BattleScene extends Phaser.Scene {
         this.get_card_group_button_selections().forEach((selection, selection_index) => {
             selection.setVisible(selection_index === group_index);
         });
+
+        /**
+         * @type {SceneCard}
+         */
+        let card = group.scene_cards[index];
+        this.player_card_hand.card_groups.forEach((group, index) => {
+            group.scene_cards_dirty = true;
+            this.player_card_hand.present_card_group(index);
+
+            group.scene_cards.forEach((other_card) => {
+                if (other_card !== card) {
+                    card.setAbove(other_card);
+                }
+            });
+        });
+        this.tweens.add({
+            targets: card,
+            scale: card.scale * 1.2,
+            y: this.cameras.main.height * 0.2,
+            x: this.cameras.main.width * 0.5,
+            duration: 500,
+            yoyo: false,
+            repeat: 0,
+            ease: "Sine.easeInOut",
+            destroy: true,
+        });
         
         this.current_player_turn_selected_card_group_index = group_index;
         this.current_player_turn_selected_card_index = index;
@@ -424,6 +491,12 @@ class BattleScene extends Phaser.Scene {
             this.get_card_group_button_selections().forEach((selection) => {
                 selection.setVisible(false);
             });
+
+            this.player_card_hand.card_groups.forEach((group, index) => {
+                group.scene_cards_dirty = true;
+                this.player_card_hand.present_card_group(index);
+            });
+
             this.current_player_turn_selected_card_group_index = -1;
             this.current_player_turn_selected_card_index = -1;
             break;
@@ -437,7 +510,8 @@ class BattleScene extends Phaser.Scene {
         }
         }
         this.get_dice_box_selection_outline().setVisible(true);
-        
+
+        this.dice_slots_roll_texts_dirty = true;
         this.current_player_turn_action_type = PLAYER_TURN_ACTION_TYPE.DICE_SWAP;
     }
 
@@ -449,6 +523,13 @@ class BattleScene extends Phaser.Scene {
         this.dice_box.position_dices();
         this.dice_slots.present_scene_dices();
         this.active_enemy_wave.present_scene_enemies();
+
+        if (this.dice_slots_roll_texts_dirty) {
+            this.dice_slots_roll_texts.forEach((roll_text, index) => {
+                roll_text.setText(`${this.dice_slots.dice_slots[index].get_max_roll_value()}`);
+            });
+            this.dice_slots_roll_texts_dirty = false;
+        }
     }
 
     on_player_health_set(health) {
@@ -464,6 +545,14 @@ class BattleScene extends Phaser.Scene {
         this.active_enemy_wave.scene_enemies.forEach((scene_enemy, i) => {
             scene_enemy.userdata.selection.setVisible(index === i);
         });
+    }
+    /**
+     * 
+     * @param {EnemyWave} wave 
+     * @param {SceneEnemy} scene_enemy 
+     */
+    on_enemy_death(wave, scene_enemy) {
+
     }
 
     /**
@@ -500,19 +589,74 @@ class BattleScene extends Phaser.Scene {
     }
 
     on_player_turn_action_none() {
-        // TODO anim and text
+        let choose_turn_action_text = this.add.text(
+            this.turn_bell_button.x,
+            this.turn_bell_button.y - this.turn_bell_button.getBounds().height * 0.5,
+            "Choose an Action\n before Committing the Turn", {
+                fontFamily: KEYS_FONT_FAMILIES.Bauhaus93,
+                fontSize: "28px",
+                color: "#CCA049",
+                backgroundColor: "#FFFFFF",
+                align: "right",
+            }
+        ).setOrigin(0.5, 0.5).setDepth(LAYER_FRONT_UI);
+        this.tweens.add({
+            targets: choose_turn_action_text,
+            y: choose_turn_action_text.y - 50,
+            alpha: 0,
+            duration: 2000,
+            yoyo: false,
+            repeat: 0,
+            ease: "Sine.easeInOut",
+            onComplete: () => {
+                choose_turn_action_text.destroy();
+            }
+        });
+
+        this.tweens.add({
+            targets: this.turn_bell_button,
+            x: this.turn_bell_button.x + 10,
+            duration: 100,
+            yoyo: true,
+            repeat: 5,
+            ease: "Sine.easeInOut",
+        });
+
         return false;
-    }
+}
 
     on_player_turn_action_card() {
         if (this.current_player_turn_enemy_selection_index === -1) {
-            // TODO select enemy anim
+            this.cameras.main.shake(100, 0.01);
+            let select_enemy_text = this.add.text(
+                this.active_enemy_wave.rect.x,
+                this.active_enemy_wave.rect.y + this.active_enemy_wave.rect.height * 0.5,
+                "Must Select Enemy\n for Card Action", {
+                    fontFamily: KEYS_FONT_FAMILIES.Bauhaus93,
+                    fontSize: "28px",
+                    color: "#FF2020",
+                    backgroundColor: "#FFFFFF",
+                    align: "right",
+                }
+            ).setOrigin(0.5, 0.5).setDepth(LAYER_FRONT_UI);
+            this.tweens.add({
+                targets: select_enemy_text,
+                y: select_enemy_text.y + 50,
+                alpha: 0,
+                duration: 2000,
+                yoyo: false,
+                repeat: 0,
+                ease: "Sine.easeInOut",
+                onComplete: () => {
+                    select_enemy_text.destroy();
+                }
+            });
             return false;
         }
         if (this.current_player_turn_selected_card_group_index === -1
             || this.current_player_turn_selected_card_index === -1
         ) {
-            // TODO select card anim
+            console.assert(false, "fatal error: card not selected");
             return false;
         }
 
@@ -527,6 +671,7 @@ class BattleScene extends Phaser.Scene {
         if (roll >= card.value) {
             let source = null;
             let target = null;
+            let scene_target = null;
             const context = new CardEffectContext(
                 roll, max_roll, this, this.emotion_stack
             );
@@ -535,16 +680,19 @@ class BattleScene extends Phaser.Scene {
             case CARD_ACTION_TYPE.ATTACK: {
                 source = this.player.player;
                 target = enemy.enemy;
+                scene_target = enemy;
                 break;
             }
             case CARD_ACTION_TYPE.DEFENCE: {
                 source = this.player.player;
                 target = this.player.player;
+                scene_target = this.player;
                 break;
             }
             case CARD_ACTION_TYPE.HEAL: {
                 source = this.player.player;
                 target = this.player.player;
+                scene_target = this.player;
                 break;
             }
             default: {
@@ -552,19 +700,126 @@ class BattleScene extends Phaser.Scene {
                 exit("EXIT_FAILURE");
             }
             }
-            card.card_effects.forEach((effect) => {
-                effect.apply_effect(target, source, context);
+
+            let scene_card = this.player_card_hand.card_groups[this.current_player_turn_selected_card_group_index]
+                .scene_cards[this.current_player_turn_selected_card_index];
+
+            const group_index = this.current_player_turn_selected_card_group_index;
+            const card_index = this.current_player_turn_selected_card_index;
+            
+            const mat = scene_card.card_value_text.getWorldTransformMatrix();
+            const position = mat.transformPoint(0, 0);
+            let successfull_roll_text = this.add.text(
+                position.x, position.y,
+                `${roll} WINS ${scene_card.card.value}`, {
+                    fontFamily: KEYS_FONT_FAMILIES.Bauhaus93,
+                    fontSize: "34px",
+                    color: "#49CCA0",
+                    align: "center",
+                    stroke: "#000000",
+                    strokeThickness: 4,
+                }
+            ).setOrigin(0.5, 0.5).setDepth(LAYER_FRONT_UI);
+            this.tweens.add({
+                targets: successfull_roll_text,
+                y: successfull_roll_text.y - 50,
+                alpha: 0,
+                duration: 2000,
+                yoyo: false,
+                repeat: 0,
+                ease: "Sine.easeInOut",
+                onComplete: () => {
+                    successfull_roll_text.destroy();
+                }
+            });
+
+            this.tweens.add({
+                targets: scene_card,
+                x: scene_target.x,
+                y: scene_target.y,
+                rotation: Math.PI,
+                duration: 500,
+                yoyo: false,
+                repeat: 0,
+                // anticipation and precise and quick
+                ease: (t) => {
+                    const c1 = 1.70158;
+                    const c3 = c1 + 1;
+                    
+                    return c3 * t * t * t - c1 * t * t;
+                },
+                onComplete: () => {
+                    card.card_effects.forEach((effect) => {
+                        effect.apply_effect(target, source, context);
+                    });
+        
+                    this.player_card_hand.remove_card(
+                        group_index, card_index
+                    );
+                }
             });
 
         } else {
-            // TODO failure anim
+            const scene_card = this.player_card_hand.card_groups[this.current_player_turn_selected_card_group_index]
+            .scene_cards[this.current_player_turn_selected_card_index];
+            
+            const mat = scene_card.card_value_text.getWorldTransformMatrix();
+            const position = mat.transformPoint(0, 0);
+            let failure_rool_text = this.add.text(
+                position.x, position.y,
+                `${roll} LOSES ${scene_card.card.value}`, {
+                    fontFamily: KEYS_FONT_FAMILIES.Bauhaus93,
+                    fontSize: "34px",
+                    color: "#CC49A0",
+                    align: "center",
+                    stroke: "#000000",
+                    strokeThickness: 4,
+                }
+            ).setOrigin(0.5, 0.5).setDepth(LAYER_FRONT_UI);
+            this.tweens.add({
+                targets: failure_rool_text,
+                y: failure_rool_text.y + 50,
+                alpha: 0,
+                duration: 2000,
+                yoyo: false,
+                repeat: 0,
+                ease: "Sine.easeInOut",
+                onComplete: () => {
+                    failure_rool_text.destroy();
+                }
+            });
+
+            this.player_card_hand.card_groups.forEach((group, index) => {
+                group.scene_cards_dirty = true;
+                this.player_card_hand.present_card_group(index);
+            });
         }
 
         return true;
     }
 
     on_player_turn_action_dice_swap() {
-        // TODO anim and text
+        this.tweens.add({
+            targets: this.dice_box_selection,
+            x: this.dice_box_selection.x + 10,
+            duration: 100,
+            yoyo: true,
+            repeat: 5,
+            ease: "Sine.easeInOut",
+        });
+
+        // do a slam with the dices
+        this.dice_slots.game_dices.forEach((game_dice) => {
+            this.tweens.add({
+                targets: game_dice.scene_dice,
+                scale: game_dice.scene_dice.scale * 1.2,
+                duration: 250,
+                yoyo: true,
+                repeat: 0,
+                ease: "Sine.easeInOut",
+            });
+                
+        });
         return true;
     }
 
@@ -593,7 +848,7 @@ class BattleScene extends Phaser.Scene {
             this.active_enemy_wave.execute_turn(this.player.player)
     
             this.get_dice_box_selection_outline().setVisible(false);
-            this.player_card_hand.card_groups.forEach((group) => {
+            this.player_card_hand.card_groups.forEach((group, index) => {
                 group.unselect_card();
             });
             this.get_card_group_button_selections().forEach((selection) => {
