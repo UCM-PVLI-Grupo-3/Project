@@ -1,4 +1,5 @@
 import { KEYS_FONT_FAMILIES, KEYS_SCENES, KEYS_SHADER_PIPELINES } from "../common/constants.js";
+import { EndSceneInitData } from "./end_scene.js";
 
 class MainMenuScene extends Phaser.Scene {
     /**
@@ -50,8 +51,13 @@ class MainMenuScene extends Phaser.Scene {
                 .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, (ptr, local_x, local_y) => {
                     this.on_play_game_button_ptr_down(ptr, local_x, local_y);
                 })
-            )
-            .add(this.add.text(0, 0, "Play Game", {
+                .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, (ptr, local_x, local_y) => {
+                    this.play_game_button.setScale(1.1);
+                })
+                .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OUT, (ptr, local_x, local_y) => {
+                    this.play_game_button.setScale(1.0);
+                })
+            ).add(this.add.text(0, 0, "Play Game", {
                 fontFamily: KEYS_FONT_FAMILIES.Bauhaus93,
                 fontSize: '30px',
             }).setOrigin(0.5, 0.5));
@@ -62,8 +68,13 @@ class MainMenuScene extends Phaser.Scene {
                 .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, (ptr, local_x, local_y) => {
                     this.on_exit_game_button_ptr_down(ptr, local_x, local_y);
                 })
-            )
-            .add(this.add.text(0, 0, "Exit Game", {
+                .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, (ptr, local_x, local_y) => {
+                    this.exit_game_button.setScale(1.1);
+                })
+                .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OUT, (ptr, local_x, local_y) => {
+                    this.exit_game_button.setScale(1.0);
+                })
+            ).add(this.add.text(0, 0, "Exit Game", {
                 fontFamily: KEYS_FONT_FAMILIES.Bauhaus93,
                 fontSize: '30px',
             }).setOrigin(0.5, 0.5));
@@ -106,6 +117,7 @@ class MainMenuScene extends Phaser.Scene {
             allowInput: false,
             moveAbove: true,
             //moveBelow: true,
+            data: new EndSceneInitData(5),
         });
     }
 

@@ -1,5 +1,13 @@
 import { KEYS_FONT_FAMILIES, KEYS_SCENES, KEYS_SHADER_PIPELINES } from "../common/constants.js";
 
+class EndSceneInitData {
+    waves_defeated = -1;
+
+    constructor(waves_defeated) {
+        this.waves_defeated = waves_defeated;
+    }
+}
+
 class EndScene extends Phaser.Scene {
     /**
      * @type {Phaser.GameObjects.Rectangle}
@@ -19,14 +27,25 @@ class EndScene extends Phaser.Scene {
     /**
      * @type {Phaser.GameObjects.Text}
      */
-    game_title;
+    game_end_text;
+
+    /**
+     * @type {Phaser.GameObjects.Text}
+     */
+    waves_text;
+
+    /**
+     * @type {EndSceneInitData}
+     */
+    init_data;
 
     constructor() {
         super({ key: KEYS_SCENES.END });
     }
 
     init(data) {
-
+        console.assert(data instanceof EndSceneInitData, "fatal error: data must be an instance of EndSceneInitData");
+        this.init_data = data;
     }
 
     preload() {
@@ -39,9 +58,26 @@ class EndScene extends Phaser.Scene {
 
         this.background = this.add.rectangle(0, 0, screen_width, screen_height, 0xAF6235).setOrigin(0, 0);
 
-        this.game_title = this.add.text(screen_width / 2, screen_height * 0.35, "The End !!DEBUG", {
+        this.game_end_text = this.add.text(screen_width / 2, screen_height * 0.35,
+            `Game Over!`, {
             fontFamily: KEYS_FONT_FAMILIES.Bauhaus93,
             fontSize: '60px',
+            align: "center",
+            // purplish
+            color: "#F010A2",
+            stroke: "#000000",
+            strokeThickness: 4,
+        }).setOrigin(0.5, 0.5);
+
+        this.waves_text = this.add.text(screen_width / 2, screen_height * 0.45,
+            `Waves Defeated: ${this.init_data.waves_defeated}`, {
+            fontFamily: KEYS_FONT_FAMILIES.Bauhaus93,
+            fontSize: '30px',
+            align: "center",
+            // purplish
+            color: "#FFFFFF",
+            stroke: "#000000",
+            strokeThickness: 4,
         }).setOrigin(0.5, 0.5);
 
         this.play_game_button = this.add.container(screen_width / 2, screen_height * 0.60)
@@ -50,8 +86,14 @@ class EndScene extends Phaser.Scene {
                 .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, (ptr, local_x, local_y) => {
                     this.on_play_game_button_ptr_down(ptr, local_x, local_y);
                 })
+                .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, (ptr, local_x, local_y) => {
+                    this.play_game_button.setScale(1.1);
+                })
+                .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OUT, (ptr, local_x, local_y) => {
+                    this.play_game_button.setScale(1.0);
+                })
             )
-            .add(this.add.text(0, 0, "Play Game !!DEBUG", {
+            .add(this.add.text(0, 0, "Play Again", {
                 fontFamily: KEYS_FONT_FAMILIES.Bauhaus93,
                 fontSize: '30px',
             }).setOrigin(0.5, 0.5));
@@ -62,8 +104,14 @@ class EndScene extends Phaser.Scene {
                 .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, (ptr, local_x, local_y) => {
                     this.on_exit_game_button_ptr_down(ptr, local_x, local_y);
                 })
+                .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, (ptr, local_x, local_y) => {
+                    this.exit_game_button.setScale(1.1);
+                })
+                .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OUT, (ptr, local_x, local_y) => {
+                    this.exit_game_button.setScale(1.0);
+                })
             )
-            .add(this.add.text(0, 0, "Exit Game !!DEBUG", {
+            .add(this.add.text(0, 0, "Exit Game", {
                 fontFamily: KEYS_FONT_FAMILIES.Bauhaus93,
                 fontSize: '30px',
             }).setOrigin(0.5, 0.5));
@@ -111,4 +159,4 @@ class EndScene extends Phaser.Scene {
 
 }
 
-export { EndScene };
+export { EndScene, EndSceneInitData };

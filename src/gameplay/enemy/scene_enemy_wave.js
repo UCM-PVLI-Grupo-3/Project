@@ -70,7 +70,7 @@ class SceneEnemyWave {
     }
 
     wave_level() {
-        return this.current_wave.wave;
+        return this.current_wave.wave_level;
     }
 
     set_wave(wave) {

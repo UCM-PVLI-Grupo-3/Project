@@ -16,6 +16,7 @@ import { SceneEnemyWave } from "../gameplay/enemy/scene_enemy_wave.js";
 import { Block, Health } from "../gameplay/health/health.js";
 import { Player } from "../gameplay/player/player.js";
 import { ScenePlayer } from "../gameplay/player/scene_player.js";
+import { EndSceneInitData } from "./end_scene.js";
 
 const ATTACK_CARD_GROUP_INDEX = 0;
 const DEFENCE_CARD_GROUP_INDEX = 1;
@@ -682,31 +683,14 @@ class BattleScene extends Phaser.Scene {
             targets: this.player,
             x: this.cameras.main.width * 0.5,
             y: this.cameras.main.height * 0.5,
+            scale: 0.0,
             duration: 2000,
             yoyo: false,
             repeat: 0,
             ease: "Sine.easeInOut",
             onComplete: () => {
-                this.scene.start(KEYS_SCENES.END);
+                this.scene.start(KEYS_SCENES.END, new EndSceneInitData(this.active_enemy_wave.wave_level()));
             }
-        });
-        // shake and explode 
-        this.tweens.add({
-            targets: this.player,
-            scale: 0,
-            duration: 2000,
-            yoyo: false,
-            repeat: 0,
-            ease: "Sine.easeInOut",
-        });
-
-        this.tweens.add({
-            targets: this.player.health_bar,
-            scale: 0,
-            duration: 2000,
-            yoyo: false,
-            repeat: 0,
-            ease: "Sine.easeInOut",
         });
     }
 
