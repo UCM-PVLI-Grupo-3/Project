@@ -57,14 +57,14 @@ h2 {
     text-align: center;
 }
 
-.instructions ul {
+.instructions ol {
     list-style-type: disc;
     padding-left: 20px;
 }
 
 .instructions li {
     font-size: 18px;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }
 
 .info {

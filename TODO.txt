@@ -1,28 +1,28 @@
 TODO:
-    Player Die
-    Player Win
-    Player Sustain
-    TUTORIAL
-    COMMENTS
+    Player Die      //
+    Player Win      //
+    Player Sustain  //
+    TUTORIAL        //
+    COMMENTS        //
 
 HACK:
-    Better Hand Repr
-    Separate All File Levels and Classes
+    Better Hand Repr                        //
+    Separate All File Levels and Classes    //
 
 Update for Accuracy:
     GDD
-    Website
+    Website                 //
     MARKDOWN !Outdated
     DEDUPLICATE Folders
-    SET NAMING-CONVENTION
+    SET NAMING-CONVENTION   //
 
 Update for Usability:
-    Website
-    TUTORIAL
-    Card Use/Turn Actions
+    Website                 //
+    TUTORIAL                //
+    Card Use/Turn Actions   //
     
 Fix:
-    Web Mispellings
-    Leveling/Scoring
-    Draw Order
+    Web Mispellings     //
+    Leveling/Scoring    //
+    Draw Order          //
 
