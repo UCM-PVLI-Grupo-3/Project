@@ -1,7 +1,7 @@
 import { KEYS_ASSETS_SPRITES, KEYS_EVENTS, KEYS_SCENES, KEYS_FONT_FAMILIES, KEYS_SHADER_PIPELINES } from "../common/constants.js";
 import { distribute_uniform } from "../common/layouts.js";
 import { exit } from "../common/utility.js";
-import { CARD_ACTION_TYPE, GAMEPLAY_CARDS } from "../gameplay/card/card.js";
+import { Card, CARD_ACTION_TYPE, GAMEPLAY_CARDS, TIMELINE_TYPE } from "../gameplay/card/card.js";
 import { SceneCardHand } from "../gameplay/card/card_hand.js";
 import { SceneCard } from "../gameplay/card/scene_card.js";
 import { CardEffectContext } from "../gameplay/card_effects/card_effect.js";
@@ -186,9 +186,17 @@ class BattleScene extends Phaser.Scene {
 
         this.player = this.add.existing(new ScenePlayer(this, sw * 0.2, sh * 0.1, new Player(
             this.player_card_hand,
-            new Health(26, 0, 26, (health) => { this.on_player_health_set(health); }),
-            new Block(0, 0, 14, (block) => { this.on_player_block_set(block); })
+            new Health(100, 0, 100, (health) => { this.on_player_health_set(health); }),
+            new Block(0, 0, 50, (block) => { this.on_player_block_set(block); })
         )));
+        if (this.player.health_bar.userdata === undefined) {
+            this.player.health_bar.userdata = {};
+        }
+        if (this.player.block_bar.userdata === undefined) {
+            this.player.block_bar.userdata = {};
+        }
+        this.player.health_bar.userdata.previous_health = this.player.health_bar.health.get_health();
+        this.player.block_bar.userdata.previous_block = this.player.block_bar.health.get_health();
         
         this.active_enemy_wave = new SceneEnemyWave(this, sw * 0.8, sh * 0.1, sw * 0.6, sh * 0.4, EnemyWave.next_wave(0),
             (wave, scene_enemy) => {
@@ -344,7 +352,16 @@ class BattleScene extends Phaser.Scene {
         let button = new Phaser.GameObjects.Container(this, x, y)
             .add(button_selection)
             .add(button_sprite)
-            .setScale(button_scale);
+            .setScale(button_scale)
+        
+        button_sprite
+            .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, (ptr, local_x, local_y, event) => {
+                button.setScale(button_scale * 1.2);
+            }).on(Phaser.Input.Events.GAMEOBJECT_POINTER_OUT, (ptr, local_x, local_y, event) => {
+                button.setScale(button_scale);
+            }
+        );
+
         if (button.userdata === undefined) {
             button.userdata = {};
         }
@@ -386,19 +403,23 @@ class BattleScene extends Phaser.Scene {
             .setVisible(false);
         let bell_sprite = this.add.sprite(0, 0, KEYS_ASSETS_SPRITES.TURN_EXECUTION_RING_BUTTON_RELEASE, 0)
             .setInteractive()
-            .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, (ptr, local_x, local_y, event) => {
-                bell_selection.setVisible(true);
-            }).on(Phaser.Input.Events.GAMEOBJECT_POINTER_OUT, (ptr, local_x, local_y, event) => {
-                bell_selection.setVisible(false);
-            }).on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, (ptr, local_x, local_y, event) => {
+            .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, (ptr, local_x, local_y, event) => {
                 this.execute_turn();
             }
         ).setTint(0xCCA049);
 
+        const bell_button_scale = 0.75;
         let bell_button = this.add.container(x, y)
             .add(bell_selection)
             .add(bell_sprite)
-            .setScale(0.75);
+            .setScale(bell_button_scale);
+
+        bell_sprite
+            .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, (ptr, local_x, local_y, event) => {
+                bell_button.setScale(bell_button_scale * 1.2);
+            }).on(Phaser.Input.Events.GAMEOBJECT_POINTER_OUT, (ptr, local_x, local_y, event) => {
+                bell_button.setVisible(bell_button_scale);
+            })
         return bell_button;
     }
 
@@ -418,6 +439,62 @@ class BattleScene extends Phaser.Scene {
         });
         box_dices.forEach((game_dice) => {
             this.dice_box.add_dice(game_dice.dice);
+        });
+    }
+
+    /**
+     * 
+     * @param {Card} card 
+     * @param {number} start_x 
+     * @param {number} start_y 
+     */
+    give_player_card(card, start_x, start_y) {
+        let group;
+        switch (card.action_type) {
+        case CARD_ACTION_TYPE.ATTACK:
+            group = ATTACK_CARD_GROUP_INDEX;
+            break;
+        case CARD_ACTION_TYPE.DEFENCE:
+            group = DEFENCE_CARD_GROUP_INDEX;
+            break;
+        case CARD_ACTION_TYPE.HEAL:
+            group = HEAL_CARD_GROUP_INDEX;
+            break;
+        default: {
+            console.assert(false, "unreachable: invalid card action type");
+            exit("EXIT_FAILURE");
+        }
+        }
+        
+        const end_target = this.card_group_buttons[group];
+        let scene_card = this.add.existing(new SceneCard(this, start_x, start_y, card)).setScale(0.5);
+        this.tweens.add({
+            targets: scene_card,
+            x: end_target.x,
+            y: end_target.y,
+            scale: scene_card.scale * 0.25,
+
+            duration: 1000,
+            yoyo: false,
+            repeat: 0,
+            ease: (t) => {
+                const c1 = 1.70158;
+                const c2 = c1 * 1.525;
+                
+                return t < 0.5
+                    ? (Math.pow(2 * t, 2) * ((c2 + 1) * 2 * t - c2)) / 2
+                    : (Math.pow(2 * t - 2, 2) * ((c2 + 1) * (t * 2 - 2) + c2) + 2) / 2;
+            },
+            onComplete: () => {
+                this.player_card_hand.add_card(card, group);
+
+                if (this.player_card_hand.active_group_equals(group)) {
+                    this.player_card_hand.present_active_card_group();
+                } else {
+                    this.player_card_hand.card_groups[group].set_group_active(false);
+                }
+                scene_card.destroy();
+            }
         });
     }
 
@@ -534,11 +611,109 @@ class BattleScene extends Phaser.Scene {
     }
 
     on_player_health_set(health) {
-        this.events.emit(KEYS_EVENTS.PLAYER_HEALTH_SET, health);
+        if (health.userdata === undefined) {
+            health.userdata = {};
+        } else {
+            const health_variation = health.get_health() - health.userdata.previous_health;
+
+            let health_text;
+            const x = this.player.x + this.player.health_bar.x;
+            const y = this.player.y + this.player.health_bar.y;
+            if (health_variation < 0) {
+                health_text = this.add.text(
+                    x, y,
+                    `${health_variation}`, {
+                        fontFamily: KEYS_FONT_FAMILIES.Bauhaus93,
+                        fontSize: "36px",
+                        color: "#2020FF",
+                        stroke: "#FFFFFF",
+                        strokeThickness: 4,
+                        align: "center",
+                    }
+                ).setOrigin(0.5, 0.5).setDepth(LAYER_FRONT_UI);
+            } else if (health_variation > 0) {
+                health_text = this.add.text(
+                    x, y,
+                    `+${health_variation}`, {
+                        fontFamily: KEYS_FONT_FAMILIES.Bauhaus93,
+                        fontSize: "36px",
+                        color: "#FF2020",
+                        stroke: "#FFFFFF",
+                        strokeThickness: 4,
+                        align: "center",
+                    }
+                ).setOrigin(0.5, 0.5).setDepth(LAYER_FRONT_UI);
+            } else {
+                return;
+            }
+
+            this.tweens.add({
+                targets: health_text,
+                y: health_text.y - 50,
+                alpha: 0,
+                duration: 2000,
+                yoyo: false,
+                repeat: 0,
+                ease: "Sine.easeInOut",
+                onComplete: () => {
+                    health_text.destroy();
+                }
+            });
+        }
+        health.userdata.previous_health = health.get_health();
     }
 
     on_player_block_set(block) {
-        this.events.emit(KEYS_EVENTS.PLAYER_BLOCK_SET, block);
+        if (block.userdata === undefined) {
+            block.userdata = {};
+        } else {
+            const block_variation = block.get_health() - block.userdata.previous_block;
+
+            let block_text;
+            const x = this.player.x + this.player.block_bar.x;
+            const y = this.player.y + this.player.block_bar.y;
+            if (block_variation < 0) {
+                block_text = this.add.text(
+                    x, y,
+                    `${block_variation}`, {
+                        fontFamily: KEYS_FONT_FAMILIES.Bauhaus93,
+                        fontSize: "36px",
+                        color: "#F020FA",
+                        stroke: "#FFFFFF",
+                        strokeThickness: 4,
+                        align: "center",
+                    }
+                ).setOrigin(0.5, 0.5).setDepth(LAYER_FRONT_UI);
+            } else if (block_variation > 0) {
+                block_text = this.add.text(
+                    x, y,
+                    `+${block_variation}`, {
+                        fontFamily: KEYS_FONT_FAMILIES.Bauhaus93,
+                        fontSize: "36px",
+                        color: "#1020FF",
+                        stroke: "#FFFFFF",
+                        strokeThickness: 4,
+                        align: "center",
+                    }
+                ).setOrigin(0.5, 0.5).setDepth(LAYER_FRONT_UI);
+            } else {
+                return;
+            }
+
+            this.tweens.add({
+                targets: block_text,
+                y: block_text.y - 50,
+                alpha: 0,
+                duration: 2000,
+                yoyo: false,
+                repeat: 0,
+                ease: "Sine.easeInOut",
+                onComplete: () => {
+                    block_text.destroy();
+                }
+            });
+        }
+        block.userdata.previous_block = block.get_health();
     }
 
     on_enemy_selected(enemy, index) {
@@ -553,7 +728,36 @@ class BattleScene extends Phaser.Scene {
      * @param {SceneEnemy} scene_enemy 
      */
     on_enemy_death(wave, scene_enemy) {
-        scene_enemy.enemy.tim
+        const max_target_attack_cards = 6;
+        const available_attack_space =
+            max_target_attack_cards - this.player_card_hand.card_groups[ATTACK_CARD_GROUP_INDEX].cards.length;
+        console.assert(available_attack_space >= 0, "error: available_attack_space must be non-negative");
+
+        const min_gifted_cards = Math.min(available_attack_space, 2);
+        const max_gifted_cards = Math.min(available_attack_space, 6);
+        const gifted_cards_count = Math.floor(Math.random() * (max_gifted_cards - min_gifted_cards + 1)) + min_gifted_cards;
+        
+        let gifted_cards;
+        const cards = [...GAMEPLAY_CARDS].sort(() => 0.5 - Math.random());
+        switch (scene_enemy.enemy.timeline) {
+        case TIMELINE_TYPE.PAST: {
+            gifted_cards = cards.filter((card) => card.timeline_type === TIMELINE_TYPE.PAST).slice(0, gifted_cards_count);
+            break;
+        }
+        case TIMELINE_TYPE.FUTURE: {
+            gifted_cards = cards.filter((card) => card.timeline_type === TIMELINE_TYPE.FUTURE).slice(0, gifted_cards_count);
+            break;
+        }
+        default: {
+            console.assert(false, "unreachable: invalid timeline type");
+            exit("EXIT_FAILURE");
+        }
+        }
+        gifted_cards.forEach((card) => {
+            let offset_x = (Math.random() - 0.5) * 2.0 * 15.0;
+            let offset_y = (Math.random() - 0.5) * 2.0 * 15.0;
+            this.give_player_card(card, scene_enemy.x + offset_x, scene_enemy.y + offset_y);
+        });
     }
 
     /**
@@ -561,7 +765,11 @@ class BattleScene extends Phaser.Scene {
      * @param {EnemyWave} enemy_wave 
      */
     on_wave_defeated(enemy_wave) {
-        // TODO
+        const wave_percentage_heal = 0.25;
+        this.player.player.heal(Math.floor(
+            enemy_wave.wave_enemies.reduce((acc, enemy) => acc + enemy.health.get_max_health(), 0)
+            * wave_percentage_heal
+        ));
     }
 
     /**

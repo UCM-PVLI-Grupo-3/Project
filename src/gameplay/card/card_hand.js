@@ -50,8 +50,15 @@ class CardGroup {
 
 	position_in_rect(x, y, width, height, horizontal_count = 0xFFFF_FFFF, vertical_count = 1) {
 		if (this.scene_cards.length > 0) {
-			let h_count = Math.min(this.scene_cards.length, horizontal_count);
-			let v_count = vertical_count;
+			let h_count = 0;
+			let v_count = 0;
+			if (this.scene_cards.length <= horizontal_count) {
+				h_count = this.scene_cards.length;
+				v_count = vertical_count;
+			} else {
+				h_count = horizontal_count;
+				v_count = Math.ceil(this.scene_cards.length / h_count);
+			}
 
 			let positions = distribute_uniform(width, height, h_count, v_count);
 			for (let i = 0; i < this.scene_cards.length; i++) {
@@ -105,7 +112,12 @@ class CardGroup {
 		console.assert(index >= 0 && index < this.scene_cards.length, "error: index out of bounds");
 		this.cards.splice(index, 1);
 		let removed = this.scene_cards.splice(index, 1).at(0);
-		removed.destroy();
+
+		if (removed !== undefined) {
+			removed.destroy();
+		} else {
+			console.warn("fatal warning: card not found");
+		}
 		this.scene_cards_dirty = true;
 	}
 }

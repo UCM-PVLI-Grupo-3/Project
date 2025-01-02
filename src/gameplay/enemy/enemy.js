@@ -11,13 +11,16 @@ class Enemy {
     health = null;
     attack_damage = NaN;
 
-    health_set = (health_object) => { };
-    death = (health_object) => { };
+    health_set = (self, health_object) => { };
+    death = (self, health_object) => { };
 
-    constructor(timeline, health, attack_damage) {
+    constructor(timeline, health, attack_damage, on_health_set = (enemy, health_object) => {}, on_death = (enemy, health_object) => { }) {
         this.timeline = timeline;
         this.health = health;
         this.attack_damage = attack_damage;
+
+        this.death = on_death;
+        this.health_set = on_health_set;
 
         let health_set = this.health.health_set;
         this.health.health_set = (health_object) => { 
@@ -27,9 +30,9 @@ class Enemy {
     }
 
     on_health_set(health_object) {
-        this.health_set(health_object);
+        this.health_set(this, health_object);
         if (health_object.get_health() <= health_object.get_min_health()) {
-            this.death(health_object);
+            this.death(this, health_object);
         }
     }
 

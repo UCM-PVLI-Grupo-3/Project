@@ -100,9 +100,7 @@ class SceneEnemyWave {
                 emotion_key, 0,
                 enemies[i]
             ));
-            let death = scene_enemy.enemy.death;
-            scene_enemy.enemy.death = (health_object) => {
-                death(health_object);
+            scene_enemy.death = (scene_enemy, health_object) => {
                 this.on_enemy_death(scene_enemy, i);
             };
 

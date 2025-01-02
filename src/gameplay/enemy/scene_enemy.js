@@ -7,6 +7,7 @@ class SceneEnemy extends Phaser.GameObjects.Container {
      * @type {Enemy}
      */
     enemy = null;
+    death = (self, health_object) => { };
     
     /**
      * @type {Phaser.GameObjects.Sprite}
@@ -19,7 +20,7 @@ class SceneEnemy extends Phaser.GameObjects.Container {
     health_bar = null;
 
 
-    constructor(scene, x, y, texture, frame, enemy) {
+    constructor(scene, x, y, texture, frame, enemy, on_death = (scene_enemy, health_object) => { }) {
         console.assert(scene instanceof Phaser.Scene, "error: parameter scene must be an instance of Phaser.Scene");
         super(scene, x, y);
 
@@ -39,9 +40,9 @@ class SceneEnemy extends Phaser.GameObjects.Container {
             health_set(health_object);
             this.on_health_set(health_object);
         };
-        let death = this.enemy.death;
+
+        this.death = on_death;
         this.enemy.death = (health_object) => {
-            death(health_object);
             this.on_death(health_object);
         };
     }
@@ -50,7 +51,23 @@ class SceneEnemy extends Phaser.GameObjects.Container {
     }
 
     on_death(health_object) {
-        this.setVisible(false);
+        this.scene.tweens.add({
+            targets: this,
+            alpha: 0,
+            scale: 0,
+            duration: 600,
+            repeat: 0,
+            ease: (t) => {
+                const c1 = 1.70158;
+                const c3 = c1 + 1;
+                
+                return c3 * t * t * t - c1 * t * t;
+            },
+            onComplete: () => {
+                this.setVisible(false);
+                this.death(this, health_object);
+            }
+        });
     }
 }
 
