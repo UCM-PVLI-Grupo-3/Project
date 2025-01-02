@@ -9,6 +9,7 @@ import { DICE_TYPE, GAMEPLAY_DICE } from "../gameplay/dice/dice.js";
 import { SceneDiceBox } from "../gameplay/dice/dice_box.js";
 import { GAME_DICE_STATUS, GameDice, SceneDiceSlots } from "../gameplay/dice/scene_dice_slots.js";
 import { SceneEmotionStack } from "../gameplay/emotion/emotion_stack.js";
+import { OPTIONAL_EMOTION_TYPE } from "../gameplay/emotion/emotions.js";
 import { EnemyWave } from "../gameplay/enemy/enemy_wave.js";
 import { SceneEnemy } from "../gameplay/enemy/scene_enemy.js";
 import { SceneEnemyWave } from "../gameplay/enemy/scene_enemy_wave.js";
@@ -390,8 +391,6 @@ class BattleScene extends Phaser.Scene {
             }).on(Phaser.Input.Events.GAMEOBJECT_POINTER_OUT, (ptr, local_x, local_y, event) => {
                 bell_selection.setVisible(false);
             }).on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, (ptr, local_x, local_y, event) => {
-                // TODO: play bell press anim
-
                 this.execute_turn();
             }
         ).setTint(0xCCA049);
@@ -432,6 +431,7 @@ class BattleScene extends Phaser.Scene {
         }
         case PLAYER_TURN_ACTION_TYPE.DICE_SWAP: {
             this.restore_from_game_dices();
+            this.dice_slots_roll_texts_dirty = true;
             this.get_dice_box_selection_outline().setVisible(false);
             break;
         }
@@ -523,6 +523,7 @@ class BattleScene extends Phaser.Scene {
         this.dice_box.position_dices();
         this.dice_slots.present_scene_dices();
         this.active_enemy_wave.present_scene_enemies();
+        this.emotion_stack.present_emotions();
 
         if (this.dice_slots_roll_texts_dirty) {
             this.dice_slots_roll_texts.forEach((roll_text, index) => {
@@ -552,7 +553,7 @@ class BattleScene extends Phaser.Scene {
      * @param {SceneEnemy} scene_enemy 
      */
     on_enemy_death(wave, scene_enemy) {
-
+        scene_enemy.enemy.tim
     }
 
     /**
@@ -667,6 +668,17 @@ class BattleScene extends Phaser.Scene {
         const dice_slots = this.dice_slots.dice_slots[this.current_player_turn_selected_card_group_index];
         let roll = dice_slots.roll();
         let max_roll = dice_slots.get_max_roll_value();
+
+        const roll_ratio = roll / max_roll;
+        if (roll_ratio > 0.75) {
+            if (card.successful_action_emotion_type !== OPTIONAL_EMOTION_TYPE.NONE()) {                     
+                this.emotion_stack.push_back_cycle(card.successful_action_emotion_type);
+            }
+        } else if (roll_ratio < 0.25) {
+            if (card.failure_action_emotion_type !== OPTIONAL_EMOTION_TYPE.NONE()) {
+                this.emotion_stack.push_back_cycle(card.failure_action_emotion_type);
+            }
+        }
 
         if (roll >= card.value) {
             let source = null;
