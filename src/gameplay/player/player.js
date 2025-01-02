@@ -134,7 +134,7 @@ class Player {
     }
 
     heal(amount_of_healing) {
-        this.health.set_health(this.health.get_health() + amount_of_healing);
+        this.health.set_health_clamped(this.health.get_health() + amount_of_healing);
     }
 
     get_block() {

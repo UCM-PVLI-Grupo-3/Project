@@ -427,7 +427,7 @@ class BattleScene extends Phaser.Scene {
             .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, (ptr, local_x, local_y, event) => {
                 bell_button.setScale(bell_button_scale * 1.2);
             }).on(Phaser.Input.Events.GAMEOBJECT_POINTER_OUT, (ptr, local_x, local_y, event) => {
-                bell_button.setVisible(bell_button_scale);
+                bell_button.setScale(bell_button_scale);
             })
         return bell_button;
     }
@@ -640,6 +640,7 @@ class BattleScene extends Phaser.Scene {
                         align: "center",
                     }
                 ).setOrigin(0.5, 0.5).setDepth(LAYER_FRONT_UI);
+                this.cameras.main.shake(100, 0.01);
             } else if (health_variation > 0) {
                 health_text = this.add.text(
                     x, y,
@@ -669,7 +670,44 @@ class BattleScene extends Phaser.Scene {
                 }
             });
         }
+
+        if (health.get_health() <= 0) {
+            this.on_player_death();
+        }
         health.userdata.previous_health = health.get_health();
+    }
+
+    on_player_death() {
+        this.tweens.add({
+            targets: this.player,
+            x: this.cameras.main.width * 0.5,
+            y: this.cameras.main.height * 0.5,
+            duration: 2000,
+            yoyo: false,
+            repeat: 0,
+            ease: "Sine.easeInOut",
+            onComplete: () => {
+                this.scene.start(KEYS_SCENES.END);
+            }
+        });
+        // shake and explode 
+        this.tweens.add({
+            targets: this.player,
+            scale: 0,
+            duration: 2000,
+            yoyo: false,
+            repeat: 0,
+            ease: "Sine.easeInOut",
+        });
+
+        this.tweens.add({
+            targets: this.player.health_bar,
+            scale: 0,
+            duration: 2000,
+            yoyo: false,
+            repeat: 0,
+            ease: "Sine.easeInOut",
+        });
     }
 
     on_player_block_set(block) {
@@ -830,7 +868,8 @@ class BattleScene extends Phaser.Scene {
         let choose_turn_action_text = this.add.text(
             this.turn_bell_button.x,
             this.turn_bell_button.y - this.turn_bell_button.getBounds().height * 0.5,
-            "Choose an Action\n before Committing the Turn", {
+            /*"Choose an Action\n before Committing the Turn"*/
+            "Elige una Acción\nantes de Efectuar tu Turno", {
                 fontFamily: KEYS_FONT_FAMILIES.Bauhaus93,
                 fontSize: "28px",
                 color: "#CCA049",
@@ -869,7 +908,8 @@ class BattleScene extends Phaser.Scene {
             let select_enemy_text = this.add.text(
                 this.active_enemy_wave.rect.x,
                 this.active_enemy_wave.rect.y + this.active_enemy_wave.rect.height * 0.5,
-                "Must Select Enemy\n for Card Action", {
+                /*"Must Select Enemy\n for Card Action"*/
+                "Debes Seleccionar un Enemigo\npara Usar Carta", {
                     fontFamily: KEYS_FONT_FAMILIES.Bauhaus93,
                     fontSize: "28px",
                     color: "#FF2020",
