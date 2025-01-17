@@ -12,7 +12,7 @@ HACK:
 Update for Accuracy:
     GDD                     //
     Website                 //
-    MARKDOWN !Outdated      
+    MARKDOWN !Outdated      //
     DEDUPLICATE Folders     //
     SET NAMING-CONVENTION   //
 
